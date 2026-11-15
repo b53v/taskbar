@@ -1,0 +1,36 @@
+@use "variables" as *;
+@use "wallpaper-contrast" as *;
+
+/* Liquid Glass status bar ink
+ * Kept outside the Matugen-generated _variables.scss so that re-theming a
+ * wallpaper cannot wipe the bar's legibility tokens.
+ *
+ * Legibility comes from vibrant ink, optical weight, one faint specular rim
+ * and one soft depth shadow, never from an extra scrim/mask behind the bar. */
+$barInk: if($darkmode, rgba(255, 255, 255, 0.97), rgba(20, 21, 26, 0.97));
+$barInkSecondary: if($darkmode, rgba(255, 255, 255, 0.82), rgba(20, 21, 26, 0.80));
+$barInkFaint: if($darkmode, rgba(255, 255, 255, 0.52), rgba(20, 21, 26, 0.48));
+$barInkHalo: if($darkmode, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.20));
+@if $barMixedBackdrop {
+  $barInkHalo: if($darkmode, rgba(0, 0, 0, 0.50), rgba(255, 255, 255, 0.58));
+}
+$barInkDepth: if($darkmode, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.16));
+$barRim: if($darkmode, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.55));
+$barDotRim: if($darkmode, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.38));
+@if $barMixedBackdrop {
+  $barDotRim: $barInkHalo;
+  $barRim: $barInkHalo;
+}
+$barBorder: if($darkmode, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.10));
+$barSpecular: if($darkmode, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.62));
+$barInkShadow:
+  0 1px 0 $barInkHalo,
+  0 1px 1px $barInkDepth;
+@if $barMixedBackdrop {
+  // A lighter half-pixel glyph rim avoids making small text look bold while
+  // retaining some local contrast protection on mixed wallpaper.
+  $barInkShadow:
+    -0.5px 0 0 $barInkHalo, 0.5px 0 0 $barInkHalo,
+    0 -0.5px 0 $barInkHalo, 0 0.5px 0 $barInkHalo,
+    0 1px 1px $barInkDepth;
+}

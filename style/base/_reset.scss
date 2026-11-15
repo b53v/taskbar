@@ -1,0 +1,9 @@
+
+@use "sass:color";
+@use "../abstracts" as *;
+
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
+  color: $fg;
+}

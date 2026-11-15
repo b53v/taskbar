@@ -1,0 +1,15 @@
+@use "sass:color";
+@use "../variables" as *;
+
+// Shadow system
+@mixin light-mode-shadow($shadow-type: "default") {
+  box-shadow: none;
+}
+
+@mixin window-shadow {
+  box-shadow: none;
+}
+
+@mixin inset-shadow {
+  box-shadow: none;
+}

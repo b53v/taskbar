@@ -1,0 +1,188 @@
+@use "sass:color";
+
+/*
+* Css Colors
+* Generated with Matugen
+*/
+
+
+$background: rgba(24, 18, 12, 1);
+
+$error: rgba(255, 180, 171, 1);
+
+$error_container: rgba(147, 0, 10, 1);
+
+$inverse_on_surface: rgba(55, 47, 39, 1);
+
+$inverse_primary: rgba(131, 84, 21, 1);
+
+$inverse_surface: rgba(238, 224, 213, 1);
+
+$on_background: rgba(238, 224, 213, 1);
+
+$on_error: rgba(105, 0, 5, 1);
+
+$on_error_container: rgba(255, 218, 214, 1);
+
+$on_primary: rgba(72, 42, 0, 1);
+
+$on_primary_container: rgba(255, 221, 186, 1);
+
+$on_primary_fixed: rgba(43, 23, 0, 1);
+
+$on_primary_fixed_variant: rgba(102, 61, 0, 1);
+
+$on_secondary: rgba(63, 45, 23, 1);
+
+$on_secondary_container: rgba(253, 221, 189, 1);
+
+$on_secondary_fixed: rgba(40, 24, 5, 1);
+
+$on_secondary_fixed_variant: rgba(88, 67, 43, 1);
+
+$on_surface: rgba(238, 224, 213, 1);
+
+$on_surface_variant: rgba(212, 196, 181, 1);
+
+$on_tertiary: rgba(40, 52, 18, 1);
+
+$on_tertiary_container: rgba(217, 233, 183, 1);
+
+$on_tertiary_fixed: rgba(20, 31, 2, 1);
+
+$on_tertiary_fixed_variant: rgba(62, 75, 38, 1);
+
+$outline: rgba(157, 142, 129, 1);
+
+$outline_variant: rgba(80, 69, 58, 1);
+
+$primary: rgba(249, 186, 114, 1);
+
+$primary_container: rgba(102, 61, 0, 1);
+
+$primary_fixed: rgba(255, 221, 186, 1);
+
+$primary_fixed_dim: rgba(249, 186, 114, 1);
+
+$scrim: rgba(0, 0, 0, 1);
+
+$secondary: rgba(224, 193, 163, 1);
+
+$secondary_container: rgba(88, 67, 43, 1);
+
+$secondary_fixed: rgba(253, 221, 189, 1);
+
+$secondary_fixed_dim: rgba(224, 193, 163, 1);
+
+$shadow: rgba(0, 0, 0, 1);
+
+$source_color: rgba(156, 118, 75, 1);
+
+$surface: rgba(24, 18, 12, 1);
+
+$surface_bright: rgba(64, 56, 48, 1);
+
+$surface_container: rgba(37, 30, 23, 1);
+
+$surface_container_high: rgba(48, 41, 33, 1);
+
+$surface_container_highest: rgba(59, 51, 44, 1);
+
+$surface_container_low: rgba(33, 26, 19, 1);
+
+$surface_container_lowest: rgba(19, 13, 7, 1);
+
+$surface_dim: rgba(24, 18, 12, 1);
+
+$surface_tint: rgba(249, 186, 114, 1);
+
+$surface_variant: rgba(80, 69, 58, 1);
+
+$tertiary: rgba(189, 205, 157, 1);
+
+$tertiary_container: rgba(62, 75, 38, 1);
+
+$tertiary_fixed: rgba(217, 233, 183, 1);
+
+$tertiary_fixed_dim: rgba(189, 205, 157, 1);
+
+
+/* general color variables */
+$red: #d17678;
+$accent_green: #afbea2;
+$tooltipBg: $background;
+$fg: $on_background;
+$bg: color.adjust($background, $alpha: -0.5);
+$barBg: color.adjust($background, $alpha: -0.60);
+$surface: color.adjust($surface_bright, $alpha: -0.4);
+$overlay: color.adjust($on_surface, $alpha: -0.25);
+$accent: $tertiary_container;
+
+/* os icon colors */
+$os: $on_surface_variant;
+
+/* workspaces colors */
+$primaryMon: color.mix(
+  $primary_container,
+  $on_primary_container,
+  70%,
+  $method: rgb
+);
+$primaryMonHover: color.mix(
+  $primary_container,
+  $on_primary_container,
+  45%,
+  $method: rgb
+);
+$secondaryMon: color.mix(
+  $tertiary_container,
+  $on_tertiary_container,
+  50%,
+  $method: rgb
+);
+$secondaryMonHover: color.mix(
+  $tertiary_container,
+  $on_tertiary_container,
+  30%,
+  $method: rgb
+);
+$tertiaryMon: color.mix(
+  $secondary_container,
+  $on_secondary_container,
+  70%,
+  $method: rgb
+);
+$tertiaryMonHover: color.mix(
+  $secondary_container,
+  $on_secondary_container,
+  45%,
+  $method: rgb
+);
+$fourthMon: color.mix($secondary, $on_secondary, 70%, $method: rgb);
+$fourthMonHover: color.mix($secondary, $on_secondary, 45%, $method: rgb);
+
+/* button colors */
+$buttonEnabled: color.adjust($primary, $alpha: -0.8);
+$buttonEnabledHover: color.adjust($buttonEnabled, $alpha: +0.1);
+
+$buttonDisabled: $surface;
+$buttonDisabledHover: color.adjust($buttonDisabled, $alpha: +0.39);
+
+/* hw circular proc colors */
+$ramProc: color.mix($primary_fixed_dim, $on_primary_fixed_variant, 66%);
+$cpuProc: color.mix($tertiary_fixed_dim, $on_tertiary_fixed_variant, 66%);
+$procBg: $surface_dim;
+
+/* numeric variables */
+$round: 8px;
+$round2: 16px;
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.4rem;
+$spacing-md: 0.75rem;
+$border-width: 2px;
+$scale: 0.5rem;
+$font: 1.1rem;
+
+/* matugen */
+$darkmode: true;
+$textShadow: if($darkmode, 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 1px rgba(255, 255, 255, 0.65));

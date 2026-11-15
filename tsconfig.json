@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    "experimentalDecorators": false,
+    "jsx": "react-jsx",
+    "jsxImportSource": "ags/gtk4",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "noImplicitAny": false,
+    "paths": {
+      "ags/*": ["/nix/store/psrrf65n7psp6asygmdqdj033wgyzwya-ags-3.1.0/share/ags/js/lib/*"],
+      "ags": ["/nix/store/psrrf65n7psp6asygmdqdj033wgyzwya-ags-3.1.0/share/ags/js/lib/index.ts"]
+    },
+    "typeRoots": [
+      "./@girs"
+    ],
+    "strict": true,
+    "target": "ES2020"
+  }
+}

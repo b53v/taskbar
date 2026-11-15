@@ -1,0 +1,398 @@
+@use "../layouts" as *;
+@use "../abstracts" as *;
+@use "sass:color";
+
+/* A Liquid Glass surface is defined by its lit edge, not by a fill.
+ * We keep the original (almost clear) tint and add only a specular rim,
+ * so nothing is masked behind the bar. */
+@mixin glass-surface {
+  @if $darkmode {
+    background: rgba(10, 15, 22, 0.20);
+  } @else {
+    background: rgba(255, 255, 255, 0.20);
+  }
+  backdrop-filter: blur(20px);
+  border: 1px solid $barBorder;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 $barSpecular,
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* general */
+/* Base bar styles */
+.Bar {
+  border-radius: 8px;
+  font-family:
+    "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC",
+    "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: $barInk;
+  text-shadow: $barInkShadow;
+
+  // Color-only transitions: do not animate dimensions or fade the whole window.
+  // Apply these to leaf widgets too; their explicit colors do not inherit the
+  // window's intermediate color. This does not change sizes or opacity.
+  &, label, image {
+    transition:
+      color 400ms ease-in-out,
+      text-shadow 400ms ease-in-out,
+      -gtk-icon-shadow 400ms ease-in-out;
+  }
+
+  label { text-shadow: $barInkShadow; }
+  image { -gtk-icon-shadow: $barInkShadow; }
+
+  .module {
+    margin: 0 $spacing-xs;
+  }
+
+  /* OS Icon */
+  .os-button {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+  }
+
+  .OsIcon {
+    -gtk-icon-size: 1.18rem;
+    margin: 0 5px;
+    color: $barInk;
+  }
+
+  /* Hyperland & River Workspaces (Monochrome Black / White / Gray) */
+  .Workspaces {
+    margin: 0 4px;
+
+    button {
+      padding: 0;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      border-radius: 9999px;
+      margin: 0 3px;
+      min-width: 9px;
+      min-height: 9px;
+      transition:
+        min-width 180ms cubic-bezier(0.2, 0, 0, 1),
+        margin 180ms cubic-bezier(0.2, 0, 0, 1),
+        opacity 180ms cubic-bezier(0.2, 0, 0, 1),
+        background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+        box-shadow 400ms ease-in-out;
+      background: color.adjust($barInk, $alpha: -0.7);
+      /* A one-pixel light rim so the dots survive dark backdrops. */
+      box-shadow: 0 0 0 1px $barDotRim;
+
+      &:hover {
+        background: color.adjust($barInk, $alpha: -0.22);
+      }
+
+      &.empty {
+        background: color.adjust($barInk, $alpha: -0.7);
+        min-width: 9px;
+        min-height: 9px;
+      }
+
+      &.occupied {
+        background: color.adjust($barInk, $alpha: -0.38);
+        min-width: 9px;
+        min-height: 9px;
+      }
+
+      &.focused {
+        background: $barInk;
+        min-width: 22px;
+        min-height: 9px;
+        border-radius: 9999px;
+        /* Light rim keeps the selected capsule visible on dark backdrops. */
+        box-shadow: 0 0 0 1px $barRim;
+      }
+
+      &.hidden {
+        min-width: 0px;
+        min-height: 9px;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding: 0;
+        opacity: 0;
+        border: none;
+      }
+    }
+
+    .monitor0, .monitor1, .monitor2, .monitor3 {
+      &.occupied:not(.focused) {
+        background: color.adjust($barInk, $alpha: -0.38);
+      }
+      &.focused {
+        background: $barInk;
+      }
+    }
+  }
+
+  .Clients {
+    margin: 0.1rem 0;
+
+    .client-button {
+      @include animate;
+      background: transparent;
+      border-radius: 6px;
+      padding: 0.1rem 0.25rem;
+
+      &:hover {
+        background: color.adjust($fg, $alpha: -0.9);
+      }
+
+      &.focused {
+        .client-icon {
+          -gtk-icon-size: 1.1rem;
+          color: $primaryMon;
+        }
+      }
+
+      &:not(.focused) {
+        opacity: 0.68;
+
+        .client-icon {
+          -gtk-icon-size: 0.95rem;
+          margin: 0 0.25rem;
+        }
+
+        &:hover {
+          opacity: 0.85;
+        }
+      }
+
+      .client-icon {
+        @include animate;
+      }
+    }
+  }
+
+  /* music */
+  .Media {
+    & > box {
+      @include animate;
+      border-radius: $round2;
+      margin: $spacing-sm;
+      font-size: $font;
+    }
+
+    &.active > box {
+      background: $surface;
+    }
+
+    .cover {
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      min-width: 2rem;
+      min-height: 2rem;
+      margin: 0.1rem $spacing-sm;
+    }
+  }
+
+  /* tray */
+  .SysTray {
+    image {
+      -gtk-icon-size: 1rem;
+    }
+
+    .tray-item {
+      margin: 0rem 0.12rem;
+      padding: 0;
+      min-height: 0;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      outline: none;
+    }
+
+    &:not(:last-child) {
+      margin-right: -0.15rem;
+    }
+  }
+
+  /* Action buttons: Volume, Notifications, SystemInfo, Hardware, Clock */
+  .bar-volume,
+  .bar-notifications,
+  .system-menu-toggler,
+  .bar-hw-item,
+  .clock-button {
+    padding: 0.14rem 0.26rem;
+    margin: 0;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    transition: background 120ms ease, color 400ms ease-in-out;
+    color: $barInk;
+
+    &:hover {
+      background: color.adjust($barInk, $alpha: -0.86);
+    }
+
+    &:active {
+      background: color.adjust($barInk, $alpha: -0.8);
+    }
+
+    box {
+      -gtk-icon-size: 1.05rem;
+      margin: 0;
+    }
+
+    image {
+      -gtk-icon-size: 1.05rem;
+      color: $barInk;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $barInk;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .hw-icon {
+      /* Nerd Font glyphs are optically smaller than the symbolic icons on
+       * the right, so match their visual weight rather than their nominal
+       * point size. */
+      font-size: 1.15rem;
+      min-width: 1.15rem;
+      color: $barInk;
+      margin-right: 2px;
+    }
+
+    .hw-val {
+      /* Same numeric size/weight as the volume percentage. */
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $barInk;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .hw-temp {
+      /* Temperature is secondary information: quieter than the percentage
+       * and than the volume/tray labels, so the telemetry has one clear
+       * primary rhythm. */
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: $barInkSecondary;
+      margin-left: 1px;
+      font-feature-settings: "tnum" 1;
+    }
+  }
+
+  /* System menu */
+  .system-menu-toggler {
+    box {
+      @include animate;
+      margin: 0;
+      border-radius: 7px;
+      -gtk-icon-size: 1.05rem;
+    }
+
+    &.active {
+      background: color.adjust($barInk, $alpha: -0.8);
+    }
+
+    .module {
+      margin: 0;
+    }
+  }
+
+  .separator {
+    transition: background-color 400ms ease-in-out;
+    min-width: 1px;
+    min-height: 12px;
+    margin: 0 5px;
+    border-radius: 1px;
+    background: $barInkFaint;
+  }
+
+  .bar-active-window {
+    padding: 0.14rem 0.32rem;
+    border-radius: 7px;
+    color: $barInk;
+
+    image {
+      -gtk-icon-size: 1.02rem;
+      margin-right: 2px;
+      color: $barInk;
+    }
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: $barInkSecondary;
+    }
+  }
+
+  .clock {
+    margin: 0 0.25rem 0 0.18rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $barInk;
+    font-feature-settings: "tnum" 1;
+  }
+
+  .power-button {
+    margin: 0 0.3rem 0 0rem;
+    padding: 0.14rem 0.35rem;
+    border-radius: 7px;
+    -gtk-icon-size: 1.05rem;
+    color: $barInk;
+
+    image {
+    }
+
+    &:hover {
+      background: color.adjust($barInk, $alpha: -0.86);
+    }
+  }
+}
+/* Floating elements style */
+.bar-style-floating {
+  .centerbox > box {
+    @include glass-surface;
+    transition: background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
+    border-radius: 9999px;
+    min-height: 30px;
+    padding: 0 12px;
+    margin: 0;
+  }
+}
+
+/* Full-width connected style */
+.bar-style-expanded {
+  @include glass-surface;
+  transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
+  border-radius: 9999px;
+  min-height: 30px;
+  padding: 0 12px;
+  margin: 0;
+
+  .centerbox > box {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    min-height: 30px;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* Corner-integrated style */
+.bar-style-corners {
+  transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out;
+  @if $darkmode {
+    background: rgba(10, 15, 22, 0.20);
+  } @else {
+    background: rgba(255, 255, 255, 0.20);
+  }
+  border-radius: 0;
+}
