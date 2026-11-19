@@ -1,7 +1,7 @@
 // widgets/bar/modules/Time.tsx
-import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
 import { createExternal, createState } from "ags";
+import { togglePopup } from "utils/popups";
 
 const WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 const pad2 = (n: number) => n.toString().padStart(2, "0");
@@ -55,7 +55,7 @@ export default function Time() {
       <button
         cssClasses={["clock-button"]}
         tooltipText="点击展开侧边栏日历 / 控制中心"
-        onClicked={() => app.toggle_window("system-menu")}
+        onClicked={() => void togglePopup("system-menu").catch(console.error)}
       >
         <label cssClasses={["clock"]} label={timeLabel} />
       </button>
@@ -67,7 +67,7 @@ export default function Time() {
         <button
           cssClasses={["power-button"]}
           tooltipText="电源与会话菜单"
-          onClicked={() => app.toggle_window("logout-menu")}
+          onClicked={() => void togglePopup("logout-menu").catch(console.error)}
         >
           <image iconName="system-shutdown-symbolic" />
         </button>

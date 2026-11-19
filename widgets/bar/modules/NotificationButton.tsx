@@ -1,9 +1,9 @@
 // widgets/bar/modules/NotificationButton.tsx
 import { Gtk } from "ags/gtk4";
-import app from "ags/gtk4/app";
 import Notifd from "gi://AstalNotifd";
 import { createBinding, createComputed } from "ags";
 import { notificationManager } from "utils/notifd";
+import { togglePopup } from "utils/popups";
 
 export default function NotificationButton() {
   const notifd = Notifd.get_default();
@@ -21,7 +21,7 @@ export default function NotificationButton() {
       cssClasses={["bar-notifications"]}
       tooltipText="Notifications (Click to open, Right click for DND)"
       onClicked={() => {
-        app.toggle_window("system-menu");
+        void togglePopup("system-menu").catch(console.error);
       }}
       $={(self) => {
         const gesture = new Gtk.GestureClick();

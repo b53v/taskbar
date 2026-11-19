@@ -19,14 +19,14 @@
 * {
   all: unset;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
-  color: rgb(238, 224, 213);
+  color: rgb(29, 28, 19);
 }
 
 /* variables & mixins */
 /* general styles */
 tooltip.background,
 tooltip > box {
-  background-color: rgb(24, 18, 12);
+  background-color: rgb(255, 249, 235);
   border-radius: 8px;
   box-shadow: none;
 }
@@ -37,14 +37,14 @@ tooltip > box label {
 
 /* scales */
 scale trough {
-  background-color: rgba(64, 56, 48, 0.6);
+  background-color: rgba(255, 249, 235, 0.6);
   border-radius: 0.5rem;
   min-width: calc(0.5rem * 10);
   padding: 0 calc(0.5rem / 2);
 }
 scale highlight,
 scale progress {
-  background: rgba(238, 224, 213, 0.75);
+  background: rgba(29, 28, 19, 0.75);
   border-radius: 0.5rem;
   margin: 0 calc(0px - 0.5rem / 2);
   min-height: 0.5rem;
@@ -56,10 +56,10 @@ popover.background {
 }
 popover.background > contents {
   box-shadow: none;
-  background-color: rgba(64, 56, 48, 0.9);
+  background-color: rgba(255, 249, 235, 0.9);
   border-radius: 8px;
   padding: 0.25rem;
-  border: 1px solid rgba(238, 224, 213, 0.15);
+  border: 1px solid rgba(29, 28, 19, 0.15);
 }
 popover.background modelbutton,
 popover.background row {
@@ -70,65 +70,65 @@ popover.background row {
 }
 popover.background modelbutton:hover,
 popover.background row:hover {
-  background-color: rgba(249, 186, 114, 0.2);
+  background-color: rgba(106, 95, 17, 0.2);
 }
 popover.background modelbutton:selected, popover.background modelbutton:active,
 popover.background row:selected,
 popover.background row:active {
-  background-color: rgba(249, 186, 114, 0.2);
+  background-color: rgba(106, 95, 17, 0.2);
 }
 
 /* buttons */
 .button {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 .button:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 
 .button-disabled {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
-  border: 1px solid rgba(238, 224, 213, 0.1);
+  background: rgba(255, 249, 235, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
 }
 .button-disabled:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 
 /* dropdowns */
 .dropdown button {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 .dropdown button:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 .dropdown button {
   border-radius: 1.1rem;
   padding: 0.4rem;
   margin: 0.5rem;
-  border: 1px solid rgba(238, 224, 213, 0.1);
-  background-color: rgba(64, 56, 48, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
+  background-color: rgba(255, 249, 235, 0.6);
   transition: all 200ms ease;
 }
 .dropdown button:hover {
-  border-color: rgba(238, 224, 213, 0.3);
-  background-color: rgba(64, 56, 48, 0.6);
+  border-color: rgba(29, 28, 19, 0.3);
+  background-color: rgba(255, 249, 235, 0.6);
 }
 .dropdown button:active {
-  background-color: rgba(249, 186, 114, 0.2);
+  background-color: rgba(106, 95, 17, 0.2);
 }
 .dropdown button label {
   margin-top: 0.1rem;
@@ -158,17 +158,17 @@ popover.background row:active {
   font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.97);
-  text-shadow: -0.5px 0 0 rgba(0, 0, 0, 0.5), 0.5px 0 0 rgba(0, 0, 0, 0.5), 0 -0.5px 0 rgba(0, 0, 0, 0.5), 0 0.5px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.32);
+  color: rgba(20, 21, 26, 0.97);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 1px rgba(0, 0, 0, 0.16);
 }
 .Bar, .Bar label, .Bar image {
   transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, -gtk-icon-shadow 400ms ease-in-out;
 }
 .Bar label {
-  text-shadow: -0.5px 0 0 rgba(0, 0, 0, 0.5), 0.5px 0 0 rgba(0, 0, 0, 0.5), 0 -0.5px 0 rgba(0, 0, 0, 0.5), 0 0.5px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.32);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 1px rgba(0, 0, 0, 0.16);
 }
 .Bar image {
-  -gtk-icon-shadow: -0.5px 0 0 rgba(0, 0, 0, 0.5), 0.5px 0 0 rgba(0, 0, 0, 0.5), 0 -0.5px 0 rgba(0, 0, 0, 0.5), 0 0.5px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.32);
+  -gtk-icon-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 1px rgba(0, 0, 0, 0.16);
 }
 .Bar .module {
   margin: 0 0.25rem;
@@ -187,7 +187,7 @@ popover.background row:active {
 .Bar .OsIcon {
   -gtk-icon-size: 1.18rem;
   margin: 0 5px;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
 }
 .Bar {
   /* Hyperland & River Workspaces (Monochrome Black / White / Gray) */
@@ -205,30 +205,30 @@ popover.background row:active {
   min-width: 9px;
   min-height: 9px;
   transition: min-width 180ms cubic-bezier(0.2, 0, 0, 1), margin 180ms cubic-bezier(0.2, 0, 0, 1), opacity 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1), box-shadow 400ms ease-in-out;
-  background: rgba(255, 255, 255, 0.27);
+  background: rgba(20, 21, 26, 0.27);
   /* A one-pixel light rim so the dots survive dark backdrops. */
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38);
 }
 .Bar .Workspaces button:hover {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(20, 21, 26, 0.75);
 }
 .Bar .Workspaces button.empty {
-  background: rgba(255, 255, 255, 0.27);
+  background: rgba(20, 21, 26, 0.27);
   min-width: 9px;
   min-height: 9px;
 }
 .Bar .Workspaces button.occupied {
-  background: rgba(255, 255, 255, 0.59);
+  background: rgba(20, 21, 26, 0.59);
   min-width: 9px;
   min-height: 9px;
 }
 .Bar .Workspaces button.focused {
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(20, 21, 26, 0.97);
   min-width: 22px;
   min-height: 9px;
   border-radius: 9999px;
   /* Light rim keeps the selected capsule visible on dark backdrops. */
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55);
 }
 .Bar .Workspaces button.hidden {
   min-width: 0px;
@@ -240,10 +240,10 @@ popover.background row:active {
   border: none;
 }
 .Bar .Workspaces .monitor0.occupied:not(.focused), .Bar .Workspaces .monitor1.occupied:not(.focused), .Bar .Workspaces .monitor2.occupied:not(.focused), .Bar .Workspaces .monitor3.occupied:not(.focused) {
-  background: rgba(255, 255, 255, 0.59);
+  background: rgba(20, 21, 26, 0.59);
 }
 .Bar .Workspaces .monitor0.focused, .Bar .Workspaces .monitor1.focused, .Bar .Workspaces .monitor2.focused, .Bar .Workspaces .monitor3.focused {
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(20, 21, 26, 0.97);
 }
 .Bar .Clients {
   margin: 0.1rem 0;
@@ -255,11 +255,11 @@ popover.background row:active {
   padding: 0.1rem 0.25rem;
 }
 .Bar .Clients .client-button:hover {
-  background: rgba(238, 224, 213, 0.1);
+  background: rgba(29, 28, 19, 0.1);
 }
 .Bar .Clients .client-button.focused .client-icon {
   -gtk-icon-size: 1.1rem;
-  color: rgb(58%, 42.7450980392%, 21.8823529412%);
+  color: rgb(70.4705882353%, 65.8823529412%, 37.6078431373%);
 }
 .Bar .Clients .client-button:not(.focused) {
   opacity: 0.68;
@@ -284,7 +284,7 @@ popover.background row:active {
   font-size: 1.1rem;
 }
 .Bar .Media.active > box {
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
 }
 .Bar .Media .cover {
   background-size: cover;
@@ -327,21 +327,21 @@ popover.background row:active {
   border: none;
   background: transparent;
   transition: background 120ms ease, color 400ms ease-in-out;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
 }
 .Bar .bar-volume:hover,
 .Bar .bar-notifications:hover,
 .Bar .system-menu-toggler:hover,
 .Bar .bar-hw-item:hover,
 .Bar .clock-button:hover {
-  background: rgba(255, 255, 255, 0.11);
+  background: rgba(20, 21, 26, 0.11);
 }
 .Bar .bar-volume:active,
 .Bar .bar-notifications:active,
 .Bar .system-menu-toggler:active,
 .Bar .bar-hw-item:active,
 .Bar .clock-button:active {
-  background: rgba(255, 255, 255, 0.17);
+  background: rgba(20, 21, 26, 0.17);
 }
 .Bar .bar-volume box,
 .Bar .bar-notifications box,
@@ -357,7 +357,7 @@ popover.background row:active {
 .Bar .bar-hw-item image,
 .Bar .clock-button image {
   -gtk-icon-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
 }
 .Bar .bar-volume label,
 .Bar .bar-notifications label,
@@ -366,7 +366,7 @@ popover.background row:active {
 .Bar .clock-button label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
   font-feature-settings: "tnum" 1;
 }
 .Bar .bar-volume .hw-icon,
@@ -379,7 +379,7 @@ popover.background row:active {
    * point size. */
   font-size: 1.15rem;
   min-width: 1.15rem;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
   margin-right: 2px;
 }
 .Bar .bar-volume .hw-val,
@@ -390,7 +390,7 @@ popover.background row:active {
   /* Same numeric size/weight as the volume percentage. */
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
   font-feature-settings: "tnum" 1;
 }
 .Bar .bar-volume .hw-temp,
@@ -403,7 +403,7 @@ popover.background row:active {
    * primary rhythm. */
   font-size: 0.82rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(20, 21, 26, 0.8);
   margin-left: 1px;
   font-feature-settings: "tnum" 1;
 }
@@ -417,7 +417,7 @@ popover.background row:active {
   -gtk-icon-size: 1.05rem;
 }
 .Bar .system-menu-toggler.active {
-  background: rgba(255, 255, 255, 0.17);
+  background: rgba(20, 21, 26, 0.17);
 }
 .Bar .system-menu-toggler .module {
   margin: 0;
@@ -428,28 +428,28 @@ popover.background row:active {
   min-height: 12px;
   margin: 0 5px;
   border-radius: 1px;
-  background: rgba(255, 255, 255, 0.52);
+  background: rgba(20, 21, 26, 0.48);
 }
 .Bar .bar-active-window {
   padding: 0.14rem 0.32rem;
   border-radius: 7px;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
 }
 .Bar .bar-active-window image {
   -gtk-icon-size: 1.02rem;
   margin-right: 2px;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
 }
 .Bar .bar-active-window label {
   font-size: 0.88rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(20, 21, 26, 0.8);
 }
 .Bar .clock {
   margin: 0 0.25rem 0 0.18rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
   font-feature-settings: "tnum" 1;
 }
 .Bar .power-button {
@@ -457,18 +457,18 @@ popover.background row:active {
   padding: 0.14rem 0.35rem;
   border-radius: 7px;
   -gtk-icon-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.97);
+  color: rgba(20, 21, 26, 0.97);
 }
 .Bar .power-button:hover {
-  background: rgba(255, 255, 255, 0.11);
+  background: rgba(20, 21, 26, 0.11);
 }
 
 /* Floating elements style */
 .bar-style-floating .centerbox > box {
-  background: rgba(10, 15, 22, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   transition: background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
   border-radius: 9999px;
   min-height: 30px;
@@ -478,10 +478,10 @@ popover.background row:active {
 
 /* Full-width connected style */
 .bar-style-expanded {
-  background: rgba(10, 15, 22, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
   border-radius: 9999px;
   min-height: 30px;
@@ -500,25 +500,25 @@ popover.background row:active {
 /* Corner-integrated style */
 .bar-style-corners {
   transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out;
-  background: rgba(10, 15, 22, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 0;
 }
 
 box.picker {
   border-radius: 16px;
   box-shadow: none;
-  background: rgba(24, 18, 12, 0.5);
+  background: rgba(255, 249, 235, 0.5);
   margin: 5px 10px 15px;
   padding: 0.4rem;
 }
 box.picker box.search {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
   margin: 1rem 0.5rem;
-  background-color: rgba(249, 186, 114, 0.15);
+  background-color: rgba(106, 95, 17, 0.15);
 }
 box.picker box.search label {
   font-family: "Material Symbols Outlined";
@@ -530,23 +530,23 @@ box.picker box.search entry {
   margin: 0.25rem;
 }
 box.picker box.search entry menu {
-  background: rgb(24, 18, 12);
+  background: rgb(255, 249, 235);
   border-radius: 8px;
   font-size: 1.1rem;
 }
 box.picker box.search entry menu separator {
-  background-color: rgba(64, 56, 48, 0.6);
+  background-color: rgba(255, 249, 235, 0.6);
 }
 box.picker box.search entry menu menuitem {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
-  border: 1px solid rgba(238, 224, 213, 0.1);
+  background: rgba(255, 249, 235, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
 }
 box.picker box.search entry menu menuitem:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 box.picker box.search entry menu menuitem {
   border-radius: 0;
@@ -564,7 +564,7 @@ box.picker box.search entry menu menuitem:only-child {
 box.picker box.results-list {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
 }
@@ -585,21 +585,21 @@ box.picker box.results-list .app-button label.name {
   font-size: 1.1rem;
 }
 box.picker box.results-list .app-button label.description {
-  color: rgba(238, 224, 213, 0.8);
+  color: rgba(29, 28, 19, 0.8);
 }
 box.picker box.results-list .app-button:focus, box.picker box.results-list .app-button:hover, box.picker box.results-list .app-button.selected {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 box.picker box.results-list .app-button:focus:hover, box.picker box.results-list .app-button:hover:hover, box.picker box.results-list .app-button.selected:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 box.picker box.results-list .app-button:focus, box.picker box.results-list .app-button:hover, box.picker box.results-list .app-button.selected {
-  background-color: rgba(249, 186, 114, 0.3);
+  background-color: rgba(106, 95, 17, 0.3);
   border: transparent;
 }
 box.picker box.results-list .action-button .action-icon {
@@ -613,17 +613,17 @@ box.picker box.results-list .action-button {
 }
 box.picker box.results-list .action-button:focus, box.picker box.results-list .action-button:hover {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 box.picker box.results-list .action-button:focus:hover, box.picker box.results-list .action-button:hover:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 box.picker box.results-list .action-button:focus, box.picker box.results-list .action-button:hover {
-  background-color: rgba(249, 186, 114, 0.3);
+  background-color: rgba(106, 95, 17, 0.3);
   border: transparent;
   border-radius: 5rem;
   padding: 0 0.6rem;
@@ -631,7 +631,7 @@ box.picker box.results-list .action-button:focus, box.picker box.results-list .a
 box.picker box.results-grid {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
 }
@@ -643,15 +643,15 @@ box.picker box.results-grid .wallpaper-thumbnail {
   border: 1px solid transparent;
 }
 box.picker box.results-grid .wallpaper-thumbnail:hover, box.picker box.results-grid .wallpaper-thumbnail:focus, box.picker box.results-grid .wallpaper-thumbnail.selected {
-  background-color: rgba(238, 224, 213, 0.1);
-  border-color: rgba(238, 224, 213, 0.3);
+  background-color: rgba(29, 28, 19, 0.1);
+  border-color: rgba(29, 28, 19, 0.3);
 }
 box.picker box.results-grid .wallpaper-thumbnail box.wallpaper-preview-container {
   border-radius: calc(16px - 0.4rem - 2px);
   border: 1px solid rgba(0, 0, 0, 0.1);
   min-width: 140px;
   min-height: 100px;
-  background-color: rgba(238, 224, 213, 0.1);
+  background-color: rgba(29, 28, 19, 0.1);
 }
 box.picker box.results-grid .wallpaper-thumbnail .wallpaper-picture {
   border-radius: calc(16px - 0.4rem - 2px);
@@ -664,7 +664,7 @@ box.picker box.results-grid .wallpaper-thumbnail box.wallpaper-placeholder {
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 box.picker box.results-grid .wallpaper-thumbnail .wallpaper-name {
-  color: rgba(238, 224, 213, 0.9);
+  color: rgba(29, 28, 19, 0.9);
   margin-top: 0.25rem;
   font-weight: 500;
 }
@@ -679,10 +679,10 @@ box.picker box.not-found {
 }
 box.picker box.not-found image {
   -gtk-icon-size: 6rem;
-  color: rgba(238, 224, 213, 0.7);
+  color: rgba(29, 28, 19, 0.7);
 }
 box.picker box.not-found label {
-  color: rgba(238, 224, 213, 0.9);
+  color: rgba(29, 28, 19, 0.9);
   font-size: 1.2em;
 }
 
@@ -700,7 +700,7 @@ box.picker box.not-found label {
 }
 .mode-bar .mode-button:hover, .mode-bar .mode-button:focus, .mode-bar .mode-button.active {
   border-radius: calc(16px - 0.4rem - 2px);
-  background-color: rgba(249, 186, 114, 0.15);
+  background-color: rgba(106, 95, 17, 0.15);
   border: transparent;
   padding: 6px 12px;
   transition: all 0.2s ease;
@@ -709,7 +709,7 @@ box.picker box.not-found label {
 .action-bar {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
   padding: 0.4rem;
@@ -724,17 +724,17 @@ box.picker box.not-found label {
 }
 .action-bar .action-button:focus, .action-bar .action-button:hover {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 .action-bar .action-button:focus:hover, .action-bar .action-button:hover:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 .action-bar .action-button:focus, .action-bar .action-button:hover {
-  background-color: rgba(249, 186, 114, 0.2);
+  background-color: rgba(106, 95, 17, 0.2);
   border: transparent;
   border-radius: 5rem;
   padding: 0.2rem 0.4rem;
@@ -746,7 +746,7 @@ box.picker box.not-found label {
 .theme-controls .option-label {
   font-size: 1.1rem;
   font-weight: 500;
-  color: rgb(238, 224, 213);
+  color: rgb(29, 28, 19);
   opacity: 0.85;
   margin-right: 0.25rem;
 }
@@ -754,7 +754,7 @@ box.picker box.not-found label {
 .command-suggestions {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
 }
@@ -765,31 +765,31 @@ box.picker box.not-found label {
 .command-suggestions .command-item .command-icon {
   font-family: "Material Symbols Outlined";
   font-size: 3rem;
-  color: rgba(238, 224, 213, 0.8);
+  color: rgba(29, 28, 19, 0.8);
   margin-right: 0.3rem;
   margin-left: 0.3rem;
 }
 .command-suggestions .command-item .command-name {
   font-weight: bold;
-  color: rgb(249, 186, 114);
+  color: rgb(106, 95, 17);
   font-size: 1.1rem;
 }
 .command-suggestions .command-item .command-description {
-  color: rgba(238, 224, 213, 0.8);
+  color: rgba(29, 28, 19, 0.8);
 }
 .command-suggestions .command-item:hover, .command-suggestions .command-item:focus {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 .command-suggestions .command-item:hover:hover, .command-suggestions .command-item:focus:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 .command-suggestions .command-item:hover, .command-suggestions .command-item:focus {
-  background-color: rgba(249, 186, 114, 0.3);
+  background-color: rgba(106, 95, 17, 0.3);
   border: transparent;
 }
 
@@ -863,9 +863,9 @@ box.logout-background .logout-menu button.logout-btn:focus {
 }
 
 .logout-menu.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .logout-menu.popup-glass-dynamic button.logout-btn {
@@ -873,19 +873,8 @@ box.logout-background .logout-menu button.logout-btn:focus {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-.logout-menu.popup-glass-auto button.logout-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
 .logout-menu.popup-glass-dynamic label.logout-icon,
 .logout-menu.popup-glass-dynamic label.logout-text {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-
-.logout-menu.popup-glass-auto label.logout-icon,
-.logout-menu.popup-glass-auto label.logout-text {
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
 }
@@ -915,23 +904,23 @@ box.logout-background .logout-menu button.logout-btn:focus {
 /* Final low-tint adaptive power glass. */
 .logout-menu.popup-glass-dynamic,
 .logout-menu.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .logout-menu.popup-glass-dynamic label.logout-icon,
 .logout-menu.popup-glass-dynamic label.logout-text,
 .logout-menu.popup-glass-auto label.logout-icon,
 .logout-menu.popup-glass-auto label.logout-text {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .music.window {
   border-radius: 16px;
   box-shadow: none;
-  background: rgba(24, 18, 12, 0.5);
+  background: rgba(255, 249, 235, 0.5);
   margin: 5px 10px 15px;
   padding: 0.4rem;
   background: none;
@@ -960,6 +949,11 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .music.window .info scale {
   margin: 0.3rem 0;
 }
+.music.window .info label,
+.music.window .info .title,
+.music.window .info image {
+  color: rgb(255, 249, 235);
+}
 .music.window .info label.position,
 .music.window .info label.length {
   font-size: 0.8rem;
@@ -978,6 +972,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .music.window .controls button {
   margin: 0 1.6rem;
   -gtk-icon-size: 1.5rem;
+  color: rgb(255, 249, 235);
 }
 
 .music.window .player-info {
@@ -1002,9 +997,9 @@ box.logout-background .logout-menu button.logout-btn:focus {
 }
 
 .music.window.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .music.window.popup-glass-dynamic label,
@@ -1019,8 +1014,8 @@ box.logout-background .logout-menu button.logout-btn:focus {
 
 .music.window.popup-glass-auto label,
 .music.window.popup-glass-auto image {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .music.window.popup-glass-dynamic button,
@@ -1054,17 +1049,17 @@ box.logout-background .logout-menu button.logout-btn:focus {
 /* Final low-tint adaptive music glass. */
 .music.window.popup-glass-dynamic,
 .music.window.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .music.window.popup-glass-dynamic label,
 .music.window.popup-glass-dynamic image,
 .music.window.popup-glass-auto label,
 .music.window.popup-glass-auto image {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .music.window.popup-glass-dynamic image,
@@ -1075,7 +1070,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .notification {
   border-radius: 16px;
   box-shadow: none;
-  background: rgba(24, 18, 12, 0.5);
+  background: rgba(255, 249, 235, 0.5);
   margin: 5px 10px 15px;
   padding: 0.4rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1088,18 +1083,18 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .notification .header .app-name {
   font-size: 0.9rem;
   font-weight: bold;
-  color: rgba(238, 224, 213, 0.7);
+  color: rgba(29, 28, 19, 0.7);
 }
 .notification .header .time {
   font-size: 0.9rem;
   font-weight: bold;
-  color: rgba(238, 224, 213, 0.7);
+  color: rgba(29, 28, 19, 0.7);
 }
 .notification .header .dismiss-button {
   margin: -0.5rem 0rem;
 }
 .notification separator {
-  background-color: rgba(238, 224, 213, 0.5);
+  background-color: rgba(29, 28, 19, 0.5);
   min-height: 1px;
 }
 .notification .content {
@@ -1123,12 +1118,12 @@ box.logout-background .logout-menu button.logout-btn:focus {
   margin-right: 0.5rem;
   font-size: 1.1rem;
   font-weight: 500;
-  color: rgb(238, 224, 213);
+  color: rgb(29, 28, 19);
 }
 .notification .content .body {
   margin-right: 0.5rem;
   font-size: 0.95rem;
-  color: rgba(238, 224, 213, 0.8);
+  color: rgba(29, 28, 19, 0.8);
   margin-top: 0.75rem;
 }
 .notification .actions {
@@ -1137,7 +1132,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .notification .actions .action-button {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
@@ -1145,7 +1140,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
   font-size: 0.9rem;
 }
 .notification .actions .action-button:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 
 /* Message toasts: use the same translucent material as the bar. */
@@ -1162,9 +1157,9 @@ box.logout-background .logout-menu button.logout-btn:focus {
 }
 
 .popup-glass-auto .notification {
-  background: rgba(10, 15, 22, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .popup-glass-dynamic .notification label,
@@ -1179,15 +1174,11 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .popup-glass-auto .notification image,
 .popup-glass-auto .notification .app-name,
 .popup-glass-auto .notification .time {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .popup-glass-dynamic .notification .body {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.popup-glass-auto .notification .body {
   color: rgba(255, 255, 255, 0.78);
 }
 
@@ -1268,9 +1259,9 @@ box.logout-background .logout-menu button.logout-btn:focus {
 
 /* Theme-synced final notification glass: exactly one shared 20% tint. */
 .popup-glass-light .notification {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .popup-glass-light .notification .header .app-name,
@@ -1279,21 +1270,21 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .popup-glass-light .notification .content .body,
 .popup-glass-light .notification .actions .action-button,
 .popup-glass-light .notification .content image {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .popup-glass-light .notification .content .body {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(26, 27, 32, 0.76);
 }
 
 .popup-glass-light .notification .actions .action-button {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .popup-glass-light .notification separator {
-  background-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(0, 0, 0, 0.18);
 }
 
 /* Volume / brightness / media OSD: compact capsule pill */
@@ -1359,27 +1350,27 @@ box.logout-background .logout-menu button.logout-btn:focus {
 }
 
 .osd.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  color: #1a1b20;
 }
 
 /* Theme-synced final OSD glass rules */
 .osd {
-  background: rgba(10, 15, 22, 0.24);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  color: #1a1b20;
 }
 .osd label,
 .osd image {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 .osd progressbar > trough {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.12);
 }
 .osd progressbar > trough > progress {
-  background: #8fb3e8;
+  background: #5e81ac;
 }
 
 /* general */
@@ -1387,7 +1378,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
   -gtk-icon-size: 1.1rem;
   border-radius: 16px;
   box-shadow: none;
-  background: rgba(24, 18, 12, 0.5);
+  background: rgba(255, 249, 235, 0.5);
   margin: 5px 10px 15px;
   padding: 0.4rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1397,7 +1388,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .system-menu > box {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
   box-shadow: none;
@@ -1445,7 +1436,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 }
 .system-menu .sliders block filled {
   border-radius: 1.5rem;
-  background-color: rgb(238, 224, 213);
+  background-color: rgb(29, 28, 19);
 }
 
 .arrow-indicator {
@@ -1460,7 +1451,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .system-menu-list {
   border-radius: 16px;
   box-shadow: none;
-  background: rgba(24, 18, 12, 0.5);
+  background: rgba(255, 249, 235, 0.5);
   margin: 5px 10px 15px;
   padding: 0.4rem;
   box-shadow: none;
@@ -1471,13 +1462,13 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .network-item {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
-  border: 1px solid rgba(238, 224, 213, 0.1);
+  background: rgba(255, 249, 235, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
 }
 .network-item:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 .network-item {
   border-radius: calc(16px - 0.4rem - 2px);
@@ -1496,14 +1487,14 @@ box.logout-background .logout-menu button.logout-btn:focus {
 
 .network-item-active {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(249, 186, 114, 0.2);
-  border: 1px solid rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.2);
+  border: 1px solid rgba(106, 95, 17, 0.3);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
   box-shadow: none;
 }
 .network-item-active:hover {
-  background: rgba(249, 186, 114, 0.3);
+  background: rgba(106, 95, 17, 0.3);
 }
 .network-item-active {
   border-radius: calc(16px - 0.4rem - 2px);
@@ -1517,7 +1508,7 @@ box.logout-background .logout-menu button.logout-btn:focus {
 .password-dialog {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
   margin-bottom: 0.75rem;
@@ -1539,15 +1530,15 @@ box.logout-background .logout-menu button.logout-btn:focus {
   border: 1px solid rgba(0, 0, 0, 0.1);
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
-  border: 1px solid rgba(238, 224, 213, 0.1);
+  background: rgba(255, 249, 235, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
 }
 .refresh-button:hover,
 .disconnect-button:hover,
 .settings-button:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 .refresh-button,
 .disconnect-button,
@@ -1581,30 +1572,30 @@ image {
 .password-search {
   border-radius: calc(16px - 0.4rem - 2px);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
+  background: rgba(255, 249, 235, 0.6);
   margin: 0.4rem;
   padding: 0.4rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  background: rgba(24, 18, 12, 0.5);
+  background: rgba(255, 249, 235, 0.5);
 }
 .password-search entry menu {
-  background: rgb(24, 18, 12);
+  background: rgb(255, 249, 235);
   border-radius: 8px;
   font-size: 1.1rem;
 }
 .password-search entry menu separator {
-  background-color: rgba(64, 56, 48, 0.6);
+  background-color: rgba(255, 249, 235, 0.6);
 }
 .password-search entry menu menuitem {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
-  border: 1px solid rgba(238, 224, 213, 0.1);
+  background: rgba(255, 249, 235, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
 }
 .password-search entry menu menuitem:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 .password-search entry menu menuitem {
   border-radius: 0;
@@ -1628,13 +1619,13 @@ image {
 .saved-network {
   transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
   box-shadow: none;
-  background: rgba(64, 56, 48, 0.6);
-  border: 1px solid rgba(238, 224, 213, 0.1);
+  background: rgba(255, 249, 235, 0.6);
+  border: 1px solid rgba(29, 28, 19, 0.1);
   border-radius: calc(8px * 1.97);
   padding: 0.4rem;
 }
 .saved-network:hover {
-  background: rgba(64, 56, 48, 0.99);
+  background: rgba(255, 249, 235, 0.99);
 }
 .saved-network {
   border-radius: calc(16px - 0.4rem - 2px);
@@ -1666,10 +1657,10 @@ image {
 }
 
 .system-menu.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .system-menu.popup-glass-dynamic > box,
@@ -1693,12 +1684,8 @@ image {
 .system-menu.popup-glass-auto label,
 .system-menu.popup-glass-auto image,
 .system-menu.popup-glass-auto .section-label {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-
-.system-menu.popup-glass-auto image {
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 /* No row cards: the only surface is the popup glass itself. */
@@ -1742,12 +1729,12 @@ image {
 }
 
 .system-menu.popup-glass-auto trough {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .system-menu.popup-glass-auto highlight,
 .system-menu.popup-glass-auto progress {
-  background: #8fb3e8;
+  background: #5e81ac;
 }
 
 .system-menu.popup-glass-dynamic entry {
@@ -1757,9 +1744,9 @@ image {
 }
 
 .system-menu.popup-glass-auto entry {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: #1a1b20;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(0, 0, 0, 0.16);
 }
 
 /* All-light override: no dark variant. */
@@ -1808,9 +1795,9 @@ image {
  * bar's white-ink class, so it is light on light desktops and dark on dark. */
 .system-menu.popup-glass-dynamic,
 .system-menu.popup-glass-auto {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #1a1b20;
 }
 
 .system-menu.popup-glass-dynamic label,
@@ -1819,8 +1806,8 @@ image {
 .system-menu.popup-glass-auto label,
 .system-menu.popup-glass-auto image,
 .system-menu.popup-glass-auto .section-label {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .system-menu.popup-glass-dynamic image,
@@ -1830,19 +1817,19 @@ image {
 
 .system-menu.popup-glass-dynamic trough,
 .system-menu.popup-glass-auto trough {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .system-menu.popup-glass-dynamic highlight,
 .system-menu.popup-glass-dynamic progress,
 .system-menu.popup-glass-auto highlight,
 .system-menu.popup-glass-auto progress {
-  background: #8fb3e8;
+  background: #5e81ac;
 }
 
 .system-menu.popup-glass-dynamic entry,
 .system-menu.popup-glass-auto entry {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: #1a1b20;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(0, 0, 0, 0.16);
 }

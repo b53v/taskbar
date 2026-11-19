@@ -1,5 +1,5 @@
-import app from "ags/gtk4/app";
 import Battery from "gi://AstalBattery";
+import { togglePopup } from "utils/popups";
 import Net from "./modules/Net.tsx";
 import Blue from "./modules/Bluetooth.tsx";
 import Batt from "./modules/Battery.tsx";
@@ -9,7 +9,7 @@ export default function SystemInfo() {
   return (
     <button
       cssClasses={["system-menu-toggler"]}
-      onClicked={() => app.toggle_window("system-menu")}
+      onClicked={() => void togglePopup("system-menu").catch(console.error)}
     >
       <box spacing={12}>
         <Net />

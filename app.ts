@@ -3,8 +3,8 @@ import { execAsync } from "ags/process";
 import { monitorFile, readFile, writeFileAsync } from "ags/file";
 import GLib from "gi://GLib?version=2.0";
 import System from "system";
-import { picker } from "utils/picker";
 import options from "options";
+import { PopupName, togglePopup } from "utils/popups";
 import { CssReloader } from "utils/cssReload";
 import { StyleProvider } from "utils/styleProvider";
 import {
@@ -16,14 +16,10 @@ import WeWallpaper, {
   stopWeWallpaper,
 } from "utils/weWallpaper";
 
-// Widgets
+// Widgets mounted eagerly at startup; popups are loaded lazily via utils/popups.
 import {
   Bar,
-  SystemMenu,
   OnScreenDisplay,
-  LogoutMenu,
-  PickerWindow,
-  MusicPlayer,
   Notifications,
   Wallpaper,
 } from "./widgets";
@@ -47,20 +43,30 @@ const cssReloader = new CssReloader(async () => {
 });
 const reloadCss = () => cssReloader.request();
 
+const popupRequests: Record<string, PopupName> = {
+  picker: "picker",
+  logout: "logout-menu",
+  "music-player": "music-player",
+  music: "music-player",
+  notifications: "system-menu",
+  "system-menu": "system-menu",
+};
+
 app.start({
   icons,
   instanceName: "taskbar",
   requestHandler(argv: string[], res: (response: any) => void) {
     const request = argv[0];
+    const popup = popupRequests[request];
+    if (popup) {
+      togglePopup(popup).then(
+        () => res(`${popup} toggled`),
+        (error) => res(`${popup} toggle failed: ${error}`),
+      );
+      return;
+    }
+
     switch (request) {
-      case "picker":
-        app.toggle_window("picker");
-        res("picker toggled");
-        break;
-      case "logout":
-        app.toggle_window("logout-menu");
-        res("logout menu toggled");
-        break;
       case "reload-css":
         reloadCss().then(
           () => res("css reloaded"),
@@ -68,8 +74,13 @@ app.start({
         );
         break;
       case "wall-rand":
-        picker.random("wp");
-        res("random wallpaper set");
+        import("utils/picker").then(
+          async ({ picker }) => {
+            await picker.random("wp");
+            res("random wallpaper set");
+          },
+          (error) => res(`random wallpaper failed: ${error}`),
+        );
         break;
       case "set-video-wallpaper":
         stopWeWallpaper();
@@ -94,16 +105,6 @@ app.start({
       case "gc":
         System.gc();
         res("gc requested");
-        break;
-      case "music-player":
-      case "music":
-        app.toggle_window("music-player");
-        res("music-player toggled");
-        break;
-      case "notifications":
-      case "system-menu":
-        app.toggle_window("system-menu");
-        res("system-menu toggled");
         break;
       default:
         res("not found");
@@ -140,10 +141,6 @@ app.start({
     Bar();
     Notifications();
     OnScreenDisplay();
-    SystemMenu();
-    MusicPlayer();
-    PickerWindow();
-    LogoutMenu();
 
     // Post-startup and low-priority periodic GC to curb GJS heap growth.
     GLib.timeout_add_seconds(GLib.PRIORITY_LOW, 2, () => {
