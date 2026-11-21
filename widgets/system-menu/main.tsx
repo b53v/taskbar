@@ -1,7 +1,7 @@
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import PowerProfiles from "gi://AstalPowerProfiles";
-import { createState, onCleanup } from "ags";
+import { createState } from "ags";
 import { Sliders } from "./modules/Sliders.tsx";
 import { Toggles } from "./modules/Toggles.tsx";
 import { PowerProfileBox } from "./modules/PowerProfileBox.tsx";
@@ -31,6 +31,9 @@ export default function SystemMenu() {
             return TOP | RIGHT;
         }
       })}
+      marginTop={8}
+      marginRight={8}
+      marginBottom={8}
       keymode={Astal.Keymode.ON_DEMAND}
       // Fixes gtk4-layer-shell bug
       // https://github.com/Aylur/astal/issues/258
@@ -53,7 +56,8 @@ export default function SystemMenu() {
           "system-menu",
           ink === "dynamic" ? "popup-glass-dynamic" : "popup-glass-auto",
         ])}
-        widthRequest={285}
+        widthRequest={360}
+        spacing={4}
         orientation={Gtk.Orientation.VERTICAL}
       >
         <Toggles />

@@ -1,274 +1,480 @@
-@use "../layouts" as *;
 @use "../abstracts" as *;
-@use "sass:color";
 
+/* ============================================================================
+ * Notifications: Live Toasts + System Menu Notification Center
+ * Uses unified Liquid Glass tokens from style/abstracts/_glass.scss
+ * ============================================================================ */
+
+/* Live toast window container (transparent so Hyprland blurs only each card) */
+.notifications {
+  background: transparent;
+  padding: 0;
+}
+
+/* Shared notification card anatomy */
 .notification {
-  @include window;
-  @include border;
-  margin: $spacing-md;
-  padding: $spacing-sm $spacing-md;
+  font-family: $uiFont;
+  color: $popupInk;
+  margin: 0;
+  padding: 10px 12px;
 
   &.critical {
-    border: 1px solid $red;
+    border-color: $popupDangerInk;
   }
 
   .header {
-    .app-name {
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: color.adjust($fg, $alpha: -0.3);
+    margin: 0;
+    padding: 0;
+
+    label.app-name {
+      font-family: $uiFont;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: $popupInkSecondary;
+      text-shadow: $popupTextShadow;
+      margin: 0;
     }
-    .time {
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: color.adjust($fg, $alpha: -0.3);
+
+    label.time {
+      font-family: $uiFont;
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: $popupInkMuted;
+      text-shadow: $popupTextShadow;
+      font-feature-settings: "tnum" 1;
+      margin: 0;
     }
-    .dismiss-button {
-      margin: -0.5rem 0rem;
+
+    button.dismiss-button {
+      @include popup-interactive;
+      min-width: 22px;
+      min-height: 22px;
+      padding: 0;
+      margin: 0;
+      border-radius: $radius-pill;
+      background-color: transparent;
+      border: 1px solid transparent;
+      color: $popupInkMuted;
+      opacity: 0.82;
+
+      image {
+        margin: 0;
+        padding: 0;
+        -gtk-icon-size: 12px;
+        color: $popupInkMuted;
+      }
+
+      &:hover {
+        background-color: $popupDangerBg;
+        border-color: $popupDangerBg;
+        color: $popupDangerInk;
+        opacity: 1;
+
+        image {
+          color: $popupDangerInk;
+        }
+      }
+
+      &:active {
+        background-color: $popupDangerBg;
+        opacity: 0.85;
+      }
     }
   }
 
-  separator {
-    background-color: color.adjust($fg, $alpha: -0.5);
+  separator.notification-separator {
+    background-color: $popupDivider;
     min-height: 1px;
+    margin: 6px 0 8px 0;
   }
 
   .content {
-    margin-top: 0.75rem;
-    margin-bottom: 0.5rem;
+    margin: 0;
+    padding: 0;
 
-    > box {
-      min-width: 64px;
-      min-height: 64px;
-      border-radius: $round;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-
-    image {
-      -gtk-icon-size: 64px;
-    }
     .thumb {
-      margin-right: 0.5rem;
+      min-width: 38px;
+      min-height: 38px;
+      border-radius: 9px;
+      margin: 0;
+      padding: 0;
+
+      .thumb-frame {
+        min-width: 38px;
+        min-height: 38px;
+        border-radius: 9px;
+        background-color: $popupCardBg;
+        border: 1px solid $popupCardBorder;
+        margin: 0;
+        padding: 0;
+      }
+
+      image,
+      image.thumb-icon {
+        margin: 0;
+        padding: 0;
+        -gtk-icon-size: 36px;
+        color: $popupInk;
+      }
     }
 
-    .title {
-      margin-right: 0.5rem;
-      font-size: $font;
-      font-weight: 500;
-      color: $fg;
-    }
+    .text-content {
+      margin: 0;
+      padding: 0;
 
-    .body {
-      margin-right: 0.5rem;
-      font-size: 0.95rem;
-      color: color.adjust($fg, $alpha: -0.2);
-      margin-top: $spacing-md;
+      label.title {
+        font-family: $uiFont;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: $popupInk;
+        text-shadow: $popupTextShadow;
+        margin: 0;
+      }
+
+      label.body {
+        font-family: $uiFont;
+        font-size: 0.82rem;
+        font-weight: 400;
+        color: $popupInkSecondary;
+        text-shadow: $popupTextShadow;
+        margin: 0;
+      }
     }
   }
-  .actions {
-    margin-top: 1rem;
 
-    .action-button {
-      @include window-box;
-      @include animate;
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
+  .actions {
+    margin-top: 8px;
+
+    button.action-button {
+      @include popup-interactive;
+      background-color: $popupHoverBg;
+      border: 1px solid $popupCardBorder;
+      border-radius: $radius-control;
+      padding: 5px 10px;
+      margin: 0;
+      min-height: 26px;
+
+      label {
+        font-family: $uiFont;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: $popupInk;
+        text-shadow: $popupTextShadow;
+        margin: 0;
+      }
 
       &:hover {
-        background: $buttonDisabledHover;
+        background-color: $popupActiveBg;
+        border-color: $popupBorder;
+      }
+
+      &:active {
+        background-color: $popupAccentSoftBg;
+        border-color: $popupAccent;
       }
     }
   }
 }
 
-/* Message toasts: use the same translucent material as the bar. */
-.popup-glass-dynamic .notification,
-.popup-glass-auto .notification {
-  backdrop-filter: blur(20px);
-  border-radius: $round2;
-}
-
-.popup-glass-dynamic .notification {
-  background: rgba(10, 15, 22, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-}
-
-.popup-glass-auto .notification {
-  @if $darkmode {
-    background: rgba(10, 15, 22, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    color: rgba(255, 255, 255, 0.98);
-  } @else {
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    color: #1a1b20;
-  }
-}
-
-.popup-glass-dynamic .notification label,
-.popup-glass-dynamic .notification image,
-.popup-glass-dynamic .notification .app-name,
-.popup-glass-dynamic .notification .time {
-  color: #ffffff;
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.85),
-    0 0 1px rgba(0, 0, 0, 0.80);
-}
-
-.popup-glass-auto .notification label,
-.popup-glass-auto .notification image,
-.popup-glass-auto .notification .app-name,
-.popup-glass-auto .notification .time {
-  @if $darkmode {
-    color: #ffffff;
-    text-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.85),
-      0 0 1px rgba(0, 0, 0, 0.80);
-  } @else {
-    color: #1a1b20;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-  }
-}
-
-.popup-glass-dynamic .notification .body {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.popup-glass-auto .notification .body {
-  @if $darkmode {
-    color: rgba(255, 255, 255, 0.78);
-  }
-}
-
-.popup-glass-dynamic .notification .action-button,
-.popup-glass-auto .notification .action-button {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.popup-glass-dynamic .notification separator,
-.popup-glass-auto .notification separator {
-  background-color: rgba(255, 255, 255, 0.22);
-}
-
-/* Notifications float over arbitrary apps; a light glass card with dark ink
- * stays readable over both white and dark content, unlike a dark dynamic card. */
-.popup-glass-light .notification {
-  background: rgba(255, 255, 255, 0.46);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: $round2;
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification label,
-.popup-glass-light .notification image,
-.popup-glass-light .notification .app-name,
-.popup-glass-light .notification .time {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.popup-glass-light .notification .body {
-  color: rgba(26, 27, 32, 0.75);
-}
-
-.popup-glass-light .notification .action-button {
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification separator {
-  background-color: rgba(0, 0, 0, 0.18);
-}
-
-/* More specific than the notification component's own text colors. */
-.popup-glass-light .notification {
+/* Live floating notification toast surface */
+.notifications .notification.notification-live {
+  @include popup-glass-surface($radius-window);
   min-width: 340px;
-}
+  padding: 11px 13px;
 
-.popup-glass-light .notification .header .app-name,
-.popup-glass-light .notification .header .time,
-.popup-glass-light .notification .content .title,
-.popup-glass-light .notification .content .body,
-.popup-glass-light .notification .actions .action-button {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.popup-glass-light .notification .content .body {
-  color: rgba(26, 27, 32, 0.76);
-}
-
-.popup-glass-light .notification .content image {
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification .actions .action-button {
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-/* More transparent message cards, still dark-ink readable. */
-.popup-glass-light .notification {
-  background: rgba(255, 255, 255, 0.20);
-}
-
-/* Theme-synced final notification glass: exactly one shared 20% tint. */
-.popup-glass-light .notification {
-  @if $darkmode {
-    background: rgba(10, 15, 22, 0.20);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    color: rgba(255, 255, 255, 0.98);
-  } @else {
-    background: rgba(255, 255, 255, 0.20);
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    color: #1a1b20;
+  &.critical {
+    border-color: $popupDangerInk;
   }
 }
 
-.popup-glass-light .notification .header .app-name,
-.popup-glass-light .notification .header .time,
-.popup-glass-light .notification .content .title,
-.popup-glass-light .notification .content .body,
-.popup-glass-light .notification .actions .action-button,
-.popup-glass-light .notification .content image {
-  @if $darkmode {
-    color: #ffffff;
-    text-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.85),
-      0 0 1px rgba(0, 0, 0, 0.80);
-  } @else {
-    color: #1a1b20;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.50);
+/* ============================================================================
+ * Notification Center inside .system-menu
+ * Higher specificity beats generic .system-menu button/label/image resets
+ * even though _system-menu.scss is forwarded after _notifications.scss.
+ * ============================================================================ */
+
+.system-menu .notification-toggle-box {
+  label.unread-badge {
+    font-family: $uiFont;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-feature-settings: "tnum" 1;
+    color: $popupInk;
+    background-color: $popupAccentSoftBg;
+    border-radius: $radius-pill;
+    padding: 1px 7px;
+    margin-left: 6px;
+    text-shadow: $popupTextShadow;
+  }
+
+  label.dnd-indicator {
+    font-family: $uiFont;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: $popupInkMuted;
+    background-color: $popupHoverBg;
+    border-radius: $radius-pill;
+    padding: 1px 6px;
+    margin-left: 6px;
+    text-shadow: $popupTextShadow;
+  }
+
+  .notification-center.system-menu-list {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin: 6px 0 2px 0;
+    padding: 0;
   }
 }
 
-.popup-glass-light .notification .content .body {
-  @if $darkmode {
-    color: rgba(255, 255, 255, 0.78);
-  } @else {
-    color: rgba(26, 27, 32, 0.76);
+.system-menu .notification-center {
+  .notification-empty label.empty-label {
+    font-family: $uiFont;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: $popupInkMuted;
+    text-shadow: $popupTextShadow;
+    padding: 14px 8px;
+    margin: 0;
   }
-}
 
-.popup-glass-light .notification .actions .action-button {
-  @if $darkmode {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-  } @else {
-    background: rgba(255, 255, 255, 0.26);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+  .notification-scroll {
+    margin: 0;
+    padding: 0;
+
+    scrollbar {
+      background: transparent;
+
+      &.vertical {
+        margin-left: 2px;
+      }
+
+      trough {
+        background: transparent;
+        min-width: 4px;
+      }
+
+      slider {
+        @include popup-interactive;
+        min-width: 4px;
+        min-height: 28px;
+        border-radius: $radius-pill;
+        background-color: $popupHoverBg;
+
+        &:hover {
+          background-color: $popupActiveBg;
+        }
+      }
+    }
   }
-}
 
-.popup-glass-light .notification separator {
-  @if $darkmode {
-    background-color: rgba(255, 255, 255, 0.22);
-  } @else {
-    background-color: rgba(0, 0, 0, 0.18);
+  .notification-cards {
+    margin: 0;
+    padding: 0;
+  }
+
+  label.notification-section-label {
+    font-family: $uiFont;
+    font-size: 0.73rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: $popupInkMuted;
+    text-shadow: $popupTextShadow;
+    margin: 2px 2px 0 2px;
+    padding: 0;
+  }
+
+  .notification.notification-stored {
+    @include popup-card-surface($radius-card);
+    @include popup-interactive;
+    padding: 10px 12px;
+    margin: 0;
+
+    &:hover {
+      background-color: $popupCardHoverBg;
+    }
+
+    &.notification-unseen {
+      border-color: $popupAccentSoftBg;
+    }
+
+    &.critical {
+      border-color: $popupDangerInk;
+    }
+
+    .header {
+      label.app-name {
+        color: $popupInkSecondary;
+        text-shadow: $popupTextShadow;
+      }
+
+      label.time {
+        color: $popupInkMuted;
+        text-shadow: $popupTextShadow;
+      }
+
+      button.dismiss-button {
+        margin: 0;
+        padding: 0;
+        min-width: 22px;
+        min-height: 22px;
+        border-radius: $radius-pill;
+        background-color: transparent;
+        border: 1px solid transparent;
+
+        image {
+          margin: 0;
+          padding: 0;
+          -gtk-icon-size: 12px;
+          color: $popupInkMuted;
+        }
+
+        &:hover {
+          background-color: $popupDangerBg;
+          border-color: $popupDangerBg;
+
+          image {
+            color: $popupDangerInk;
+          }
+        }
+      }
+    }
+
+    .content {
+      .thumb {
+        image,
+        image.thumb-icon {
+          margin: 0;
+          padding: 0;
+          -gtk-icon-size: 36px;
+          color: $popupInk;
+        }
+      }
+
+      .text-content {
+        label.title {
+          color: $popupInk;
+          text-shadow: $popupTextShadow;
+        }
+
+        label.body {
+          color: $popupInkSecondary;
+          text-shadow: $popupTextShadow;
+        }
+      }
+    }
+
+    .actions {
+      button.action-button {
+        @include popup-interactive;
+        background-color: $popupHoverBg;
+        border: 1px solid $popupCardBorder;
+        border-radius: $radius-control;
+        padding: 5px 10px;
+        margin: 0;
+        min-height: 26px;
+
+        label {
+          color: $popupInk;
+          text-shadow: $popupTextShadow;
+          margin: 0;
+        }
+
+        &:hover {
+          background-color: $popupActiveBg;
+          border-color: $popupBorder;
+        }
+
+        &:active {
+          background-color: $popupAccentSoftBg;
+          border-color: $popupAccent;
+        }
+      }
+    }
+  }
+
+  .notification-footer {
+    margin-top: 2px;
+    padding-top: 6px;
+    border-top: 1px solid $popupDivider;
+
+    button.more-notifications-button {
+      @include popup-interactive;
+      background-color: $popupCardBg;
+      border: 1px solid $popupCardBorder;
+      border-radius: $radius-control;
+      padding: 6px 10px;
+      margin: 0;
+
+      label.more-text {
+        font-family: $uiFont;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: $popupInkSecondary;
+        text-shadow: $popupTextShadow;
+        margin: 0;
+      }
+
+      &:hover {
+        background-color: $popupCardHoverBg;
+        border-color: $popupBorder;
+
+        label.more-text {
+          color: $popupInk;
+        }
+      }
+    }
+
+    .notification-controls {
+      margin: 0;
+      padding: 0;
+
+      button.clear-all-button,
+      button.mark-read-button {
+        @include popup-interactive;
+        background-color: $popupHoverBg;
+        border: 1px solid $popupCardBorder;
+        border-radius: $radius-control;
+        padding: 5px 10px;
+        margin: 0;
+
+        image {
+          margin: 0;
+          padding: 0;
+          -gtk-icon-size: 14px;
+          color: $popupInkSecondary;
+        }
+
+        label {
+          font-family: $uiFont;
+          font-size: 0.78rem;
+          font-weight: 500;
+          color: $popupInkSecondary;
+          text-shadow: $popupTextShadow;
+          margin: 0;
+        }
+      }
+
+      button.clear-all-button:hover {
+        background-color: $popupDangerBg;
+        border-color: $popupDangerBg;
+
+        image,
+        label {
+          color: $popupDangerInk;
+        }
+      }
+
+      button.mark-read-button:hover {
+        background-color: $popupAccentSoftBg;
+        border-color: $popupAccentSoftBg;
+
+        image,
+        label {
+          color: $popupAccent;
+        }
+      }
+    }
   }
 }

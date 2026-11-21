@@ -2,19 +2,13 @@ import { createRoot } from "ags";
 import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
 
-export type PopupName =
-  | "system-menu"
-  | "music-player"
-  | "picker"
-  | "logout-menu";
+export type PopupName = "system-menu" | "logout-menu";
 
 const popupLoaders: Record<
   PopupName,
   () => Promise<{ default: () => unknown }>
 > = {
   "system-menu": () => import("../widgets/system-menu/main.tsx"),
-  "music-player": () => import("../widgets/music/main.tsx"),
-  picker: () => import("../widgets/picker/main.tsx"),
   "logout-menu": () => import("../widgets/logout-menu/main.tsx"),
 };
 

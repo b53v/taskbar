@@ -1,4 +1,5 @@
 import app from "ags/gtk4/app";
+import { execAsync } from "ags/process";
 import Gio from "gi://Gio?version=2.0";
 import GLib from "gi://GLib?version=2.0";
 import options from "options";
@@ -8,28 +9,34 @@ const DEPS_DIR = `${GLib.get_home_dir()}/.local/opt/lwe-deps/usr/lib`;
 const SCREEN = "DP-1";
 
 let weProcess: Gio.Subprocess | null = null;
+let startEpoch = 0;
 
-// If AGS was killed without emitting shutdown, the old Almamu process can
-// outlive it. Only match our relative-binary invocation, never unrelated apps.
-try {
-  GLib.spawn_command_line_sync("pkill -f '^\\./linux-wallpaperengine'");
-} catch (_error) {
-  // No orphan: pkill exits non-zero.
-}
-
-export function stopWeWallpaper(): void {
-  const proc = weProcess;
-  weProcess = null;
-  if (!proc) return;
+async function cleanupOrphanWeProcess(): Promise<void> {
   try {
-    proc.force_exit();
-  } catch (error) {
-    console.error("Failed to stop Almamu wallpaper process:", error);
+    await execAsync(["pkill", "-f", "^\\./linux-wallpaperengine"]);
+  } catch {
+    // No orphan: pkill exits non-zero.
   }
 }
 
-function startWeWallpaper(projectDir: string): void {
+export function stopWeWallpaper(): void {
+  startEpoch++;
+  const proc = weProcess;
+  weProcess = null;
+  if (proc) {
+    try {
+      proc.force_exit();
+    } catch (error) {
+      console.error("Failed to stop Almamu wallpaper process:", error);
+    }
+  } else {
+    void cleanupOrphanWeProcess();
+  }
+}
+
+async function startWeWallpaper(projectDir: string): Promise<void> {
   stopWeWallpaper();
+  const epoch = startEpoch;
   if (!projectDir || !GLib.file_test(projectDir, GLib.FileTest.EXISTS)) return;
 
   const binary = `${APP_DIR}/linux-wallpaperengine`;
@@ -37,6 +44,9 @@ function startWeWallpaper(projectDir: string): void {
     console.error("Almamu binary not found:", binary);
     return;
   }
+
+  await cleanupOrphanWeProcess();
+  if (epoch !== startEpoch) return;
 
   try {
     const launcher = new Gio.SubprocessLauncher({
@@ -76,12 +86,12 @@ export function setWeWallpaper(projectDir: string | null): void {
   const value = projectDir ?? "";
   options["wallpaper.we"].value = value;
   if (value) options["wallpaper.video"].value = "";
-  startWeWallpaper(value);
+  void startWeWallpaper(value);
 }
 
 export default function WeWallpaper() {
   const path = options["wallpaper.we"].get();
-  if (path) startWeWallpaper(path);
+  if (path) void startWeWallpaper(path);
 }
 
 app.connect("shutdown", () => stopWeWallpaper());

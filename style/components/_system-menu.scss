@@ -2,451 +2,434 @@
 @use "../abstracts" as *;
 @use "sass:color";
 
-/* general */
-
-.system-menu {
-  -gtk-icon-size: $font;
-  @include window;
-  @include border;
-  margin-top: $spacing-md;
-  margin-right: $spacing-md;
+/* Unified Liquid Glass System Menu (360px outer, 10px padding -> 340px inner) */
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  @include popup-glass-surface($radius-window);
+  -gtk-icon-size: 1.05rem;
+  font-size: 0.92rem;
+  text-shadow: $popupTextShadow;
+  margin: 0;
+  padding: 10px;
 
   & > box {
-    @include window-box;
-    @include light-mode-shadow;
-    @include border;
-  }
-}
-
-/* toggles */
-.system-menu .toggle {
-  min-width: 20rem;
-  &:not(:last-child) {
-    margin-bottom: $spacing-sm;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
   }
 
-  button {
-    margin-right: $spacing-sm;
-  }
-}
+  /* Expandable toggle rows (WiFi, Bluetooth, Notifications) */
+  .toggle {
+    margin: 0;
 
-/* power profiles */
-.system-menu .power-profiles {
-  padding: 0;
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
 
-  .current-profile {
-    padding: $spacing-sm;
-  }
+    & > box {
+      min-height: 36px;
 
-  image,
-  label {
-    margin: $spacing-sm;
-  }
+      & > button:first-child {
+        @include popup-interactive;
+        min-width: 34px;
+        min-height: 34px;
+        margin-right: 6px;
+        padding: 0;
+        border-radius: $radius-control;
+        box-shadow: none;
 
-  .profile-options {
-    box {
-      padding: $spacing-sm;
+        image {
+          margin: 0;
+        }
+
+        &.button {
+          background: $popupAccentBg;
+          border: 1px solid transparent;
+          color: $popupAccentFg;
+          text-shadow: none;
+
+          image {
+            color: $popupAccentFg;
+          }
+
+          &:hover {
+            background: $popupAccent;
+          }
+        }
+
+        &.button-disabled {
+          background: $popupCardBg;
+          border: 1px solid $popupCardBorder;
+          color: $popupInkSecondary;
+
+          image {
+            color: $popupInkSecondary;
+          }
+
+          &:hover {
+            background: $popupHoverBg;
+            color: $popupInk;
+
+            image {
+              color: $popupInk;
+            }
+          }
+        }
+      }
+
+      & > button:last-child {
+        @include popup-interactive;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: $radius-control;
+        box-shadow: none;
+        padding: 6px 10px;
+        color: $popupInk;
+        font-weight: 500;
+
+        &:hover {
+          background: $popupHoverBg;
+        }
+
+        &:active {
+          background: $popupActiveBg;
+        }
+      }
     }
   }
-}
 
-/* sliders */
-.system-menu .sliders {
-  min-height: $spacing-sm;
-  image {
-    margin: $spacing-sm;
+  .arrow-indicator {
+    transition: transform $motion-standard $motion-curve;
+    -gtk-icon-size: 0.95rem;
+    color: $popupInkSecondary;
+    margin-left: 6px;
   }
-  trough {
-    margin: $spacing-sm;
+
+  .arrow-down {
+    transform: rotate(90deg);
   }
-  block {
-    min-height: $spacing-sm;
-    filled {
-      border-radius: 1.5rem;
-      background-color: $fg;
+
+  /* Shared expandable drawer container */
+  .system-menu-list {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    margin: 6px 0 2px 0;
+    padding: 0;
+  }
+
+  .section-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: $popupInkMuted;
+    margin: 6px 2px 4px 2px;
+  }
+
+  .empty-label {
+    font-size: 0.86rem;
+    color: $popupInkMuted;
+    margin: 10px 0;
+  }
+
+  .error-message {
+    font-size: 0.84rem;
+    color: $popupDangerInk;
+    margin: 4px 0;
+  }
+
+  /* WiFi & Bluetooth network/device rows */
+  .network-item {
+    @include popup-card-surface($radius-control);
+    @include popup-interactive;
+    margin: 3px 0;
+    padding: 8px 10px;
+    color: $popupInk;
+
+    &:hover {
+      background: $popupCardHoverBg;
+    }
+
+    &:active {
+      background: $popupActiveBg;
+    }
+
+    image:first-child {
+      margin-right: 8px;
+    }
+
+    label {
+      color: $popupInk;
+      margin: 0 4px;
+    }
+
+    &.bt-item {
+      padding: 9px 10px;
     }
   }
-}
 
-.wifi-menu {
-}
-.arrow-indicator {
-  @include animate;
-}
+  .network-item-active {
+    @include popup-interactive;
+    background: $popupAccentBg;
+    border: 1px solid transparent;
+    border-radius: $radius-control;
+    box-shadow: none;
+    margin: 3px 0;
+    padding: 8px 10px;
+    color: $popupAccentFg;
+    text-shadow: none;
 
-.arrow-down {
-  @include animate;
-  transform: rotate(90deg);
-}
-.system-menu-list {
-  @include window;
-  @include light-mode-shadow;
-  @include border;
-  margin: $spacing-sm;
-}
+    label,
+    image {
+      color: $popupAccentFg;
+      text-shadow: none;
+    }
 
-.network-item {
-  @include button;
-  @include rounding;
-  margin: $spacing-xs $spacing-sm $spacing-sm $spacing-sm;
-  padding: $spacing-md;
-  image {
-    &:first-child {
-      margin-right: $spacing-sm;
+    image:first-child {
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background: $popupAccent;
+    }
+
+    &.bt-item {
+      padding: 9px 10px;
     }
   }
-  label {
-    margin: 0 $spacing-sm;
-  }
-  // more padding for bluetooth items
-  &.bt-item {
-    padding: 1rem $spacing-md;
-  }
-}
-.network-item-active {
-  @include button-active;
-  @include rounding;
-  margin: $spacing-xs $spacing-sm $spacing-sm $spacing-sm;
-  padding: $spacing-md;
-  &.bt-item {
-    padding: 1rem $spacing-md;
-  }
-}
 
-.password-dialog {
-  @include window-box;
-  margin-bottom: $spacing-md;
-}
+  .saved-network {
+    @include popup-card-surface($radius-control);
+    margin: 3px 0;
+    padding: 6px 8px 6px 10px;
 
-.error-message {
-  color: $red;
-  margin: $spacing-xs 0;
-}
-
-.section-label {
-  font-weight: bold;
-  margin: $spacing-sm 0 $spacing-xs 0;
-}
-
-.refresh-button,
-.disconnect-button,
-.settings-button {
-  @include border;
-  @include button;
-  margin: $spacing-sm;
-}
-
-.disconnect-button {
-  padding: 0.58rem 0;
-}
-
-.connect-button,
-.cancel-button,
-.forget-button,
-.pair-button,
-.trust-button {
-  margin: $spacing-sm;
-  @include light-mode-shadow($shadow-type: "strong");
-}
-
-//avoid artifacts
-.disconnect-button,
-.forget-button,
-.cancel-button {
-  border-radius: calc(#{$round} * 1.6);
-}
-
-image {
-  margin: $spacing-sm;
-}
-.password-search {
-  @include window-box;
-  @include border;
-  background: $bg;
-  entry {
-    menu {
-      @include menu;
+    & > label {
+      color: $popupInk;
+      margin-left: 2px;
     }
   }
-}
 
-.empty-label {
-  margin: $spacing-sm;
-  color: $red;
-}
-
-.saved-network {
-  @include button;
-  @include rounding;
-  @include light-mode-shadow;
-  margin: $spacing-sm $spacing-sm $spacing-sm $spacing-md;
-  padding: $spacing-xs;
-  > label {
-    margin-left: $spacing-sm;
+  .bt-button-container {
+    margin: 4px 0 6px 0;
   }
-}
 
-.bt-button-container {
-  margin: 0 $spacing-xs $spacing-sm $spacing-sm;
-}
+  .password-dialog {
+    @include popup-card-surface($radius-card);
+    padding: 10px;
+    margin: 4px 0 6px 0;
 
-/* Bar-button popup: same translucent material as the bar itself. */
-@mixin popup-dark-ink {
-  color: rgba(255, 255, 255, 0.98);
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.85),
-    0 0 1px rgba(0, 0, 0, 0.80);
-}
-
-.system-menu.popup-glass-dynamic,
-.system-menu.popup-glass-auto {
-  backdrop-filter: blur(20px);
-  border-radius: $round2;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-}
-
-.system-menu.popup-glass-dynamic {
-  background: rgba(10, 15, 22, 0.20);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  @include popup-dark-ink;
-}
-
-.system-menu.popup-glass-auto {
-  @if $darkmode {
-    background: rgba(10, 15, 22, 0.20);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    @include popup-dark-ink;
-  } @else {
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    color: #1a1b20;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+    .password-label {
+      font-weight: 600;
+      color: $popupInk;
+      margin-bottom: 6px;
+    }
   }
-}
 
-.system-menu.popup-glass-dynamic > box,
-.system-menu.popup-glass-auto > box {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-}
+  .password-search {
+    background: $popupInputBg;
+    border: 1px solid $popupInputBorder;
+    border-radius: $radius-control;
+    padding: 5px 8px;
+    margin-bottom: 8px;
 
-.system-menu.popup-glass-dynamic label,
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-dynamic .section-label {
-  color: #ffffff;
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.85),
-    0 0 1px rgba(0, 0, 0, 0.80);
-}
+    image {
+      margin-right: 6px;
+      color: $popupInkSecondary;
+    }
 
-.system-menu.popup-glass-dynamic image {
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.80));
-}
+    entry {
+      color: $popupInk;
+      background: transparent;
+      border: 0;
 
-.system-menu.popup-glass-auto label,
-.system-menu.popup-glass-auto image,
-.system-menu.popup-glass-auto .section-label {
-  @if $darkmode {
-    color: #ffffff;
-    text-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.85),
-      0 0 1px rgba(0, 0, 0, 0.80);
-  } @else {
-    color: #1a1b20;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+      menu {
+        @include menu;
+      }
+    }
   }
-}
 
-.system-menu.popup-glass-auto image {
-  @if $darkmode {
-    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.80));
+  /* Compact action buttons inside WiFi / Bluetooth drawers */
+  .refresh-button,
+  .disconnect-button,
+  .settings-button,
+  .connect-button,
+  .cancel-button,
+  .forget-button,
+  .pair-button,
+  .trust-button {
+    @include popup-card-surface($radius-control);
+    @include popup-interactive;
+    color: $popupInk;
+    padding: 6px 10px;
+    margin: 4px 3px 2px 3px;
+    font-size: 0.86rem;
+    font-weight: 500;
+
+    &:hover {
+      background: $popupCardHoverBg;
+    }
+
+    &:active {
+      background: $popupActiveBg;
+    }
   }
-}
 
-/* No row cards: the only surface is the popup glass itself. */
-.system-menu.popup-glass-dynamic .system-menu-list,
-.system-menu.popup-glass-auto .system-menu-list {
-  background: transparent;
-  border: 0;
-}
+  .connect-button.button,
+  .trust-button.button,
+  .pair-button.button {
+    background: $popupAccentBg;
+    border-color: transparent;
+    color: $popupAccentFg;
+    text-shadow: none;
 
-.system-menu.popup-glass-dynamic .network-item,
-.system-menu.popup-glass-auto .network-item {
-  background: transparent;
-}
+    image {
+      color: $popupAccentFg;
+    }
 
-.system-menu.popup-glass-dynamic button,
-.system-menu.popup-glass-auto button {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-}
-
-.system-menu.popup-glass-dynamic button.network-item-active,
-.system-menu.popup-glass-auto button.network-item-active {
-  background: rgba(94, 129, 172, 0.85);
-}
-
-.system-menu.popup-glass-dynamic button.network-item-active label,
-.system-menu.popup-glass-dynamic button.network-item-active image,
-.system-menu.popup-glass-auto button.network-item-active label,
-.system-menu.popup-glass-auto button.network-item-active image {
-  color: #ffffff;
-}
-
-.system-menu.popup-glass-dynamic trough {
-  background: rgba(255, 255, 255, 0.20);
-}
-
-.system-menu.popup-glass-dynamic highlight,
-.system-menu.popup-glass-dynamic progress {
-  background: #8fb3e8;
-}
-
-.system-menu.popup-glass-auto trough {
-  @if $darkmode {
-    background: rgba(255, 255, 255, 0.20);
-  } @else {
-    background: rgba(0, 0, 0, 0.12);
+    &:hover {
+      background: $popupAccent;
+    }
   }
-}
 
-.system-menu.popup-glass-auto highlight,
-.system-menu.popup-glass-auto progress {
-  @if $darkmode {
-    background: #8fb3e8;
-  } @else {
-    background: #5e81ac;
+  .disconnect-button,
+  .forget-button {
+    &:hover {
+      background: $popupDangerBg;
+      color: $popupDangerInk;
+    }
   }
-}
 
-.system-menu.popup-glass-dynamic entry {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.20);
-}
+  /* Power profiles */
+  .power-profiles {
+    border-top: 1px solid $popupDivider;
+    padding-top: 6px;
+    margin-top: 2px;
 
-.system-menu.popup-glass-auto entry {
-  @if $darkmode {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.20);
-  } @else {
-    color: #1a1b20;
-    background: rgba(255, 255, 255, 0.22);
-    border-color: rgba(0, 0, 0, 0.16);
+    button {
+      @include popup-interactive;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: $radius-control;
+      box-shadow: none;
+      padding: 6px 10px;
+      color: $popupInk;
+
+      &:hover {
+        background: $popupHoverBg;
+      }
+
+      &:active {
+        background: $popupActiveBg;
+      }
+    }
+
+    .current-profile,
+    .profile-options box {
+      padding: 0;
+    }
+
+    image {
+      margin-right: 8px;
+      color: $popupInk;
+    }
+
+    label {
+      color: $popupInk;
+      font-weight: 500;
+    }
+
+    .profile-options {
+      margin-top: 4px;
+      padding-left: 8px;
+    }
   }
-}
 
-/* All-light override: no dark variant. */
-.system-menu.popup-glass-dynamic,
-.system-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  color: #1a1b20;
-}
+  /* Volume & brightness sliders */
+  .sliders {
+    border-top: 1px solid $popupDivider;
+    padding-top: 8px;
+    margin-top: 2px;
 
-.system-menu.popup-glass-dynamic label,
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-dynamic .section-label,
-.system-menu.popup-glass-auto label,
-.system-menu.popup-glass-auto image,
-.system-menu.popup-glass-auto .section-label {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
+    & > box {
+      min-height: 32px;
+    }
 
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-auto image {
-  filter: none;
-}
+    button {
+      @include popup-interactive;
+      min-width: 30px;
+      min-height: 30px;
+      padding: 0;
+      margin-right: 6px;
+      border-radius: $radius-control;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      color: $popupInk;
 
-.system-menu.popup-glass-dynamic entry,
-.system-menu.popup-glass-auto entry {
-  color: #1a1b20;
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(0, 0, 0, 0.16);
-}
+      &:hover {
+        background: $popupHoverBg;
+      }
 
-.system-menu.popup-glass-dynamic trough,
-.system-menu.popup-glass-auto trough {
-  background: rgba(0, 0, 0, 0.12);
-}
+      &:active {
+        background: $popupActiveBg;
+      }
+    }
 
-.system-menu.popup-glass-dynamic highlight,
-.system-menu.popup-glass-dynamic progress,
-.system-menu.popup-glass-auto highlight,
-.system-menu.popup-glass-auto progress {
-  background: #5e81ac;
-}
+    .brightness > image {
+      min-width: 30px;
+      margin-right: 6px;
+      color: $popupInk;
+    }
 
-/* Final low-tint adaptive popup glass: follows the wallpaper theme, not the
- * bar's white-ink class, so it is light on light desktops and dark on dark. */
-.system-menu.popup-glass-dynamic,
-.system-menu.popup-glass-auto {
-  @if $darkmode {
-    background: rgba(10, 15, 22, 0.20);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    color: rgba(255, 255, 255, 0.98);
-  } @else {
-    background: rgba(255, 255, 255, 0.20);
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    color: #1a1b20;
+    scale {
+      padding: 4px 2px;
+
+      trough {
+        background: $popupTroughBg;
+        border-radius: $radius-pill;
+        min-height: 6px;
+        padding: 0;
+        margin: 0;
+      }
+
+      highlight,
+      progress {
+        background: $popupAccent;
+        border-radius: $radius-pill;
+        min-height: 6px;
+        margin: 0;
+      }
+
+      slider {
+        min-width: 14px;
+        min-height: 14px;
+        margin: -4px 0;
+        border-radius: $radius-pill;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.16);
+      }
+    }
   }
-}
 
-.system-menu.popup-glass-dynamic label,
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-dynamic .section-label,
-.system-menu.popup-glass-auto label,
-.system-menu.popup-glass-auto image,
-.system-menu.popup-glass-auto .section-label {
-  @if $darkmode {
-    color: #ffffff;
-    text-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.85),
-      0 0 1px rgba(0, 0, 0, 0.80);
-  } @else {
-    color: #1a1b20;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.50);
-  }
-}
+  /* Battery footer */
+  .battery-info {
+    border-top: 1px solid $popupDivider;
+    padding: 8px 6px 2px 6px;
+    margin-top: 2px;
+    color: $popupInkSecondary;
+    font-size: 0.86rem;
+    font-feature-settings: "tnum" 1;
 
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-auto image {
-  filter: none;
-}
+    image {
+      margin-right: 6px;
+      color: $popupInk;
+    }
 
-.system-menu.popup-glass-dynamic trough,
-.system-menu.popup-glass-auto trough {
-  @if $darkmode {
-    background: rgba(255, 255, 255, 0.20);
-  } @else {
-    background: rgba(0, 0, 0, 0.12);
-  }
-}
-
-.system-menu.popup-glass-dynamic highlight,
-.system-menu.popup-glass-dynamic progress,
-.system-menu.popup-glass-auto highlight,
-.system-menu.popup-glass-auto progress {
-  @if $darkmode {
-    background: #8fb3e8;
-  } @else {
-    background: #5e81ac;
-  }
-}
-
-.system-menu.popup-glass-dynamic entry,
-.system-menu.popup-glass-auto entry {
-  @if $darkmode {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.20);
-  } @else {
-    color: #1a1b20;
-    background: rgba(255, 255, 255, 0.20);
-    border-color: rgba(0, 0, 0, 0.16);
+    label {
+      color: $popupInkSecondary;
+    }
   }
 }

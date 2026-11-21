@@ -3,20 +3,15 @@ import { execAsync } from "ags/process";
 import GLib from "gi://GLib?version=2.0";
 import { CpuMonitor } from "./cpuMonitor";
 import { MemoryMonitor } from "./memoryMonitor";
-import { NetworkMonitor } from "./networkMonitor";
 import { GpuMonitorFactory } from "./gpuMonitor";
-import { DiskMonitor } from "./diskMonitor";
-import { SystemInfoMonitor } from "./systemInfoMonitor";
 import options from "options";
 
-export { DiskInfo } from "./diskMonitor";
 export { ByteFormatter } from "./base";
 
 // Config
 export const MonitorConfig = {
   // The bar shows whole percents; 1s polling only added redraw and GC churn.
   UPDATE_INTERVAL: 3000,
-  DISK_UPDATE_INTERVAL: 30000,
   // nvidia-smi 是子进程，跑一次几十 ms，没必要每秒
   GPU_UPDATE_INTERVAL: 10000,
   THRESHOLD_DEBOUNCE_MS: 3000,
@@ -34,9 +29,6 @@ export default class SystemMonitor extends GObject.Object {
 
   public readonly cpu: CpuMonitor = new CpuMonitor();
   public readonly memory: MemoryMonitor = new MemoryMonitor();
-  public readonly network: NetworkMonitor = new NetworkMonitor();
-  public readonly disk: DiskMonitor = new DiskMonitor();
-  public readonly system: SystemInfoMonitor = new SystemInfoMonitor();
   public readonly gpu = GpuMonitorFactory.create();
 
   private thresholdStates = {
@@ -56,11 +48,8 @@ export default class SystemMonitor extends GObject.Object {
 
   private unsubscribers: (() => void)[] = [];
   private coreUsers = 0;
-  private detailUsers = 0;
   private coreReady = false;
-  private detailsReady = false;
   private coreStarting: Promise<void> | null = null;
-  private detailsStarting: Promise<void> | null = null;
   private thresholdTimer: number | null = null;
   private destroyed = false;
 
@@ -103,38 +92,10 @@ export default class SystemMonitor extends GObject.Object {
     };
   }
 
-  retainDetails(): () => void {
-    const releaseCore = this.retainCore();
-    this.detailUsers++;
-    if (this.detailUsers === 1) {
-      if (this.detailsReady) {
-        [this.network, this.disk, this.system].forEach((monitor) => monitor.resumeMonitoring());
-      } else if (!this.detailsStarting) {
-        this.detailsStarting = (async () => {
-          await Promise.all([this.network.initialize(), this.disk.initialize(), this.system.initialize()]);
-          await Promise.all([this.network.refresh(), this.disk.refresh(), this.system.refresh()]);
-          this.detailsReady = true;
-          if (!this.detailUsers || this.destroyed) this.stopDetails();
-        })().catch(console.error).finally(() => { this.detailsStarting = null; });
-      }
-    }
-    let released = false;
-    return () => {
-      if (released) return;
-      released = true;
-      if (--this.detailUsers === 0) this.stopDetails();
-      releaseCore();
-    };
-  }
-
   private stopCore(): void {
     [this.cpu, this.memory, this.gpu].forEach((monitor) => monitor.stopMonitoring());
     if (this.thresholdTimer !== null) GLib.source_remove(this.thresholdTimer);
     this.thresholdTimer = null;
-  }
-
-  private stopDetails(): void {
-    [this.network, this.disk, this.system].forEach((monitor) => monitor.stopMonitoring());
   }
 
   private setupWatchers(): void {
@@ -220,9 +181,16 @@ export default class SystemMonitor extends GObject.Object {
       icon = "dialog-warning";
     }
 
-    await execAsync(
-      `notify-send -u critical -i "${icon}" --replace-id=${replaceId} "${title}" "${body}"`,
-    );
+    await execAsync([
+      "notify-send",
+      "-u",
+      "critical",
+      "-i",
+      icon,
+      `--replace-id=${replaceId}`,
+      title,
+      body,
+    ]);
   }
   private checkThresholds(): void {
     const now = Date.now();
@@ -281,7 +249,6 @@ export default class SystemMonitor extends GObject.Object {
   destroy(): void {
     this.destroyed = true;
     this.stopCore();
-    this.stopDetails();
     this.unsubscribers.forEach((unsubscribe) => {
       try {
         unsubscribe();
@@ -293,9 +260,6 @@ export default class SystemMonitor extends GObject.Object {
 
     this.cpu.destroy();
     this.memory.destroy();
-    this.network.destroy();
     this.gpu.destroy();
-    this.disk.destroy();
-    this.system.destroy();
   }
 }

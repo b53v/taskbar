@@ -1,30 +1,24 @@
 @use "sass:color";
 @use "../variables" as *;
+@use "../glass" as *;
 @use "base" as *;
 @use "effects" as *;
 
 // Window container base
 @mixin window {
-  @include window-rounding;
-  @include window-shadow;
-  background: $bg;
-  margin: 5px 10px 15px;
-  padding: $spacing-sm;
+  @include popup-glass-surface($radius-window);
+  margin: 6px 10px 12px;
+  padding: 10px;
 }
 
 @mixin window-box {
-  @include rounding;
-  @include inset-shadow;
-  background: $surface;
-  margin: $spacing-sm;
+  @include popup-card-surface($radius-card);
+  margin: $spacing-xs 0;
   padding: $spacing-sm;
 }
 
 @mixin widget-container {
-  @include window;
-  @include light-mode-shadow;
-  @include border;
-  border-radius: calc(#{$round} * 3);
+  @include popup-glass-surface($radius-modal);
   padding: $spacing-md;
   margin: $spacing-md;
 }
@@ -33,7 +27,7 @@
   margin: 0 $spacing-sm;
 
   image {
-    color: $fg;
+    color: $popupInk;
     margin-right: $spacing-sm;
   }
 
@@ -41,20 +35,20 @@
     margin-top: $spacing-md;
     font-size: $font;
     font-weight: 700;
-    color: $fg;
+    color: $popupInk;
   }
 }
 
 @mixin separator($alpha: -0.85, $margin: $spacing-sm 0) {
-  background-color: color.adjust($fg, $alpha: $alpha);
+  background-color: $popupDivider;
   margin: $margin;
   min-height: 1px;
 }
 
 @mixin scrollbar($orientation: vertical) {
   scrollbar {
-    background: color.adjust($barBg, $lightness: if($darkmode, -2%, 2%));
-    border-radius: calc(#{$round} * 1);
+    background: transparent;
+    border-radius: $radius-pill;
 
     @if $orientation == vertical {
       &.vertical {
@@ -63,25 +57,25 @@
     }
 
     trough {
-      background: color.adjust($fg, $alpha: -0.9);
-      border-radius: calc(#{$round} * 1);
-      min-width: 8px;
+      background: transparent;
+      border-radius: $radius-pill;
+      min-width: 6px;
     }
 
     slider {
-      background: color.adjust($fg, $alpha: -0.6);
-      border-radius: calc(#{$round} * 1);
-      min-width: 8px;
-      transition: all 100ms ease;
+      background: $popupInkMuted;
+      border-radius: $radius-pill;
+      min-width: 6px;
+      min-height: 28px;
+      transition: background-color $motion-fast $motion-curve;
       box-shadow: none;
 
       &:hover {
-        background: color.adjust($primary, $alpha: -0.3);
-        box-shadow: none;
+        background: $popupInkSecondary;
       }
 
       &:active {
-        background: $primary;
+        background: $popupAccent;
       }
     }
   }

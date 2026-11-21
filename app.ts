@@ -11,10 +11,6 @@ import {
   setVideoWallpaper,
   stopVideoWallpaper,
 } from "./widgets/wallpaper/main.tsx";
-import WeWallpaper, {
-  setWeWallpaper,
-  stopWeWallpaper,
-} from "utils/weWallpaper";
 
 // Widgets mounted eagerly at startup; popups are loaded lazily via utils/popups.
 import {
@@ -44,10 +40,7 @@ const cssReloader = new CssReloader(async () => {
 const reloadCss = () => cssReloader.request();
 
 const popupRequests: Record<string, PopupName> = {
-  picker: "picker",
   logout: "logout-menu",
-  "music-player": "music-player",
-  music: "music-player",
   notifications: "system-menu",
   "system-menu": "system-menu",
 };
@@ -73,17 +66,10 @@ app.start({
           (error) => res(`css reload failed: ${error}`),
         );
         break;
-      case "wall-rand":
-        import("utils/picker").then(
-          async ({ picker }) => {
-            await picker.random("wp");
-            res("random wallpaper set");
-          },
-          (error) => res(`random wallpaper failed: ${error}`),
-        );
-        break;
       case "set-video-wallpaper":
-        stopWeWallpaper();
+        if (options["wallpaper.we"].get()) {
+          void import("utils/weWallpaper").then(({ stopWeWallpaper }) => stopWeWallpaper());
+        }
         options["bar.ink"].value = (argv[1] ?? "") ? "dynamic" : "auto";
         setVideoWallpaper(argv[1] ?? "");
         res("video wallpaper set");
@@ -91,12 +77,21 @@ app.start({
       case "set-we-wallpaper":
         stopVideoWallpaper();
         options["bar.ink"].value = (argv[1] ?? "") ? "dynamic" : "auto";
-        setWeWallpaper(argv[1] ?? "");
-        res("we wallpaper set");
+        import("utils/weWallpaper").then(
+          ({ setWeWallpaper }) => {
+            setWeWallpaper(argv[1] ?? "");
+            res("we wallpaper set");
+          },
+          (error) => res(`we wallpaper failed: ${error}`),
+        );
         break;
       case "clear-wallpapers":
         stopVideoWallpaper();
-        stopWeWallpaper();
+        if (options["wallpaper.we"].get()) {
+          void import("utils/weWallpaper").then(({ stopWeWallpaper }) => stopWeWallpaper());
+        } else {
+          void execAsync(["pkill", "-f", "^\\./linux-wallpaperengine"]).catch(() => {});
+        }
         options["wallpaper.video"].value = "";
         options["wallpaper.we"].value = "";
         options["bar.ink"].value = "auto";
@@ -136,8 +131,11 @@ app.start({
         : "auto";
 
     // Initialize widgets
-    if (options["wallpaper.we"].get()) WeWallpaper();
-    else Wallpaper();
+    if (options["wallpaper.we"].get()) {
+      void import("utils/weWallpaper").then((mod) => mod.default()).catch(console.error);
+    } else {
+      Wallpaper();
+    }
     Bar();
     Notifications();
     OnScreenDisplay();

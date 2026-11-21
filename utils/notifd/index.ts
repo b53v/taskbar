@@ -11,5 +11,5 @@ export { NotificationManager, notificationManager } from "./manager.ts";
 // Utilities
 export { createTimeoutManager } from "./timeout.ts";
 export { createNotificationTimeLabel, urgency } from "./formatting.ts";
-export { isIcon, fileExists } from "./validation.ts";
+export { isIcon, fileExists, resolveIconFile } from "./validation.ts";
 export { liveToStored, liveToDisplay } from "./adapters.ts";

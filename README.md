@@ -43,7 +43,7 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
 ## Features
 
 - **Bar**: OS icon, CPU/RAM/GPU stats, workspaces, tray, volume, notifications, network/BT, clock
-- **Popups**: App & wallpaper picker, system menu, notification center, music player, logout menu, OSD
+- **Popups**: System menu, notification center, live toasts, logout menu, OSD
 - **Theming**: Matugen colors with automatic light/dark bar text based on the wallpaper
 - **Performance**: Launches via [`start-ags-lite.sh`](start-ags-lite.sh) (`gjs -m` + `GSK_RENDERER=cairo`, no `ags run` wrapper) with lazy-loaded popups (`~118 MiB` PSS idle)
 
@@ -64,11 +64,11 @@ exec-once = $HOME/.config/ags/start-ags-lite.sh
 ## IPC
 
 ```bash
-ags request -i taskbar picker
 ags request -i taskbar system-menu
-ags request -i taskbar music-player
 ags request -i taskbar logout
 ags request -i taskbar reload-css
-ags request -i taskbar wall-rand
+ags request -i taskbar set-video-wallpaper /path/to/video.mp4
+ags request -i taskbar set-we-wallpaper /path/to/project
+ags request -i taskbar clear-wallpapers
 ags request -i taskbar gc
 ```

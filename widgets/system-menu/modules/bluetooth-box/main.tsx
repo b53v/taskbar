@@ -1,6 +1,6 @@
 import app from "ags/gtk4/app";
 import { Gtk } from "ags/gtk4";
-import { createBinding, onCleanup } from "ags";
+import { createBinding, createState, onCleanup, With } from "ags";
 import Bluetooth from "gi://AstalBluetooth";
 import { BluetoothDevices } from "./modules/BluetoothDevices.tsx";
 import {
@@ -8,10 +8,30 @@ import {
   bluetoothTooltip,
   isExpanded,
   setIsExpanded,
+  stopScan,
 } from "utils/bluetooth";
 
 export const BluetoothBox = () => {
   const bluetooth = Bluetooth.get_default();
+  const [mounted, setMounted] = createState(isExpanded.get());
+  let unmountTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const syncMounted = (expanded: boolean) => {
+    if (unmountTimer) {
+      clearTimeout(unmountTimer);
+      unmountTimer = null;
+    }
+
+    if (expanded) {
+      setMounted(true);
+    } else {
+      stopScan();
+      unmountTimer = setTimeout(() => {
+        unmountTimer = null;
+        if (!isExpanded.get()) setMounted(false);
+      }, 200);
+    }
+  };
 
   return (
     <box cssClasses={["toggle"]} orientation={Gtk.Orientation.VERTICAL}>
@@ -58,9 +78,19 @@ export const BluetoothBox = () => {
       {/* Devices List Revealer */}
       <revealer
         transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
-        transitionDuration={250}
+        transitionDuration={180}
         revealChild={isExpanded}
         $={() => {
+          const unsubscribeExpanded = isExpanded.subscribe(() => {
+            syncMounted(isExpanded.get());
+          });
+
+          const poweredListener = bluetooth.connect("notify::is-powered", () => {
+            if (!bluetooth.is_powered && isExpanded.get()) {
+              setIsExpanded(false);
+            }
+          });
+
           const windowListener = app.connect("window-toggled", (_, window) => {
             if (
               window.name === "system-menu" &&
@@ -72,12 +102,23 @@ export const BluetoothBox = () => {
           });
 
           onCleanup(() => {
+            if (unmountTimer) {
+              clearTimeout(unmountTimer);
+              unmountTimer = null;
+            }
+            stopScan();
+            bluetooth.disconnect(poweredListener);
             app.disconnect(windowListener);
+            unsubscribeExpanded();
           });
         }}
       >
-        {/* Bluetooth Devices */}
-        <BluetoothDevices />
+        {/* Lazily mounted Bluetooth Devices */}
+        <box orientation={Gtk.Orientation.VERTICAL}>
+          <With value={mounted}>
+            {(isMounted) => (isMounted ? <BluetoothDevices /> : null)}
+          </With>
+        </box>
       </revealer>
     </box>
   );

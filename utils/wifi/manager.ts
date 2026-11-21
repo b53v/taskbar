@@ -6,6 +6,42 @@ import { savedNetworks, activeNetwork } from "./state.ts";
 
 export class AccessPointManager {
   private network: Network.Network;
+  readonly displayInfo;
+  readonly canConnect;
+  readonly needsPassword;
+  readonly connectionClasses;
+  readonly statusIcon;
+
+  constructor(network: Network.Network) {
+    this.network = network;
+
+    this.displayInfo = createComputed(
+      [savedNetworks, activeNetwork],
+      (saved, active): NetworkInfo => ({
+        ssid: this.network.ssid,
+        strength: this.network.strength,
+        secured: this.network.secured,
+        isActive: active?.ssid === this.network.ssid,
+        isSaved: saved.includes(this.network.ssid),
+        iconName: this.network.iconName,
+      }),
+    );
+
+    this.canConnect = this.displayInfo((info) => !info.isActive);
+    this.needsPassword = this.displayInfo(
+      (info) => info.secured && !info.isSaved,
+    );
+    this.connectionClasses = this.displayInfo((info) =>
+      info.isActive
+        ? ["network-item", "network-item-active"]
+        : ["network-item"],
+    );
+    this.statusIcon = this.displayInfo((info) => {
+      if (info.isActive) return "object-select-symbolic";
+      if (info.secured) return "network-wireless-encrypted-symbolic";
+      return null;
+    });
+  }
 
   // Actions
   async connect(password?: string) {
@@ -21,48 +57,6 @@ export class AccessPointManager {
   requiresPasswordDialog() {
     const info = this.displayInfo.get();
     return info.secured && !info.isSaved;
-  }
-
-  constructor(network: Network.Network) {
-    this.network = network;
-  }
-
-  get displayInfo() {
-    return createComputed(
-      [savedNetworks, activeNetwork],
-      (saved, active): NetworkInfo => ({
-        ssid: this.network.ssid,
-        strength: this.network.strength,
-        secured: this.network.secured,
-        isActive: active?.ssid === this.network.ssid,
-        isSaved: saved.includes(this.network.ssid),
-        iconName: this.network.iconName,
-      }),
-    );
-  }
-
-  get canConnect() {
-    return this.displayInfo((info) => !info.isActive);
-  }
-
-  get needsPassword() {
-    return this.displayInfo((info) => info.secured && !info.isSaved);
-  }
-
-  get connectionClasses() {
-    return this.displayInfo((info) =>
-      info.isActive
-        ? ["network-item", "network-item-active"]
-        : ["network-item"],
-    );
-  }
-
-  get statusIcon() {
-    return this.displayInfo((info) => {
-      if (info.isActive) return "object-select-symbolic";
-      if (info.secured) return "network-wireless-encrypted-symbolic";
-      return null;
-    });
   }
 }
 

@@ -14,6 +14,7 @@ export default function OnScreenDisplay() {
     <window
       visible={visible}
       name="osd"
+      namespace="osd"
       layer={Astal.Layer.OVERLAY}
       exclusivity={Astal.Exclusivity.IGNORE}
       gdkmonitor={gdkmonitor}
@@ -27,12 +28,21 @@ export default function OnScreenDisplay() {
             return BOTTOM;
         }
       })}
+      marginBottom={options["bar.position"]((pos) => (pos === "bottom" ? 0 : 32))}
+      marginTop={options["bar.position"]((pos) => (pos === "bottom" ? 32 : 0))}
       $={(self) => {
-        const surface = self.get_native()?.get_surface();
-        if (surface) {
-          surface.set_input_region(new Cairo.Region());
-        }
-        onCleanup(() => self.destroy());
+        const applyPassthrough = () => {
+          const surface = self.get_native()?.get_surface();
+          if (surface) {
+            surface.set_input_region(new Cairo.Region());
+          }
+        };
+        applyPassthrough();
+        const realizeId = self.connect("realize", applyPassthrough);
+        onCleanup(() => {
+          self.disconnect(realizeId);
+          self.destroy();
+        });
       }}
       application={app}
       keymode={Astal.Keymode.NONE}

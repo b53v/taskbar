@@ -48,7 +48,7 @@ export const BluetoothDevices = () => {
 
       {/* Known Devices Section */}
       <box orientation={Gtk.Orientation.VERTICAL} visible={hasKnownDevices}>
-        <label label="My Devices" cssClasses={["section-label"]} />
+        <label label="My Devices" xalign={0} cssClasses={["section-label"]} />
 
         {/* Connected devices */}
         <box
@@ -76,7 +76,11 @@ export const BluetoothDevices = () => {
         orientation={Gtk.Orientation.VERTICAL}
         visible={unpairedDevices((devices) => devices.length > 0)}
       >
-        <label label="Available Devices" cssClasses={["section-label"]} />
+        <label
+          label="Available Devices"
+          xalign={0}
+          cssClasses={["section-label"]}
+        />
         <For each={unpairedDevices}>
           {(device) => <BluetoothItem device={device} />}
         </For>

@@ -68,34 +68,6 @@ popover.background {
   @include button;
 }
 
-/* dropdowns */
-.dropdown {
-  button {
-    @include button-active;
-    border-radius: 1.1rem;
-    padding: $spacing-sm;
-    margin: 0.5rem;
-    border: 1px solid color.adjust($fg, $alpha: -0.9);
-    background-color: $surface;
-    transition: all 200ms ease;
-
-    &:hover {
-      border-color: color.adjust($fg, $alpha: -0.7);
-      background-color: $surface;
-    }
-
-    &:active {
-      background-color: $buttonEnabled;
-    }
-    label {
-      // centering in the dropdown still isn't perfect
-      // hacky & ugly but works
-      margin-top: 0.1rem;
-      margin-left: 1.35rem;
-    }
-  }
-}
-
 /* Native video wallpaper window */
 .video-wallpaper {
   background: #000;

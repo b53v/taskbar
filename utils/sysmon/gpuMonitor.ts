@@ -69,9 +69,11 @@ function parseNvidiaSmiOutput(output: string): {
 export class NvidiaGpuMonitor extends BaseGpuMonitor {
   async update(): Promise<void> {
     try {
-      const output = await execAsync(
-        "nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits",
-      );
+      const output = await execAsync([
+        "nvidia-smi",
+        "--query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu",
+        "--format=csv,noheader,nounits",
+      ]);
 
       const parsed = parseNvidiaSmiOutput(output);
       if (!parsed) {

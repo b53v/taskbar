@@ -11,95 +11,82 @@ export const connectToNetwork = async (
   ssid: string,
   password?: string,
 ): Promise<boolean> => {
+  if (!ssid) return false;
   setIsConnecting(true);
   setErrorMessage("");
 
   const network = Network.get_default();
-  const currentSsid = network.wifi.ssid;
+  const currentSsid = network.wifi?.ssid;
 
-  const performConnection = () => {
-    return new Promise<boolean>((resolve) => {
-      let command = "";
-      if (password) {
-        command = `echo '${password}' | nmcli device wifi connect "${ssid}" --ask`;
-      } else {
-        command = `nmcli connection up "${ssid}" || nmcli device wifi connect "${ssid}"`;
-      }
-
-      execAsync(["bash", "-c", command])
-        .then(() => {
-          setShowPasswordDialog(false);
-          setIsConnecting(false);
-          scanNetworks();
-          getSavedNetworks();
-          resolve(true);
-        })
-        .catch((error) => {
-          console.error("Connection error:", error);
-          setIsConnecting(false);
-          setErrorMessage("Check Password");
-
-          // Clean up failed connection attempt
-          execAsync([
-            "bash",
-            "-c",
-            `nmcli connection show "${ssid}" 2>/dev/null`,
-          ])
-            .then((output) => {
-              if (output) forgetNetwork(ssid);
-            })
-            .catch(() => {
-              // Network wasn't saved (expected)
-            });
-
-          resolve(false);
-        });
-    });
-  };
-
-  // If already connected to a network, disconnect first
+  // If already connected to another network, disconnect first
   if (currentSsid && currentSsid !== ssid) {
-    console.log(
-      `Disconnecting from ${currentSsid} before connecting to ${ssid}`,
-    );
     try {
-      await execAsync(["bash", "-c", `nmcli connection down "${currentSsid}"`]);
-      // Wait for clean disconnection
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await execAsync(["nmcli", "connection", "down", currentSsid]);
+      await new Promise((resolve) => setTimeout(resolve, 400));
     } catch (error) {
       console.error("Disconnect error:", error);
-      // Continue with connection attempt even if disconnect fails
     }
   }
 
-  return performConnection();
+  try {
+    if (password) {
+      await execAsync([
+        "nmcli",
+        "device",
+        "wifi",
+        "connect",
+        ssid,
+        "password",
+        password,
+      ]);
+    } else {
+      try {
+        await execAsync(["nmcli", "connection", "up", ssid]);
+      } catch {
+        await execAsync(["nmcli", "device", "wifi", "connect", ssid]);
+      }
+    }
+
+    setShowPasswordDialog(false);
+    setIsConnecting(false);
+    scanNetworks();
+    getSavedNetworks();
+    return true;
+  } catch (error) {
+    console.error("Connection error:", error);
+    setIsConnecting(false);
+    setErrorMessage("Check Password");
+
+    // Clean up failed connection profile if created
+    execAsync(["nmcli", "connection", "show", ssid])
+      .then((output) => {
+        if (output) forgetNetwork(ssid);
+      })
+      .catch(() => {});
+
+    return false;
+  }
 };
 
 export const disconnectNetwork = async (ssid: string): Promise<boolean> => {
-  return new Promise((resolve) => {
-    execAsync(["bash", "-c", `nmcli connection down "${ssid}"`])
-      .then(() => {
-        scanNetworks();
-        resolve(true);
-      })
-      .catch((error) => {
-        console.error("Disconnect error:", error);
-        resolve(false);
-      });
-  });
+  try {
+    await execAsync(["nmcli", "connection", "down", ssid]);
+    scanNetworks();
+    return true;
+  } catch (error) {
+    console.error("Disconnect error:", error);
+    return false;
+  }
 };
 
 export const forgetNetwork = async (ssid: string): Promise<boolean> => {
-  return new Promise((resolve) => {
-    execAsync(["bash", "-c", `nmcli connection delete "${ssid}"`])
-      .then(() => {
-        getSavedNetworks();
-        scanNetworks();
-        resolve(true);
-      })
-      .catch((error) => {
-        console.error("Forget network error:", error);
-        resolve(false);
-      });
-  });
+  try {
+    await execAsync(["nmcli", "connection", "delete", ssid]);
+    getSavedNetworks();
+    scanNetworks();
+    return true;
+  } catch (error) {
+    console.error("Forget network error:", error);
+    return false;
+  }
 };

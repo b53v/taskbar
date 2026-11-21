@@ -6,6 +6,7 @@ export const createTimeoutManager = (
   timeoutDelay: number,
 ): TimeoutManager => {
   let isHovered = false;
+  let cleanedUp = false;
   let timeoutId: number | null = null;
 
   const clearTimeout = () => {
@@ -16,12 +17,15 @@ export const createTimeoutManager = (
   };
 
   const setupTimeout = () => {
+    if (cleanedUp) return;
     clearTimeout();
 
     if (!isHovered) {
       timeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, timeoutDelay, () => {
-        clearTimeout();
-        dismissCallback();
+        timeoutId = null;
+        if (!cleanedUp) {
+          dismissCallback();
+        }
         return GLib.SOURCE_REMOVE;
       });
     }
@@ -31,13 +35,18 @@ export const createTimeoutManager = (
     setupTimeout,
     clearTimeout,
     handleHover: () => {
+      if (cleanedUp) return;
       isHovered = true;
       clearTimeout();
     },
     handleHoverLost: () => {
+      if (cleanedUp) return;
       isHovered = false;
       setupTimeout();
     },
-    cleanup: clearTimeout,
+    cleanup: () => {
+      cleanedUp = true;
+      clearTimeout();
+    },
   };
 };

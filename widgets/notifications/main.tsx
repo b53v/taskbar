@@ -10,18 +10,14 @@ export default function Notifications() {
   const { TOP, RIGHT } = Astal.WindowAnchor;
 
   const notifications = createBinding(notifd, "notifications");
-  const recentNotifications = createComputed(
-    [notifications],
-    (notifs) => notifs.slice(0, 6),
-  );
   const isDndMode = createBinding(notifd, "dont-disturb");
 
+  const recentNotifications = createComputed(() =>
+    isDndMode() ? [] : notifications().slice(0, 6),
+  );
+
   const shouldShowWindow = createComputed(
-    [notifications, isDndMode],
-    (notifs, dndEnabled) => {
-      // Hide window completely when DND is on or no notifications
-      return !dndEnabled && notifs.length > 0;
-    },
+    () => !isDndMode() && notifications().length > 0,
   );
 
   return (
@@ -31,6 +27,8 @@ export default function Notifications() {
       layer={Astal.Layer.OVERLAY}
       gdkmonitor={gdkmonitor}
       anchor={TOP | RIGHT}
+      marginTop={8}
+      marginRight={8}
       $={(self) => {
         self.set_default_size(1, 1);
       }}
@@ -38,7 +36,11 @@ export default function Notifications() {
     >
       <box
         orientation={Gtk.Orientation.VERTICAL}
-        cssClasses={["notifications", "popup-glass-light"]}
+        spacing={8}
+        cssClasses={options["bar.ink"]((ink) => [
+          "notifications",
+          ink === "dynamic" ? "popup-glass-dynamic" : "popup-glass-auto",
+        ])}
       >
         <For each={recentNotifications}>
           {(notification) => <NotificationWidget notification={notification} />}

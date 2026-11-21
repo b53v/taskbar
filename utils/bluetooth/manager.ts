@@ -8,8 +8,77 @@ import { ensureBluetoothAgent, stopBluetoothAgent } from "./agent.ts";
 export class BluetoothDeviceManager {
   private device: Bluetooth.Device;
 
+  readonly isConnected;
+  readonly isPaired;
+  readonly isTrusted;
+  readonly isConnecting;
+  readonly batteryPercentage;
+  readonly displayInfo;
+  readonly canConnect;
+  readonly connectionIcon;
+  readonly trustIcon;
+  readonly pairIcon;
+  readonly connectionClasses;
+  readonly connectionTooltip;
+  readonly trustTooltip;
+  readonly pairTooltip;
+
   constructor(device: Bluetooth.Device) {
     this.device = device;
+
+    this.isConnected = createBinding(this.device, "connected");
+    this.isPaired = createBinding(this.device, "paired");
+    this.isTrusted = createBinding(this.device, "trusted");
+    this.isConnecting = createBinding(this.device, "connecting");
+    this.batteryPercentage = createBinding(this.device, "battery_percentage");
+
+    this.displayInfo = createComputed(
+      [this.isConnected, this.batteryPercentage],
+      (connected, battery) => ({
+        name: this.device.name || "Unknown Device",
+        batteryText:
+          connected && battery > 0 ? ` ${Math.round(battery * 100)}%` : "",
+        isConnected: connected,
+      }),
+    );
+
+    this.canConnect = createComputed(
+      [this.isPaired, this.isConnecting],
+      (paired, connecting) => paired && !connecting,
+    );
+
+    this.connectionIcon = createComputed(
+      [this.isConnected, this.isConnecting],
+      (connected, connecting): BluetoothIconType => {
+        if (connected) return "bluetooth-active-symbolic";
+        if (connecting) return "bluetooth-acquiring-symbolic";
+        return "bluetooth-disconnected-symbolic";
+      },
+    );
+
+    this.trustIcon = this.isTrusted((trusted) =>
+      trusted ? "security-high-symbolic" : "security-low-symbolic",
+    );
+
+    this.pairIcon = this.isPaired((paired) =>
+      paired ? "network-transmit-receive-symbolic" : "network-offline-symbolic",
+    );
+
+    this.connectionClasses = this.isConnected((connected) =>
+      connected
+        ? ["network-item-active", "bt-item"]
+        : ["network-item", "bt-item"],
+    );
+
+    this.connectionTooltip = this.isConnected((connected) =>
+      connected ? "Disconnect" : "Connect",
+    );
+
+    this.trustTooltip = this.isTrusted((trusted) =>
+      trusted ? "Untrust" : "Trust",
+    );
+
+    this.pairTooltip = this.isPaired((paired) => (paired ? "Unpair" : "Pair"));
   }
 
   async connect(): Promise<boolean> {
@@ -20,9 +89,6 @@ export class BluetoothDeviceManager {
       this.device.connect_device(() => {
         setIsConnecting(false);
         const success = this.device.connected;
-        console.log(
-          `Connection ${success ? "successful" : "failed"} for ${this.device.name}`,
-        );
         resolve(success);
       });
     });
@@ -31,11 +97,7 @@ export class BluetoothDeviceManager {
   async disconnect(): Promise<boolean> {
     return new Promise((resolve) => {
       this.device.disconnect_device(() => {
-        const success = !this.device.connected;
-        console.log(
-          `Disconnection ${success ? "successful" : "failed"} for ${this.device.name}`,
-        );
-        resolve(success);
+        resolve(!this.device.connected);
       });
     });
   }
@@ -60,21 +122,19 @@ export class BluetoothDeviceManager {
         }
       }
 
-      // Create a binding for the paired state
-      const pairedBinding = createBinding(this.device, "paired");
+      const pairedBinding = this.isPaired;
       let resolved = false;
+      let pairingTimer: ReturnType<typeof timeout> | null = null;
 
-      // Set up cleanup to run when paired becomes true
       const unsubscribe = pairedBinding.subscribe(() => {
         const paired = pairedBinding.get();
         if (paired && !resolved) {
           resolved = true;
-          console.log(`Successfully paired with ${this.device.name}`);
+          pairingTimer?.cancel();
+          pairingTimer = null;
           unsubscribe();
 
-          // Stop the agent when paired
           if (agentWasStarted) {
-            console.log("Pairing successful, stopping Bluetooth agent");
             timeout(1000, async () => {
               try {
                 await stopBluetoothAgent();
@@ -87,11 +147,10 @@ export class BluetoothDeviceManager {
         }
       });
 
-      // Set up timeout for pairing process
-      timeout(30000, async () => {
+      pairingTimer = timeout(30000, async () => {
+        pairingTimer = null;
         if (!resolved) {
           resolved = true;
-          console.log("Pairing timeout reached");
           unsubscribe();
           if (agentWasStarted) {
             try {
@@ -108,11 +167,12 @@ export class BluetoothDeviceManager {
       });
 
       try {
-        console.log(`Initiating pairing with ${this.device.name}`);
         this.device.pair();
       } catch (error) {
         if (!resolved) {
           resolved = true;
+          pairingTimer?.cancel();
+          pairingTimer = null;
           console.error("Error pairing device:", error);
           unsubscribe();
           if (agentWasStarted) {
@@ -136,7 +196,6 @@ export class BluetoothDeviceManager {
     if (bluetooth?.adapter) {
       try {
         bluetooth.adapter.remove_device(this.device);
-        console.log(`Unpaired device: ${this.device.name}`);
         return true;
       } catch (error) {
         console.error("Error unpairing device:", error);
@@ -150,98 +209,11 @@ export class BluetoothDeviceManager {
     try {
       const newTrustState = !this.device.trusted;
       this.device.set_trusted(newTrustState);
-      console.log(
-        `${this.device.name} trust: ${newTrustState ? "enabled" : "disabled"}`,
-      );
       return true;
     } catch (error) {
       console.error("Error toggling device trust:", error);
       return false;
     }
-  }
-
-  get isConnected() {
-    return createBinding(this.device, "connected");
-  }
-
-  get isPaired() {
-    return createBinding(this.device, "paired");
-  }
-
-  get isTrusted() {
-    return createBinding(this.device, "trusted");
-  }
-
-  get isConnecting() {
-    return createBinding(this.device, "connecting");
-  }
-
-  get batteryPercentage() {
-    return createBinding(this.device, "battery_percentage");
-  }
-
-  get displayInfo() {
-    return createComputed(
-      [this.isConnected, this.batteryPercentage],
-      (connected, battery) => ({
-        name: this.device.name || "Unknown Device",
-        batteryText:
-          connected && battery > 0 ? ` ${Math.round(battery * 100)}%` : "",
-        isConnected: connected,
-      }),
-    );
-  }
-
-  get canConnect() {
-    return createComputed(
-      [this.isPaired, this.isConnecting],
-      (paired, connecting) => paired && !connecting,
-    );
-  }
-
-  get connectionIcon() {
-    return createComputed(
-      [this.isConnected, this.isConnecting],
-      (connected, connecting): BluetoothIconType => {
-        if (connected) return "bluetooth-active-symbolic";
-        if (connecting) return "bluetooth-acquiring-symbolic";
-        return "bluetooth-disconnected-symbolic";
-      },
-    );
-  }
-
-  get trustIcon() {
-    return this.isTrusted((trusted) =>
-      trusted ? "security-high-symbolic" : "security-low-symbolic",
-    );
-  }
-
-  get pairIcon() {
-    return this.isPaired((paired) =>
-      paired ? "network-transmit-receive-symbolic" : "network-offline-symbolic",
-    );
-  }
-
-  get connectionClasses() {
-    return this.isConnected((connected) =>
-      connected
-        ? ["network-item-active", "bt-item"]
-        : ["network-item", "bt-item"],
-    );
-  }
-
-  get connectionTooltip() {
-    return this.isConnected((connected) =>
-      connected ? "Disconnect" : "Connect",
-    );
-  }
-
-  get trustTooltip() {
-    return this.isTrusted((trusted) => (trusted ? "Untrust" : "Trust"));
-  }
-
-  get pairTooltip() {
-    return this.isPaired((paired) => (paired ? "Unpair" : "Pair"));
   }
 }
 

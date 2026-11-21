@@ -4,7 +4,6 @@ import Pango from "gi://Pango";
 import Wp from "gi://AstalWp";
 import Brightness from "utils/brightness";
 import Bluetooth from "gi://AstalBluetooth";
-import options from "options.ts";
 
 interface OnScreenProgressProps {
   visible: boolean | Accessor<boolean>;
@@ -20,7 +19,7 @@ export default function OnScreenProgress({
   const [icon, setIcon] = createState("");
   const [hasProgress, setHasProgress] = createState(true);
 
-  let currentTimeout: any = null;
+  let currentTimeout: ReturnType<typeof setTimeout> | null = null;
   const TIMEOUT_DELAY = 2000;
 
   const show = (
@@ -29,7 +28,6 @@ export default function OnScreenProgress({
     iconName: string,
     progress = true,
   ) => {
-    console.log(`OSD: value=${val} text=${text} icon=${iconName}`);
     setValue(val);
     setLabel(text);
     setIcon(iconName);
@@ -37,7 +35,10 @@ export default function OnScreenProgress({
     setVisible(true);
 
     if (currentTimeout) clearTimeout(currentTimeout);
-    currentTimeout = setTimeout(() => setVisible(false), TIMEOUT_DELAY);
+    currentTimeout = setTimeout(() => {
+      currentTimeout = null;
+      setVisible(false);
+    }, TIMEOUT_DELAY);
   };
 
   // Audio
@@ -71,45 +72,60 @@ export default function OnScreenProgress({
     onCleanup(() => brightness.disconnect(id));
   } catch {}
 
-  // Bluetooth: with my bt adapter only functional when in active mode
-  const bluetooth = Bluetooth.get_default();
+  // Bluetooth connection status OSD (safe when bluetoothd is inactive)
+  let bluetooth: Bluetooth.Bluetooth | null = null;
+  let btId: number | null = null;
   const deviceSignals = new Map<Bluetooth.Device, number>();
-  const syncDevices = () => {
-    const devices = new Set(bluetooth.devices);
-    for (const [device, id] of deviceSignals) {
-      if (!devices.has(device)) {
-        device.disconnect(id);
-        deviceSignals.delete(device);
+  try {
+    bluetooth = Bluetooth.get_default();
+    const syncDevices = () => {
+      if (!bluetooth) return;
+      const devices = new Set(bluetooth.devices);
+      for (const [device, id] of deviceSignals) {
+        if (!devices.has(device)) {
+          device.disconnect(id);
+          deviceSignals.delete(device);
+        }
       }
-    }
-    for (const device of devices) {
-      if (deviceSignals.has(device)) continue;
-      const id = device.connect("notify::connected", () => {
-        const message = device.connected
-          ? `Connected: ${device.name || device.address}`
-          : `Disconnected: ${device.name || device.address}`;
+      for (const device of devices) {
+        if (deviceSignals.has(device)) continue;
+        const id = device.connect("notify::connected", () => {
+          const message = device.connected
+            ? `Connected: ${device.name || device.address}`
+            : `Disconnected: ${device.name || device.address}`;
 
-        show(0, message, device.icon || "bluetooth-active-symbolic", false);
-      });
-      deviceSignals.set(device, id);
-    }
-  };
-  const btId = bluetooth.connect("notify::devices", syncDevices);
-  syncDevices();
+          show(0, message, device.icon || "bluetooth-active-symbolic", false);
+        });
+        deviceSignals.set(device, id);
+      }
+    };
+    btId = bluetooth.connect("notify::devices", syncDevices);
+    syncDevices();
+  } catch {}
 
   onCleanup(() => {
-    if (currentTimeout) clearTimeout(currentTimeout);
-    for (const [device, id] of deviceSignals) device.disconnect(id);
+    if (currentTimeout) {
+      clearTimeout(currentTimeout);
+      currentTimeout = null;
+    }
+    for (const [device, id] of deviceSignals) {
+      try {
+        device.disconnect(id);
+      } catch {}
+    }
     deviceSignals.clear();
-    try {
-      bluetooth.disconnect(btId);
-    } catch {}
+    if (bluetooth && btId !== null) {
+      try {
+        bluetooth.disconnect(btId);
+      } catch {}
+    }
   });
 
   return (
     <revealer
       revealChild={visible}
       transitionType={Gtk.RevealerTransitionType.CROSSFADE}
+      transitionDuration={160}
     >
       <box cssClasses={["osd"]} valign={Gtk.Align.CENTER}>
         <image iconName={icon} valign={Gtk.Align.CENTER} />

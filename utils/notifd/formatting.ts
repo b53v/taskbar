@@ -1,3 +1,4 @@
+import type { Accessor } from "ags";
 import type { DisplayNotification } from "./types.ts";
 import { currentTime, formatTimestamp } from "utils/time.ts";
 import Notifd from "gi://AstalNotifd";
@@ -9,7 +10,7 @@ export function createNotificationTimeLabel(
     format?: string;
     updateInterval?: number;
   } = {},
-) {
+): string | Accessor<string> {
   const { variant = "live", format = "%H:%M" } = options;
   const shouldShowRelative = variant === "stored";
 
@@ -26,7 +27,11 @@ export function createNotificationTimeLabel(
       return "Just now";
     });
   } else {
-    return currentTime(() => formatTimestamp(notificationTimestamp, format));
+    try {
+      return formatTimestamp(notificationTimestamp, format) || "";
+    } catch {
+      return "";
+    }
   }
 }
 

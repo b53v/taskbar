@@ -18,13 +18,26 @@ export class NotificationManager {
   private setNotificationState: ReturnType<
     typeof createState<StoredNotification[]>
   >[1];
+  private maxVisibleState: Accessor<number>;
+  private setMaxVisibleState: ReturnType<typeof createState<number>>[1];
   private notifd = Notifd.get_default();
-  private maxVisibleNotifications =
-    options["notification-center.max-notifications"].get();
   private persistTimer: ReturnType<typeof setTimeout> | null = null;
   private writing = false;
   private persistDirty = false;
   private expiryTimer: ReturnType<typeof setInterval>;
+
+  readonly activeNotifications: Accessor<StoredNotification[]>;
+  readonly limitedActiveNotifications: Accessor<StoredNotification[]>;
+  readonly newNotifications: Accessor<StoredNotification[]>;
+  readonly readNotifications: Accessor<StoredNotification[]>;
+  readonly unreadCount: Accessor<number>;
+  readonly hasNotifications: Accessor<boolean>;
+  readonly hasNewNotifications: Accessor<boolean>;
+  readonly hasReadNotifications: Accessor<boolean>;
+  readonly moreNotificationsInfo: Accessor<{
+    hasMore: boolean;
+    moreCount: number;
+  }>;
 
   constructor() {
     const [notificationState, setNotificationState] = createState<
@@ -32,24 +45,79 @@ export class NotificationManager {
     >([]);
     this.notificationState = notificationState;
     this.setNotificationState = setNotificationState;
-    const visibleLimit = this.maxVisibleNotifications;
-    this.maxVisibleNotifications = Number.isFinite(visibleLimit) ? Math.max(1, Math.floor(visibleLimit)) : 4;
+
+    const initialLimit = this.normalizeVisibleLimit(
+      options["notification-center.max-notifications"].get(),
+    );
+    const [maxVisibleState, setMaxVisibleState] =
+      createState<number>(initialLimit);
+    this.maxVisibleState = maxVisibleState;
+    this.setMaxVisibleState = setMaxVisibleState;
+
+    this.activeNotifications = this.notificationState;
+    this.limitedActiveNotifications = createComputed(() =>
+      this.notificationState().slice(0, this.maxVisibleState()),
+    );
+    this.newNotifications = this.limitedActiveNotifications((notifications) =>
+      notifications.filter((n) => !n.seen),
+    );
+    this.readNotifications = this.limitedActiveNotifications((notifications) =>
+      notifications.filter((n) => n.seen),
+    );
+    this.unreadCount = this.activeNotifications((notifications) => {
+      let count = 0;
+      for (const n of notifications) {
+        if (!n.seen) count++;
+      }
+      return count;
+    });
+    this.hasNotifications = this.activeNotifications(
+      (notifications) => notifications.length > 0,
+    );
+    this.hasNewNotifications = this.newNotifications(
+      (notifications) => notifications.length > 0,
+    );
+    this.hasReadNotifications = this.readNotifications(
+      (notifications) => notifications.length > 0,
+    );
+    this.moreNotificationsInfo = createComputed(() => {
+      const totalCount = this.activeNotifications().length;
+      const shownCount = this.limitedActiveNotifications().length;
+      return {
+        hasMore: totalCount > shownCount,
+        moreCount: Math.max(0, totalCount - shownCount),
+      };
+    });
 
     this.loadPersistedNotifications();
     this.setupNotificationListeners();
-    for (const key of ["notification-center.history-limit", "notification-center.history-days"] as const) {
-      onCleanup(options[key].subscribe(() => {
-        this.updateState();
-        this.persistNotifications();
-      }));
+    for (const key of [
+      "notification-center.history-limit",
+      "notification-center.history-days",
+    ] as const) {
+      onCleanup(
+        options[key].subscribe(() => {
+          if (this.updateState()) {
+            this.persistNotifications();
+          }
+        }),
+      );
     }
-    onCleanup(options["notification-center.max-notifications"].subscribe(() => {
-      this.setMaxVisibleNotifications(options["notification-center.max-notifications"].get());
-    }));
-    this.expiryTimer = setInterval(() => {
-      this.updateState();
-      this.persistNotifications();
-    }, 60 * 60 * 1000);
+    onCleanup(
+      options["notification-center.max-notifications"].subscribe(() => {
+        this.setMaxVisibleNotifications(
+          options["notification-center.max-notifications"].get(),
+        );
+      }),
+    );
+    this.expiryTimer = setInterval(
+      () => {
+        if (this.needsPruning() && this.updateState()) {
+          this.persistNotifications();
+        }
+      },
+      60 * 60 * 1000,
+    );
     onCleanup(() => {
       clearInterval(this.expiryTimer);
       if (this.persistTimer) clearTimeout(this.persistTimer);
@@ -57,10 +125,32 @@ export class NotificationManager {
     });
   }
 
+  private normalizeVisibleLimit(limit: number): number {
+    return Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 4;
+  }
+
+  private getHistoryLimit(): number {
+    const limit = options["notification-center.history-limit"].get();
+    return Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 200;
+  }
+
+  private getExpiryCutoff(): number {
+    const days = options["notification-center.history-days"].get();
+    return Date.now() - (Number.isFinite(days) ? Math.max(1, days) : 30) * 86400_000;
+  }
+
+  private needsPruning(): boolean {
+    const limit = this.getHistoryLimit();
+    if (this.notifications.size > limit) return true;
+    const cutoff = this.getExpiryCutoff();
+    for (const notification of this.notifications.values()) {
+      if (notification.time < cutoff) return true;
+    }
+    return false;
+  }
+
   dismissNotification(id: number): void {
-    const notification = this.notifications.get(id);
-    if (notification) {
-      this.notifications.delete(id);
+    if (this.notifications.delete(id)) {
       this.updateState();
       this.persistNotifications();
     }
@@ -90,94 +180,48 @@ export class NotificationManager {
   }
 
   setMaxVisibleNotifications(limit: number) {
-    this.maxVisibleNotifications = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 4;
-    this.updateState();
+    const normalized = this.normalizeVisibleLimit(limit);
+    if (this.maxVisibleState.get() !== normalized) {
+      this.setMaxVisibleState(normalized);
+    }
   }
 
   showMoreNotifications(): void {
-    const step = options["notification-center.max-notifications"].get();
-    this.setMaxVisibleNotifications(this.maxVisibleNotifications + (Number.isFinite(step) ? Math.max(1, step) : 4));
+    const step = this.normalizeVisibleLimit(
+      options["notification-center.max-notifications"].get(),
+    );
+    this.setMaxVisibleNotifications(this.maxVisibleState.get() + step);
   }
 
   resetVisibleNotifications(): void {
-    this.setMaxVisibleNotifications(options["notification-center.max-notifications"].get());
+    this.setMaxVisibleNotifications(
+      options["notification-center.max-notifications"].get(),
+    );
   }
 
   clearVisibleNotifications() {
     const visibleNotifications = this.limitedActiveNotifications.get();
-    visibleNotifications.forEach((notification) => {
-      this.notifications.delete(notification.id);
-    });
-    this.updateState();
-    this.persistNotifications();
+    let changed = false;
+    for (const notification of visibleNotifications) {
+      if (this.notifications.delete(notification.id)) {
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.updateState();
+      this.persistNotifications();
+    }
   }
 
   clearAllNotifications() {
+    if (this.notifications.size === 0) return;
     this.notifications.clear();
     this.updateState();
     this.persistNotifications();
   }
 
-  get activeNotifications() {
-    return this.notificationState;
-  }
-
-  get limitedActiveNotifications() {
-    return this.activeNotifications((notifications) =>
-      notifications.slice(0, this.maxVisibleNotifications),
-    );
-  }
-
-  get newNotifications() {
-    return this.limitedActiveNotifications((notifications) =>
-      notifications.filter((n) => !n.seen),
-    );
-  }
-
-  get readNotifications() {
-    return this.limitedActiveNotifications((notifications) =>
-      notifications.filter((n) => n.seen),
-    );
-  }
-
-  get unreadCount() {
-    return this.activeNotifications(
-      (notifications) => notifications.filter((n) => !n.seen).length,
-    );
-  }
-
-  get hasNotifications() {
-    return this.limitedActiveNotifications(
-      (notifications) => notifications.length > 0,
-    );
-  }
-
-  get hasNewNotifications() {
-    return this.newNotifications((notifications) => notifications.length > 0);
-  }
-
-  get hasReadNotifications() {
-    return this.readNotifications((notifications) => notifications.length > 0);
-  }
-
-  get moreNotificationsInfo() {
-    return createComputed(
-      [this.notificationState, this.limitedActiveNotifications],
-      (allActive, limited) => {
-        const totalCount = allActive.length;
-        const shownCount = limited.length;
-        return {
-          hasMore: totalCount > shownCount,
-          moreCount: totalCount - shownCount,
-        };
-      },
-    );
-  }
-
   private setupNotificationListeners(): void {
     const addedId = this.notifd.connect("notified", (_, notificationId) => {
-      console.log("Received notification ID:", notificationId);
-
       const notification = this.notifd.get_notification(notificationId);
       if (notification) {
         this.storeNotification(notification);
@@ -194,16 +238,22 @@ export class NotificationManager {
     });
   }
 
-  private updateState(): void {
-    const limit = options["notification-center.history-limit"].get();
-    const days = options["notification-center.history-days"].get();
-    const cutoff = Date.now() - (Number.isFinite(days) ? Math.max(1, days) : 30) * 86400_000;
-    const sortedNotifications = Array.from(this.notifications.values()).sort(
-      (a, b) => b.time - a.time,
-    ).filter((notification) => notification.time >= cutoff)
-      .slice(0, Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 200);
-    this.notifications = new Map(sortedNotifications.map((notification) => [notification.id, notification]));
+  private updateState(): boolean {
+    const limit = this.getHistoryLimit();
+    const cutoff = this.getExpiryCutoff();
+    const prevSize = this.notifications.size;
+    const sortedNotifications = Array.from(this.notifications.values())
+      .filter((notification) => notification.time >= cutoff)
+      .sort((a, b) => b.time - a.time)
+      .slice(0, limit);
+    const pruned = sortedNotifications.length !== prevSize;
+    if (pruned) {
+      this.notifications = new Map(
+        sortedNotifications.map((notification) => [notification.id, notification]),
+      );
+    }
     this.setNotificationState(sortedNotifications);
+    return pruned;
   }
 
   private persistNotifications(): void {
@@ -241,8 +291,9 @@ export class NotificationManager {
         if (success) {
           const data = JSON.parse(new TextDecoder().decode(contents));
           this.notifications = new Map(data);
-          this.updateState();
-          this.persistNotifications();
+          if (this.updateState()) {
+            this.persistNotifications();
+          }
         }
       }
     } catch (error) {

@@ -17,7 +17,7 @@ export function liveToDisplay(
     appIcon: notification.appIcon,
     image: notification.image,
     desktopEntry: notification.desktopEntry,
-    time: notification.time,
+    time: notification.time || Math.floor(Date.now() / 1000),
     urgency: notification.urgency || Notifd.Urgency.NORMAL,
     actions: convertedActions,
   };
@@ -39,7 +39,7 @@ export function liveToStored(
     appIcon: notification.appIcon,
     image: notification.image,
     desktopEntry: notification.desktopEntry,
-    time: notification.time * 1000,
+    time: notification.time ? notification.time * 1000 : Date.now(),
     urgency: notification.urgency || Notifd.Urgency.NORMAL,
     actions: convertedActions,
     seen: false,

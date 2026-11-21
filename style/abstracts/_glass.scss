@@ -34,3 +34,110 @@ $barInkShadow:
     0 -0.5px 0 $barInkHalo, 0 0.5px 0 $barInkHalo,
     0 1px 1px $barInkDepth;
 }
+
+/* Unified Liquid Glass popup tokens (shared across system-menu, notifications,
+ * logout-menu, osd, and mirrored in rofi/glass.rasi). */
+$uiFont:
+  "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC",
+  "JetBrainsMono Nerd Font", sans-serif;
+
+/* Concentric corner radius scale */
+$radius-window: 18px;
+$radius-modal: 22px;
+$radius-card: 12px;
+$radius-control: 8px;
+$radius-pill: 9999px;
+
+/* Unified 240Hz motion tokens (matches bar Workspaces spring ~150-200ms).
+ * NOTE: Bar theme-transition color fades stay 400ms ease-in-out per theme-transition test. */
+$motion-curve: cubic-bezier(0.2, 0, 0, 1);
+$motion-fast: 140ms;
+$motion-standard: 180ms;
+
+/* Adaptive Liquid Glass material (follows Matugen/wallpaper $darkmode) */
+$popupBg: rgba(255, 255, 255, 0.34);
+$popupBorder: rgba(0, 0, 0, 0.14);
+$popupShadow:
+  inset 0 1px 0 rgba(255, 255, 255, 0.65),
+  inset 0 -1px 0 rgba(255, 255, 255, 0.24);
+$popupDivider: rgba(0, 0, 0, 0.10);
+
+$popupCardBg: rgba(255, 255, 255, 0.36);
+$popupCardHoverBg: rgba(255, 255, 255, 0.56);
+$popupCardBorder: rgba(0, 0, 0, 0.09);
+
+$popupHoverBg: rgba(0, 0, 0, 0.07);
+$popupActiveBg: rgba(0, 0, 0, 0.12);
+$popupInputBg: rgba(255, 255, 255, 0.42);
+$popupInputBorder: rgba(0, 0, 0, 0.14);
+$popupTroughBg: rgba(0, 0, 0, 0.12);
+
+$popupInk: #1a1b20;
+$popupInkSecondary: rgba(26, 27, 32, 0.74);
+$popupInkMuted: rgba(26, 27, 32, 0.54);
+$popupTextShadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+
+$popupAccent: #5e81ac;
+$popupAccentBg: rgba(94, 129, 172, 0.88);
+$popupAccentSoftBg: rgba(94, 129, 172, 0.18);
+$popupAccentFg: #ffffff;
+
+$popupDangerBg: rgba(209, 73, 78, 0.16);
+$popupDangerInk: #c53030;
+
+@if $darkmode {
+  $popupBg: rgba(12, 16, 24, 0.30);
+  $popupBorder: rgba(255, 255, 255, 0.16);
+  $popupShadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+  $popupDivider: rgba(255, 255, 255, 0.12);
+
+  $popupCardBg: rgba(255, 255, 255, 0.07);
+  $popupCardHoverBg: rgba(255, 255, 255, 0.13);
+  $popupCardBorder: rgba(255, 255, 255, 0.11);
+
+  $popupHoverBg: rgba(255, 255, 255, 0.11);
+  $popupActiveBg: rgba(255, 255, 255, 0.18);
+  $popupInputBg: rgba(255, 255, 255, 0.08);
+  $popupInputBorder: rgba(255, 255, 255, 0.18);
+  $popupTroughBg: rgba(255, 255, 255, 0.18);
+
+  $popupInk: rgba(255, 255, 255, 0.96);
+  $popupInkSecondary: rgba(255, 255, 255, 0.76);
+  $popupInkMuted: rgba(255, 255, 255, 0.56);
+  $popupTextShadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+
+  $popupAccent: #8fb3e8;
+  $popupAccentBg: rgba(94, 129, 172, 0.85);
+  $popupAccentSoftBg: rgba(143, 179, 232, 0.22);
+  $popupAccentFg: #ffffff;
+
+  $popupDangerBg: rgba(220, 88, 92, 0.22);
+  $popupDangerInk: #ff8a8e;
+}
+
+@mixin popup-glass-surface($radius: $radius-window) {
+  background: $popupBg;
+  backdrop-filter: blur(20px);
+  border: 1px solid $popupBorder;
+  border-radius: $radius;
+  box-shadow: $popupShadow;
+  color: $popupInk;
+  font-family: $uiFont;
+}
+
+@mixin popup-card-surface($radius: $radius-card) {
+  background: $popupCardBg;
+  border: 1px solid $popupCardBorder;
+  border-radius: $radius;
+  box-shadow: none;
+}
+
+@mixin popup-interactive {
+  transition:
+    background-color $motion-fast $motion-curve,
+    border-color $motion-fast $motion-curve,
+    color $motion-fast $motion-curve,
+    opacity $motion-fast $motion-curve;
+}

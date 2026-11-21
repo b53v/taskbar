@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "../variables" as *;
+@use "../glass" as *;
 @use "./_typography.scss" as *;
 @use "./_base.scss" as *;
 
@@ -54,39 +55,36 @@
 }
 
 @mixin option-row {
-  @include rounding;
-  background: color.adjust($barBg, $lightness: if($darkmode, 2%, -2%));
-  border: 1px solid color.adjust($fg, $alpha: -0.9);
+  border-radius: $radius-control;
+  background: $popupCardBg;
+  border: 1px solid $popupCardBorder;
   padding: 0 $spacing-md;
   margin: $spacing-xs 0;
   box-shadow: none;
 }
 
 @mixin toggle-switch {
-  @include animate;
-  border-radius: $round2;
+  transition: background-color $motion-fast $motion-curve;
+  border-radius: $radius-pill;
   padding: $spacing-xs;
-  background-color: color.adjust($fg, $alpha: -0.9);
+  background-color: $popupTroughBg;
   box-shadow: none;
 
   slider {
-    @include animate;
-    border-radius: $round2;
+    transition:
+      background-color $motion-fast $motion-curve,
+      transform $motion-fast $motion-curve;
+    border-radius: $radius-pill;
     margin: 0 0.2rem;
-
-    @if $darkmode {
-      background-color: color.adjust($fg, $alpha: -0.7);
-    } @else {
-      background-color: $buttonDisabled;
-      box-shadow: none;
-    }
+    background-color: $popupInkSecondary;
+    box-shadow: none;
   }
 
   &:checked {
-    background-color: $buttonEnabled;
+    background-color: $popupAccentBg;
 
     slider {
-      background-color: color.adjust($primary, $alpha: -0.3);
+      background-color: $popupAccentFg;
     }
   }
 }

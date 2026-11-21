@@ -28,7 +28,7 @@ export const BluetoothItem = ({ device }) => {
 
       <revealer
         revealChild={itemButtonsRevealed}
-        transitionDuration={200}
+        transitionDuration={180}
         transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
         $={(_self) => {
           const unsubscribeParent = isExpanded.subscribe(() => {

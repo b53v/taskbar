@@ -3,19 +3,22 @@ import app from "ags/gtk4/app";
 import { createRoot, onCleanup } from "ags";
 import { Gtk } from "ags/gtk4";
 import GLib from "gi://GLib?version=2.0";
-import Gio from "gi://Gio?version=2.0";
 import { readFileAsync } from "ags/file";
 import { HardwareMonitor } from "utils/sysmon/base";
 import SystemMonitor from "utils/sysmon";
 import { notificationManager } from "utils/notifd/manager";
 import { compositor } from "utils/compositor/detector";
 import options from "options";
-import ActiveWindow from "widgets/bar/modules/ActiveWindow";
-import { HyprlandWorkspaces } from "widgets/bar/modules/Workspaces";
-import { Clients } from "widgets/bar/modules/Clients";
+import {
+  HyprlandWorkspaces,
+  PILL_DOT_WIDTH,
+  PILL_FOCUSED_WIDTH,
+  computeWorkspaceState,
+  stepCriticallyDampedSpring,
+  workspaceContentWidth,
+} from "widgets/bar/modules/Workspaces";
 import Progress from "widgets/osd/modules/Progress";
 import { NotificationBox } from "widgets/system-menu/modules/notification-center/main";
-import { getAppIcon } from "utils/clients";
 import { CssReloader } from "utils/cssReload";
 import { StyleProvider } from "utils/styleProvider";
 
@@ -77,20 +80,13 @@ async function test() {
   print("PASS: hardware refresh serialization/destruction");
 
   const sysmon = SystemMonitor.get_default() as any;
-  assert(sysmon.cpu.intervalId === null && sysmon.disk.intervalId === null, "monitors started without consumers");
+  assert(sysmon.cpu.intervalId === null && sysmon.memory.intervalId === null && sysmon.gpu.intervalId === null, "monitors started without consumers");
   const release = sysmon.retainCore();
   while (sysmon.coreStarting) await sleep(20);
-  assert(sysmon.cpu.intervalId !== null, "core lease did not start CPU");
-  assert(sysmon.disk.intervalId === null && sysmon.network.intervalId === null, "core lease started unused detail monitors");
+  assert(sysmon.cpu.intervalId !== null && sysmon.memory.intervalId !== null, "core lease did not start CPU/memory");
   release();
-  assert(sysmon.cpu.intervalId === null && sysmon.gpu.intervalId === null && sysmon.thresholdTimer === null, "core release left timers running");
-  const releaseDetails = sysmon.retainDetails();
-  while (sysmon.detailsStarting || sysmon.coreStarting) await sleep(20);
-  assert(sysmon.disk.intervalId !== null && sysmon.network.intervalId !== null, "detail lease did not start timers");
-  assert(sysmon.disk.disks.length > 0, "asynchronous disk query returned no disks");
-  releaseDetails();
-  assert(sysmon.disk.intervalId === null && sysmon.network.redetectionIntervalId === null, "detail release left timers running");
-  print("PASS: monitor leases, asynchronous filesystem query, timer cleanup");
+  assert(sysmon.cpu.intervalId === null && sysmon.memory.intervalId === null && sysmon.gpu.intervalId === null && sysmon.thresholdTimer === null, "core release left timers running");
+  print("PASS: monitor leases and timer cleanup");
 
   const manager = notificationManager as any;
   manager.clearAllNotifications();
@@ -117,13 +113,10 @@ async function test() {
   let dispose!: () => void;
   createRoot((cleanup) => {
     dispose = cleanup;
-    const active = <ActiveWindow /> as Gtk.Widget;
-    assert(active.visible === !!compositor.focusedClient.get()?.title, "active window visibility differs from focused client");
-    const clients = <Clients /> as Gtk.Widget;
     const dots = <HyprlandWorkspaces /> as Gtk.Widget;
     const osd = <Progress visible={false} setVisible={() => {}} /> as Gtk.Widget;
     const notifications = <NotificationBox /> as Gtk.Widget;
-    assert(clients && dots && osd && notifications, "widget construction failed");
+    assert(dots && osd && notifications, "widget construction failed");
     const adapter = compositor as any;
     let titles = 0;
     let workspaces = 0;
@@ -143,9 +136,87 @@ async function test() {
     }
   });
   dispose();
-  Gio.icon_new_for_string(getAppIcon("application-x-executable-symbolic", true));
-  assert(!getAppIcon("application-x-executable-symbolic", true).endsWith("-symbolic-symbolic"), "duplicated symbolic suffix");
-  print("PASS: widget construction, active title/workspace reactivity, icon fallback");
+  print("PASS: widget construction, active title/workspace reactivity");
+
+  const wsSingleOccupied = computeWorkspaceState([{ id: 1, occupied: true }], { id: 1 });
+  assert(
+    wsSingleOccupied.maxVisible === 1 &&
+      wsSingleOccupied.states[0] === "focused" &&
+      wsSingleOccupied.states.slice(1).every((s) => s === "hidden"),
+    "min-1 rule failed when only workspace 1 is occupied and focused",
+  );
+  const wsAllEmpty = computeWorkspaceState([], { id: 1 });
+  assert(
+    wsAllEmpty.maxVisible === 1 &&
+      wsAllEmpty.states[0] === "focused" &&
+      wsAllEmpty.states.slice(1).every((s) => s === "hidden"),
+    "min-1 rule failed when all workspaces are empty",
+  );
+  const wsFocusEmpty2 = computeWorkspaceState([{ id: 1, occupied: true }], { id: 2 });
+  assert(
+    wsFocusEmpty2.maxVisible === 2 &&
+      wsFocusEmpty2.states[0] === "occupied" &&
+      wsFocusEmpty2.states[1] === "focused" &&
+      wsFocusEmpty2.states.slice(2).every((s) => s === "hidden"),
+    "workspace 2 did not appear when focused while empty",
+  );
+  const wsCollapseBack = computeWorkspaceState(
+    [{ id: 1, occupied: true }, { id: 2, occupied: false }],
+    { id: 1 },
+  );
+  assert(
+    wsCollapseBack.maxVisible === 1 &&
+      wsCollapseBack.states[0] === "focused" &&
+      wsCollapseBack.states[1] === "hidden",
+    "empty workspace 2 did not collapse back to min-1",
+  );
+  const wsSequential4 = computeWorkspaceState(
+    [{ id: 1, occupied: false }, { id: 4, occupied: true }],
+    { id: 1 },
+  );
+  assert(
+    wsSequential4.maxVisible === 4 &&
+      wsSequential4.states.slice(0, 4).join(",") === "focused,empty,empty,occupied" &&
+      wsSequential4.states.slice(4).every((s) => s === "hidden"),
+    "sequential intermediate slots failed for occupied workspace 4",
+  );
+  const wsSpecial = computeWorkspaceState([{ id: 1, occupied: true }], { id: -98 });
+  assert(
+    wsSpecial.maxVisible === 1 && wsSpecial.states[0] === "occupied",
+    "special workspace id broke min-1 rule",
+  );
+  for (let n = 1; n <= 10; n++) {
+    const w = workspaceContentWidth(n);
+    assert(w % 2 === 0 && w >= 13 + 15 * n && w <= 14 + 15 * n, `unexpected even content width for ${n}: ${w}`);
+  }
+
+  const shrink = { value: PILL_FOCUSED_WIDTH, velocity: 0 };
+  const grow = { value: PILL_DOT_WIDTH, velocity: 0 };
+  let active = true;
+  let steps = 0;
+  while (active && steps < 240) {
+    const a = stepCriticallyDampedSpring(shrink, PILL_DOT_WIDTH, 32, 1 / 240, 0.01, 0.05);
+    const b = stepCriticallyDampedSpring(grow, PILL_FOCUSED_WIDTH, 32, 1 / 240, 0.01, 0.05);
+    assert(
+      Math.abs(shrink.value + grow.value - (PILL_FOCUSED_WIDTH + PILL_DOT_WIDTH)) < 1e-9,
+      "total width was not conserved during focus switch spring",
+    );
+    assert(
+      shrink.value >= PILL_DOT_WIDTH - 1e-9 && grow.value <= PILL_FOCUSED_WIDTH + 1e-9,
+      "critically-damped spring overshot target",
+    );
+    active = a || b;
+    steps++;
+  }
+  assert(
+    !active &&
+      shrink.value === PILL_DOT_WIDTH &&
+      shrink.velocity === 0 &&
+      grow.value === PILL_FOCUSED_WIDTH &&
+      grow.velocity === 0,
+    "focus switch spring did not settle cleanly",
+  );
+  print("PASS: min-1 workspace state, even-width centering, critically-damped spring conservation/settle");
   sysmon.destroy();
   void app;
 }

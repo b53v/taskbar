@@ -2,11 +2,11 @@ import { execAsync } from "ags/process";
 import app from "ags/gtk4/app";
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import { createState } from "ags";
-import { gdkmonitor, currentMonitorWidth } from "utils/monitors.ts";
+import { gdkmonitor } from "utils/monitors.ts";
 import options from "options.ts";
 
 function hide() {
-  app.get_window("logout-menu")!.hide();
+  app.get_window("logout-menu")?.hide();
 }
 
 function LogoutButton(icon: string, title: string, command: string) {
@@ -37,6 +37,8 @@ export default function LogoutMenu() {
   return (
     <window
       name="logout-menu"
+      namespace="logout-menu"
+      layer={Astal.Layer.OVERLAY}
       visible={visible}
       gdkmonitor={gdkmonitor}
       anchor={
@@ -53,7 +55,9 @@ export default function LogoutMenu() {
         onKeyPressed={({ widget }, keyval: number) => {
           if (keyval === Gdk.KEY_Escape) {
             widget.hide();
+            return true;
           }
+          return false;
         }}
       />
       <box cssClasses={["logout-background"]} hexpand={true} vexpand={true}>
@@ -75,7 +79,11 @@ export default function LogoutMenu() {
           >
             <box>
               {LogoutButton("lock", "Lock", "hyprlock")}
-              {LogoutButton("bedtime", "Suspend", "systemctl suspend || loginctl suspend")}
+              {LogoutButton(
+                "bedtime",
+                "Suspend",
+                "systemctl suspend || loginctl suspend",
+              )}
               {LogoutButton(
                 "logout",
                 "Logout",

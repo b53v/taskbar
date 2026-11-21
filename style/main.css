@@ -16,17 +16,23 @@
  *
  * Legibility comes from vibrant ink, optical weight, one faint specular rim
  * and one soft depth shadow, never from an extra scrim/mask behind the bar. */
+/* Unified Liquid Glass popup tokens (shared across system-menu, notifications,
+ * logout-menu, osd, and mirrored in rofi/glass.rasi). */
+/* Concentric corner radius scale */
+/* Unified 240Hz motion tokens (matches bar Workspaces spring ~150-200ms).
+ * NOTE: Bar theme-transition color fades stay 400ms ease-in-out per theme-transition test. */
+/* Adaptive Liquid Glass material (follows Matugen/wallpaper $darkmode) */
 * {
   all: unset;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
-  color: rgb(29, 28, 19);
+  color: rgb(24, 28, 31);
 }
 
 /* variables & mixins */
 /* general styles */
 tooltip.background,
 tooltip > box {
-  background-color: rgb(255, 249, 235);
+  background-color: rgb(246, 250, 254);
   border-radius: 8px;
   box-shadow: none;
 }
@@ -37,14 +43,14 @@ tooltip > box label {
 
 /* scales */
 scale trough {
-  background-color: rgba(255, 249, 235, 0.6);
+  background-color: rgba(246, 250, 254, 0.6);
   border-radius: 0.5rem;
   min-width: calc(0.5rem * 10);
   padding: 0 calc(0.5rem / 2);
 }
 scale highlight,
 scale progress {
-  background: rgba(29, 28, 19, 0.75);
+  background: rgba(24, 28, 31, 0.75);
   border-radius: 0.5rem;
   margin: 0 calc(0px - 0.5rem / 2);
   min-height: 0.5rem;
@@ -56,10 +62,10 @@ popover.background {
 }
 popover.background > contents {
   box-shadow: none;
-  background-color: rgba(255, 249, 235, 0.9);
+  background-color: rgba(246, 250, 254, 0.9);
   border-radius: 8px;
   padding: 0.25rem;
-  border: 1px solid rgba(29, 28, 19, 0.15);
+  border: 1px solid rgba(24, 28, 31, 0.15);
 }
 popover.background modelbutton,
 popover.background row {
@@ -70,69 +76,42 @@ popover.background row {
 }
 popover.background modelbutton:hover,
 popover.background row:hover {
-  background-color: rgba(106, 95, 17, 0.2);
+  background-color: rgba(32, 100, 135, 0.2);
 }
 popover.background modelbutton:selected, popover.background modelbutton:active,
 popover.background row:selected,
 popover.background row:active {
-  background-color: rgba(106, 95, 17, 0.2);
+  background-color: rgba(32, 100, 135, 0.2);
 }
 
 /* buttons */
 .button {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background: rgba(94, 129, 172, 0.88);
+  border: 1px solid transparent;
+  border-radius: 8px;
   padding: 0.4rem;
+  color: #ffffff;
   box-shadow: none;
 }
 .button:hover {
-  background: rgba(106, 95, 17, 0.3);
+  background: #5e81ac;
 }
 
 .button-disabled {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
   box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  border-radius: calc(8px * 1.97);
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
   padding: 0.4rem;
+  color: #1a1b20;
 }
 .button-disabled:hover {
-  background: rgba(255, 249, 235, 0.99);
+  background: rgba(0, 0, 0, 0.07);
 }
-
-/* dropdowns */
-.dropdown button {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-  box-shadow: none;
-}
-.dropdown button:hover {
-  background: rgba(106, 95, 17, 0.3);
-}
-.dropdown button {
-  border-radius: 1.1rem;
-  padding: 0.4rem;
-  margin: 0.5rem;
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  background-color: rgba(255, 249, 235, 0.6);
-  transition: all 200ms ease;
-}
-.dropdown button:hover {
-  border-color: rgba(29, 28, 19, 0.3);
-  background-color: rgba(255, 249, 235, 0.6);
-}
-.dropdown button:active {
-  background-color: rgba(106, 95, 17, 0.2);
-}
-.dropdown button label {
-  margin-top: 0.1rem;
-  margin-left: 1.35rem;
+.button-disabled:active {
+  background: rgba(0, 0, 0, 0.12);
 }
 
 /* Native video wallpaper window */
@@ -151,6 +130,9 @@ popover.background row:active {
 /* A Liquid Glass surface is defined by its lit edge, not by a fill.
  * We keep the original (almost clear) tint and add only a specular rim,
  * so nothing is masked behind the bar. */
+/* Export rim contrast tokens to Cairo-rendered bar widgets (e.g. Workspaces) */
+@define-color bar_dot_rim rgba(255, 255, 255, 0.38);
+@define-color bar_rim rgba(255, 255, 255, 0.55);
 /* general */
 /* Base bar styles */
 .Bar {
@@ -190,109 +172,16 @@ popover.background row:active {
   color: rgba(20, 21, 26, 0.97);
 }
 .Bar {
-  /* Hyperland & River Workspaces (Monochrome Black / White / Gray) */
+  /* Hyprland Workspaces (Monochrome Black / White / Gray, subpixel Cairo canvas) */
 }
 .Bar .Workspaces {
   margin: 0 4px;
-}
-.Bar .Workspaces button {
-  padding: 0;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  border-radius: 9999px;
-  margin: 0 3px;
-  min-width: 9px;
-  min-height: 9px;
-  transition: min-width 180ms cubic-bezier(0.2, 0, 0, 1), margin 180ms cubic-bezier(0.2, 0, 0, 1), opacity 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1), box-shadow 400ms ease-in-out;
-  background: rgba(20, 21, 26, 0.27);
-  /* A one-pixel light rim so the dots survive dark backdrops. */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38);
-}
-.Bar .Workspaces button:hover {
-  background: rgba(20, 21, 26, 0.75);
-}
-.Bar .Workspaces button.empty {
-  background: rgba(20, 21, 26, 0.27);
-  min-width: 9px;
-  min-height: 9px;
-}
-.Bar .Workspaces button.occupied {
-  background: rgba(20, 21, 26, 0.59);
-  min-width: 9px;
-  min-height: 9px;
-}
-.Bar .Workspaces button.focused {
-  background: rgba(20, 21, 26, 0.97);
-  min-width: 22px;
-  min-height: 9px;
-  border-radius: 9999px;
-  /* Light rim keeps the selected capsule visible on dark backdrops. */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55);
-}
-.Bar .Workspaces button.hidden {
-  min-width: 0px;
-  min-height: 9px;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding: 0;
-  opacity: 0;
-  border: none;
-}
-.Bar .Workspaces .monitor0.occupied:not(.focused), .Bar .Workspaces .monitor1.occupied:not(.focused), .Bar .Workspaces .monitor2.occupied:not(.focused), .Bar .Workspaces .monitor3.occupied:not(.focused) {
-  background: rgba(20, 21, 26, 0.59);
-}
-.Bar .Workspaces .monitor0.focused, .Bar .Workspaces .monitor1.focused, .Bar .Workspaces .monitor2.focused, .Bar .Workspaces .monitor3.focused {
-  background: rgba(20, 21, 26, 0.97);
-}
-.Bar .Clients {
-  margin: 0.1rem 0;
-}
-.Bar .Clients .client-button {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: transparent;
-  border-radius: 6px;
-  padding: 0.1rem 0.25rem;
-}
-.Bar .Clients .client-button:hover {
-  background: rgba(29, 28, 19, 0.1);
-}
-.Bar .Clients .client-button.focused .client-icon {
-  -gtk-icon-size: 1.1rem;
-  color: rgb(70.4705882353%, 65.8823529412%, 37.6078431373%);
-}
-.Bar .Clients .client-button:not(.focused) {
-  opacity: 0.68;
-}
-.Bar .Clients .client-button:not(.focused) .client-icon {
-  -gtk-icon-size: 0.95rem;
-  margin: 0 0.25rem;
-}
-.Bar .Clients .client-button:not(.focused):hover {
-  opacity: 0.85;
-}
-.Bar .Clients .client-button .client-icon {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-}
-.Bar {
-  /* music */
-}
-.Bar .Media > box {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  border-radius: 16px;
-  margin: 0.4rem;
-  font-size: 1.1rem;
-}
-.Bar .Media.active > box {
-  background: rgba(255, 249, 235, 0.6);
-}
-.Bar .Media .cover {
-  background-size: cover;
-  background-position: center;
-  border-radius: 50%;
-  min-width: 2rem;
-  min-height: 2rem;
-  margin: 0.1rem 0.4rem;
+  color: rgba(20, 21, 26, 0.97);
+  /* Keep 0px border/outline bound to rim tokens so GTK invalidates the
+   * DrawingArea when contrast mode changes even if $barInk is unchanged. */
+  border: 0 solid rgba(255, 255, 255, 0.38);
+  outline: 0 solid rgba(255, 255, 255, 0.55);
+  transition: color 400ms ease-in-out;
 }
 .Bar {
   /* tray */
@@ -430,21 +319,6 @@ popover.background row:active {
   border-radius: 1px;
   background: rgba(20, 21, 26, 0.48);
 }
-.Bar .bar-active-window {
-  padding: 0.14rem 0.32rem;
-  border-radius: 7px;
-  color: rgba(20, 21, 26, 0.97);
-}
-.Bar .bar-active-window image {
-  -gtk-icon-size: 1.02rem;
-  margin-right: 2px;
-  color: rgba(20, 21, 26, 0.97);
-}
-.Bar .bar-active-window label {
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: rgba(20, 21, 26, 0.8);
-}
 .Bar .clock {
   margin: 0 0.25rem 0 0.18rem;
   font-size: 0.9rem;
@@ -468,7 +342,7 @@ popover.background row:active {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   transition: background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
   border-radius: 9999px;
   min-height: 30px;
@@ -481,7 +355,7 @@ popover.background row:active {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
   border-radius: 9999px;
   min-height: 30px;
@@ -504,297 +378,9 @@ popover.background row:active {
   border-radius: 0;
 }
 
-box.picker {
-  border-radius: 16px;
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.5);
-  margin: 5px 10px 15px;
-  padding: 0.4rem;
-}
-box.picker box.search {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-  margin: 1rem 0.5rem;
-  background-color: rgba(106, 95, 17, 0.15);
-}
-box.picker box.search label {
-  font-family: "Material Symbols Outlined";
-  font-size: 2rem;
-  margin: 0.3rem;
-}
-box.picker box.search entry {
-  font-size: 1.5rem;
-  margin: 0.25rem;
-}
-box.picker box.search entry menu {
-  background: rgb(255, 249, 235);
-  border-radius: 8px;
-  font-size: 1.1rem;
-}
-box.picker box.search entry menu separator {
-  background-color: rgba(255, 249, 235, 0.6);
-}
-box.picker box.search entry menu menuitem {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-}
-box.picker box.search entry menu menuitem:hover {
-  background: rgba(255, 249, 235, 0.99);
-}
-box.picker box.search entry menu menuitem {
-  border-radius: 0;
-  padding: 0.4rem 0.7rem;
-}
-box.picker box.search entry menu menuitem:first-child {
-  border-radius: 8px 8px 0 0;
-}
-box.picker box.search entry menu menuitem:last-child {
-  border-radius: 0 0 8px 8px;
-}
-box.picker box.search entry menu menuitem:only-child {
-  border-radius: 8px;
-}
-box.picker box.results-list {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-}
-box.picker box.results-list .app-button .action-icon {
-  font-family: "Material Symbols Outlined";
-  font-size: 24px;
-}
-box.picker box.results-list .app-button {
-  padding: 0.4rem;
-}
-box.picker box.results-list .app-button image {
-  -gtk-icon-size: 3rem;
-  margin-right: 0.3rem;
-  margin-left: 0.3rem;
-}
-box.picker box.results-list .app-button label.name {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-box.picker box.results-list .app-button label.description {
-  color: rgba(29, 28, 19, 0.8);
-}
-box.picker box.results-list .app-button:focus, box.picker box.results-list .app-button:hover, box.picker box.results-list .app-button.selected {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-  box-shadow: none;
-}
-box.picker box.results-list .app-button:focus:hover, box.picker box.results-list .app-button:hover:hover, box.picker box.results-list .app-button.selected:hover {
-  background: rgba(106, 95, 17, 0.3);
-}
-box.picker box.results-list .app-button:focus, box.picker box.results-list .app-button:hover, box.picker box.results-list .app-button.selected {
-  background-color: rgba(106, 95, 17, 0.3);
-  border: transparent;
-}
-box.picker box.results-list .action-button .action-icon {
-  font-family: "Material Symbols Outlined";
-  font-size: 24px;
-}
-box.picker box.results-list .action-button {
-  margin-bottom: 0;
-  border-radius: 5rem;
-  padding: 0 0.6rem;
-}
-box.picker box.results-list .action-button:focus, box.picker box.results-list .action-button:hover {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-  box-shadow: none;
-}
-box.picker box.results-list .action-button:focus:hover, box.picker box.results-list .action-button:hover:hover {
-  background: rgba(106, 95, 17, 0.3);
-}
-box.picker box.results-list .action-button:focus, box.picker box.results-list .action-button:hover {
-  background-color: rgba(106, 95, 17, 0.3);
-  border: transparent;
-  border-radius: 5rem;
-  padding: 0 0.6rem;
-}
-box.picker box.results-grid {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-}
-box.picker box.results-grid .wallpaper-thumbnail {
-  border-radius: calc(16px - 0.4rem - 2px);
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  padding: 0.5rem;
-  background-color: transparent;
-  border: 1px solid transparent;
-}
-box.picker box.results-grid .wallpaper-thumbnail:hover, box.picker box.results-grid .wallpaper-thumbnail:focus, box.picker box.results-grid .wallpaper-thumbnail.selected {
-  background-color: rgba(29, 28, 19, 0.1);
-  border-color: rgba(29, 28, 19, 0.3);
-}
-box.picker box.results-grid .wallpaper-thumbnail box.wallpaper-preview-container {
-  border-radius: calc(16px - 0.4rem - 2px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  min-width: 140px;
-  min-height: 100px;
-  background-color: rgba(29, 28, 19, 0.1);
-}
-box.picker box.results-grid .wallpaper-thumbnail .wallpaper-picture {
-  border-radius: calc(16px - 0.4rem - 2px);
-}
-box.picker box.results-grid .wallpaper-thumbnail box.wallpaper-placeholder {
-  border-radius: calc(16px - 0.4rem - 2px);
-  background-color: rgba(255, 255, 255, 0.1);
-  min-width: 140px;
-  min-height: 100px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-}
-box.picker box.results-grid .wallpaper-thumbnail .wallpaper-name {
-  color: rgba(29, 28, 19, 0.9);
-  margin-top: 0.25rem;
-  font-weight: 500;
-}
-box.picker box.results-grid box.wallpaper-content {
-  padding: 0.5rem;
-}
-box.picker box.results-grid box.wallpaper-row {
-  margin-bottom: 0.5rem;
-}
-box.picker box.not-found {
-  padding: 1rem;
-}
-box.picker box.not-found image {
-  -gtk-icon-size: 6rem;
-  color: rgba(29, 28, 19, 0.7);
-}
-box.picker box.not-found label {
-  color: rgba(29, 28, 19, 0.9);
-  font-size: 1.2em;
-}
-
-.mode-bar {
-  padding: 8px;
-}
-.mode-bar .mode-button {
-  border-radius: calc(16px - 0.4rem - 2px);
-  padding: 6px 12px;
-  transition: all 0.2s ease;
-}
-.mode-bar .mode-button .mode-icon {
-  font-family: "Material Symbols Outlined";
-  font-size: 24px;
-}
-.mode-bar .mode-button:hover, .mode-bar .mode-button:focus, .mode-bar .mode-button.active {
-  border-radius: calc(16px - 0.4rem - 2px);
-  background-color: rgba(106, 95, 17, 0.15);
-  border: transparent;
-  padding: 6px 12px;
-  transition: all 0.2s ease;
-}
-
-.action-bar {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-  padding: 0.4rem;
-}
-.action-bar .action-icon {
-  font-family: "Material Symbols Outlined";
-  font-size: 24px;
-}
-.action-bar .action-button {
-  border-radius: 5rem;
-  padding: 0.2rem 0.4rem;
-}
-.action-bar .action-button:focus, .action-bar .action-button:hover {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-  box-shadow: none;
-}
-.action-bar .action-button:focus:hover, .action-bar .action-button:hover:hover {
-  background: rgba(106, 95, 17, 0.3);
-}
-.action-bar .action-button:focus, .action-bar .action-button:hover {
-  background-color: rgba(106, 95, 17, 0.2);
-  border: transparent;
-  border-radius: 5rem;
-  padding: 0.2rem 0.4rem;
-}
-
-.theme-controls {
-  margin: 0.25rem 0.75rem;
-}
-.theme-controls .option-label {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: rgb(29, 28, 19);
-  opacity: 0.85;
-  margin-right: 0.25rem;
-}
-
-.command-suggestions {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-}
-.command-suggestions .command-item {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  padding: 0.4rem;
-}
-.command-suggestions .command-item .command-icon {
-  font-family: "Material Symbols Outlined";
-  font-size: 3rem;
-  color: rgba(29, 28, 19, 0.8);
-  margin-right: 0.3rem;
-  margin-left: 0.3rem;
-}
-.command-suggestions .command-item .command-name {
-  font-weight: bold;
-  color: rgb(106, 95, 17);
-  font-size: 1.1rem;
-}
-.command-suggestions .command-item .command-description {
-  color: rgba(29, 28, 19, 0.8);
-}
-.command-suggestions .command-item:hover, .command-suggestions .command-item:focus {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-  box-shadow: none;
-}
-.command-suggestions .command-item:hover:hover, .command-suggestions .command-item:focus:hover {
-  background: rgba(106, 95, 17, 0.3);
-}
-.command-suggestions .command-item:hover, .command-suggestions .command-item:focus {
-  background-color: rgba(106, 95, 17, 0.3);
-  border: transparent;
-}
-
 box.logout-background {
-  background-color: rgba(0, 0, 0, 0.06);
+  /* Keep alpha < 0.1 so Hyprland ignore_alpha 0.1 blurs only the centered glass dock */
+  background-color: rgba(0, 0, 0, 0.08);
 }
 box.logout-background > button,
 box.logout-background > box > button {
@@ -802,1034 +388,1197 @@ box.logout-background > box > button {
   border: none;
   box-shadow: none;
 }
-box.logout-background .logout-menu {
-  border-radius: 28px;
+box.logout-background .logout-menu,
+box.logout-background .logout-menu.popup-glass-dynamic,
+box.logout-background .logout-menu.popup-glass-auto {
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.14);
-  background-color: rgba(255, 255, 255, 0.35);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
-  padding: 1.4rem;
+  border-radius: 22px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.24);
+  color: #1a1b20;
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  padding: 16px;
 }
-box.logout-background .logout-menu button.logout-btn {
-  border-radius: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.28);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.03);
-  margin: 0.5rem;
-  padding: 1.1rem 1.4rem;
+box.logout-background .logout-menu button.logout-btn,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn {
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 14px;
+  box-shadow: none;
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  margin: 6px;
+  padding: 16px 20px;
   min-width: 108px;
-  min-height: 108px;
-  transition: all 180ms ease;
+  min-height: 104px;
 }
-box.logout-background .logout-menu button.logout-btn label.logout-icon {
+box.logout-background .logout-menu button.logout-btn label.logout-icon,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn label.logout-icon,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn label.logout-icon {
   font-family: "Material Symbols Outlined";
-  font-size: 3.2rem;
-  color: #2e3440;
-  margin-bottom: 0.25rem;
-  transition: color 150ms ease;
+  font-size: 3rem;
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin-bottom: 4px;
 }
-box.logout-background .logout-menu button.logout-btn label.logout-text {
-  font-size: 0.92rem;
+box.logout-background .logout-menu button.logout-btn label.logout-text,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn label.logout-text,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn label.logout-text {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #434c5e;
-  transition: color 150ms ease;
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
-box.logout-background .logout-menu button.logout-btn:hover {
-  background-color: rgba(255, 255, 255, 0.65);
-  border-color: rgba(0, 0, 0, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75), 0 6px 18px rgba(0, 0, 0, 0.08);
+box.logout-background .logout-menu button.logout-btn:hover, box.logout-background .logout-menu button.logout-btn:focus,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:hover,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:focus,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:hover,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:focus {
+  background: rgba(255, 255, 255, 0.56);
+  border-color: rgba(0, 0, 0, 0.14);
 }
-box.logout-background .logout-menu button.logout-btn:hover label.logout-icon {
-  color: #000000;
-}
-box.logout-background .logout-menu button.logout-btn:hover label.logout-text {
-  color: #000000;
-}
-box.logout-background .logout-menu button.logout-btn:focus {
-  background-color: rgba(255, 255, 255, 0.7);
-  border-color: rgba(0, 0, 0, 0.22);
-}
-
-/* Bar power popup: bar-like translucent material. */
-.logout-menu.popup-glass-dynamic,
-.logout-menu.popup-glass-auto {
-  backdrop-filter: blur(20px);
-  border-radius: 28px;
-}
-
-.logout-menu.popup-glass-dynamic {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-}
-
-.logout-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.16);
+box.logout-background .logout-menu button.logout-btn:hover label.logout-icon,
+box.logout-background .logout-menu button.logout-btn:hover label.logout-text, box.logout-background .logout-menu button.logout-btn:focus label.logout-icon,
+box.logout-background .logout-menu button.logout-btn:focus label.logout-text,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:hover label.logout-icon,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:hover label.logout-text,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:focus label.logout-icon,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:focus label.logout-text,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:hover label.logout-icon,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:hover label.logout-text,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:focus label.logout-icon,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:focus label.logout-text {
   color: #1a1b20;
 }
-
-.logout-menu.popup-glass-dynamic button.logout-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+box.logout-background .logout-menu button.logout-btn:active,
+box.logout-background .logout-menu.popup-glass-dynamic button.logout-btn:active,
+box.logout-background .logout-menu.popup-glass-auto button.logout-btn:active {
+  background: rgba(0, 0, 0, 0.12);
 }
 
-.logout-menu.popup-glass-dynamic label.logout-icon,
-.logout-menu.popup-glass-dynamic label.logout-text {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-
-/* All-light override. */
-.logout-menu.popup-glass-dynamic,
-.logout-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  color: #1a1b20;
-}
-
-.logout-menu.popup-glass-dynamic button.logout-btn,
-.logout-menu.popup-glass-auto button.logout-btn {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: rgba(0, 0, 0, 0.1);
-}
-
-.logout-menu.popup-glass-dynamic label.logout-icon,
-.logout-menu.popup-glass-dynamic label.logout-text,
-.logout-menu.popup-glass-auto label.logout-icon,
-.logout-menu.popup-glass-auto label.logout-text {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-/* Final low-tint adaptive power glass. */
-.logout-menu.popup-glass-dynamic,
-.logout-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  color: #1a1b20;
-}
-
-.logout-menu.popup-glass-dynamic label.logout-icon,
-.logout-menu.popup-glass-dynamic label.logout-text,
-.logout-menu.popup-glass-auto label.logout-icon,
-.logout-menu.popup-glass-auto label.logout-text {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.music.window {
-  border-radius: 16px;
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.5);
-  margin: 5px 10px 15px;
-  padding: 0.4rem;
-  background: none;
-  padding: 0rem;
-  margin-top: 0.75rem;
-}
-.music.window .cover {
-  background-position: center;
-  background-size: cover;
-  border-radius: 16px;
-  box-shadow: none;
-  margin: 0.4rem;
-  min-height: 13rem;
-  min-width: 13rem;
-  opacity: 0.9;
-}
-.music.window .blurred-cover {
-  border-radius: 8px;
-  opacity: 0.8;
-}
-
-.music.window .info {
-  margin: 0.75rem;
-}
-.music.window .info label,
-.music.window .info scale {
-  margin: 0.3rem 0;
-}
-.music.window .info label,
-.music.window .info .title,
-.music.window .info image {
-  color: rgb(255, 249, 235);
-}
-.music.window .info label.position,
-.music.window .info label.length {
-  font-size: 0.8rem;
-  margin-bottom: 0;
-}
-.music.window .info scale {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-.music.window .info .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  min-width: 14rem;
-}
-
-.music.window .controls button {
-  margin: 0 1.6rem;
-  -gtk-icon-size: 1.5rem;
-  color: rgb(255, 249, 235);
-}
-
-.music.window .player-info {
-  margin-bottom: 0;
-}
-.music.window .player-info .player-icon {
-  -gtk-icon-size: 1.1rem;
-}
-
-/* Bar media popup: uses the bar's dark translucent material in dynamic mode. */
-.music.window.popup-glass-dynamic,
-.music.window.popup-glass-auto {
-  backdrop-filter: blur(20px);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-}
-
-.music.window.popup-glass-dynamic {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-}
-
-.music.window.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  color: #1a1b20;
-}
-
-.music.window.popup-glass-dynamic label,
-.music.window.popup-glass-dynamic image {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-
-.music.window.popup-glass-dynamic image {
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
-}
-
-.music.window.popup-glass-auto label,
-.music.window.popup-glass-auto image {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.music.window.popup-glass-dynamic button,
-.music.window.popup-glass-auto button {
+/* ============================================================================
+ * Notifications: Live Toasts + System Menu Notification Center
+ * Uses unified Liquid Glass tokens from style/abstracts/_glass.scss
+ * ============================================================================ */
+/* Live toast window container (transparent so Hyprland blurs only each card) */
+.notifications {
   background: transparent;
-  border: 0;
-  box-shadow: none;
+  padding: 0;
 }
 
-/* All-light override. */
-.music.window.popup-glass-dynamic,
-.music.window.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  color: #1a1b20;
-}
-
-.music.window.popup-glass-dynamic label,
-.music.window.popup-glass-dynamic image,
-.music.window.popup-glass-auto label,
-.music.window.popup-glass-auto image {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.music.window.popup-glass-dynamic image,
-.music.window.popup-glass-auto image {
-  filter: none;
-}
-
-/* Final low-tint adaptive music glass. */
-.music.window.popup-glass-dynamic,
-.music.window.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  color: #1a1b20;
-}
-
-.music.window.popup-glass-dynamic label,
-.music.window.popup-glass-dynamic image,
-.music.window.popup-glass-auto label,
-.music.window.popup-glass-auto image {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.music.window.popup-glass-dynamic image,
-.music.window.popup-glass-auto image {
-  filter: none;
-}
-
+/* Shared notification card anatomy */
 .notification {
-  border-radius: 16px;
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.5);
-  margin: 5px 10px 15px;
-  padding: 0.4rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  margin: 0.75rem;
-  padding: 0.4rem 0.75rem;
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  color: #1a1b20;
+  margin: 0;
+  padding: 10px 12px;
 }
 .notification.critical {
-  border: 1px solid #d17678;
+  border-color: #c53030;
 }
-.notification .header .app-name {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: rgba(29, 28, 19, 0.7);
+.notification .header {
+  margin: 0;
+  padding: 0;
 }
-.notification .header .time {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: rgba(29, 28, 19, 0.7);
-}
-.notification .header .dismiss-button {
-  margin: -0.5rem 0rem;
-}
-.notification separator {
-  background-color: rgba(29, 28, 19, 0.5);
-  min-height: 1px;
-}
-.notification .content {
-  margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-.notification .content > box {
-  min-width: 64px;
-  min-height: 64px;
-  border-radius: 8px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-.notification .content image {
-  -gtk-icon-size: 64px;
-}
-.notification .content .thumb {
-  margin-right: 0.5rem;
-}
-.notification .content .title {
-  margin-right: 0.5rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: rgb(29, 28, 19);
-}
-.notification .content .body {
-  margin-right: 0.5rem;
-  font-size: 0.95rem;
-  color: rgba(29, 28, 19, 0.8);
-  margin-top: 0.75rem;
-}
-.notification .actions {
-  margin-top: 1rem;
-}
-.notification .actions .action-button {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-.notification .actions .action-button:hover {
-  background: rgba(255, 249, 235, 0.99);
-}
-
-/* Message toasts: use the same translucent material as the bar. */
-.popup-glass-dynamic .notification,
-.popup-glass-auto .notification {
-  backdrop-filter: blur(20px);
-  border-radius: 16px;
-}
-
-.popup-glass-dynamic .notification {
-  background: rgba(10, 15, 22, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-}
-
-.popup-glass-auto .notification {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  color: #1a1b20;
-}
-
-.popup-glass-dynamic .notification label,
-.popup-glass-dynamic .notification image,
-.popup-glass-dynamic .notification .app-name,
-.popup-glass-dynamic .notification .time {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-
-.popup-glass-auto .notification label,
-.popup-glass-auto .notification image,
-.popup-glass-auto .notification .app-name,
-.popup-glass-auto .notification .time {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.popup-glass-dynamic .notification .body {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.popup-glass-dynamic .notification .action-button,
-.popup-glass-auto .notification .action-button {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.popup-glass-dynamic .notification separator,
-.popup-glass-auto .notification separator {
-  background-color: rgba(255, 255, 255, 0.22);
-}
-
-/* Notifications float over arbitrary apps; a light glass card with dark ink
- * stays readable over both white and dark content, unlike a dark dynamic card. */
-.popup-glass-light .notification {
-  background: rgba(255, 255, 255, 0.46);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 16px;
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification label,
-.popup-glass-light .notification image,
-.popup-glass-light .notification .app-name,
-.popup-glass-light .notification .time {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.popup-glass-light .notification .body {
-  color: rgba(26, 27, 32, 0.75);
-}
-
-.popup-glass-light .notification .action-button {
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification separator {
-  background-color: rgba(0, 0, 0, 0.18);
-}
-
-/* More specific than the notification component's own text colors. */
-.popup-glass-light .notification {
-  min-width: 340px;
-}
-
-.popup-glass-light .notification .header .app-name,
-.popup-glass-light .notification .header .time,
-.popup-glass-light .notification .content .title,
-.popup-glass-light .notification .content .body,
-.popup-glass-light .notification .actions .action-button {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.popup-glass-light .notification .content .body {
-  color: rgba(26, 27, 32, 0.76);
-}
-
-.popup-glass-light .notification .content image {
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification .actions .action-button {
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-/* More transparent message cards, still dark-ink readable. */
-.popup-glass-light .notification {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Theme-synced final notification glass: exactly one shared 20% tint. */
-.popup-glass-light .notification {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  color: #1a1b20;
-}
-
-.popup-glass-light .notification .header .app-name,
-.popup-glass-light .notification .header .time,
-.popup-glass-light .notification .content .title,
-.popup-glass-light .notification .content .body,
-.popup-glass-light .notification .actions .action-button,
-.popup-glass-light .notification .content image {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.popup-glass-light .notification .content .body {
-  color: rgba(26, 27, 32, 0.76);
-}
-
-.popup-glass-light .notification .actions .action-button {
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.popup-glass-light .notification separator {
-  background-color: rgba(0, 0, 0, 0.18);
-}
-
-/* Volume / brightness / media OSD: compact capsule pill */
-.osd {
-  background: rgba(255, 255, 255, 0.32);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  border-radius: 9999px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
-  margin: 2.2rem;
-  padding: 0.38rem 1.35rem 0.38rem 1.05rem;
-  color: #1a1b20;
-}
-.osd image {
-  -gtk-icon-size: 1.4rem;
-  margin: 0 0.5rem 0 0.15rem;
-  color: #1a1b20;
-}
-.osd box {
+.notification .header label.app-name {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
   margin: 0;
 }
-.osd label {
-  margin: 0 0 0.22rem;
-  font-size: 0.78rem;
+.notification .header label.time {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.74rem;
   font-weight: 500;
+  color: rgba(26, 27, 32, 0.54);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-feature-settings: "tnum" 1;
+  margin: 0;
+}
+.notification .header button.dismiss-button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  min-width: 22px;
+  min-height: 22px;
+  padding: 0;
+  margin: 0;
+  border-radius: 9999px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: rgba(26, 27, 32, 0.54);
+  opacity: 0.82;
+}
+.notification .header button.dismiss-button image {
+  margin: 0;
+  padding: 0;
+  -gtk-icon-size: 12px;
+  color: rgba(26, 27, 32, 0.54);
+}
+.notification .header button.dismiss-button:hover {
+  background-color: rgba(209, 73, 78, 0.16);
+  border-color: rgba(209, 73, 78, 0.16);
+  color: #c53030;
+  opacity: 1;
+}
+.notification .header button.dismiss-button:hover image {
+  color: #c53030;
+}
+.notification .header button.dismiss-button:active {
+  background-color: rgba(209, 73, 78, 0.16);
+  opacity: 0.85;
+}
+.notification separator.notification-separator {
+  background-color: rgba(0, 0, 0, 0.1);
+  min-height: 1px;
+  margin: 6px 0 8px 0;
+}
+.notification .content {
+  margin: 0;
+  padding: 0;
+}
+.notification .content .thumb {
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 9px;
+  margin: 0;
+  padding: 0;
+}
+.notification .content .thumb .thumb-frame {
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 9px;
+  background-color: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  margin: 0;
+  padding: 0;
+}
+.notification .content .thumb image,
+.notification .content .thumb image.thumb-icon {
+  margin: 0;
+  padding: 0;
+  -gtk-icon-size: 36px;
   color: #1a1b20;
 }
-.osd progressbar {
+.notification .content .text-content {
+  margin: 0;
+  padding: 0;
+}
+.notification .content .text-content label.title {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+.notification .content .text-content label.body {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+.notification .actions {
+  margin-top: 8px;
+}
+.notification .actions button.action-button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background-color: rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 0;
+  min-height: 26px;
+}
+.notification .actions button.action-button label {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+.notification .actions button.action-button:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+.notification .actions button.action-button:active {
+  background-color: rgba(94, 129, 172, 0.18);
+  border-color: #5e81ac;
+}
+
+/* Live floating notification toast surface */
+.notifications .notification.notification-live {
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.24);
+  color: #1a1b20;
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  min-width: 340px;
+  padding: 11px 13px;
+}
+.notifications .notification.notification-live.critical {
+  border-color: #c53030;
+}
+
+/* ============================================================================
+ * Notification Center inside .system-menu
+ * Higher specificity beats generic .system-menu button/label/image resets
+ * even though _system-menu.scss is forwarded after _notifications.scss.
+ * ============================================================================ */
+.system-menu .notification-toggle-box label.unread-badge {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-feature-settings: "tnum" 1;
+  color: #1a1b20;
+  background-color: rgba(94, 129, 172, 0.18);
+  border-radius: 9999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.system-menu .notification-toggle-box label.dnd-indicator {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(26, 27, 32, 0.54);
+  background-color: rgba(0, 0, 0, 0.07);
+  border-radius: 9999px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.system-menu .notification-toggle-box .notification-center.system-menu-list {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin: 6px 0 2px 0;
+  padding: 0;
+}
+
+.system-menu .notification-center .notification-empty label.empty-label {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: rgba(26, 27, 32, 0.54);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  padding: 14px 8px;
+  margin: 0;
+}
+.system-menu .notification-center .notification-scroll {
+  margin: 0;
+  padding: 0;
+}
+.system-menu .notification-center .notification-scroll scrollbar {
+  background: transparent;
+}
+.system-menu .notification-center .notification-scroll scrollbar.vertical {
+  margin-left: 2px;
+}
+.system-menu .notification-center .notification-scroll scrollbar trough {
+  background: transparent;
+  min-width: 4px;
+}
+.system-menu .notification-center .notification-scroll scrollbar slider {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  min-width: 4px;
+  min-height: 28px;
+  border-radius: 9999px;
+  background-color: rgba(0, 0, 0, 0.07);
+}
+.system-menu .notification-center .notification-scroll scrollbar slider:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+.system-menu .notification-center .notification-cards {
+  margin: 0;
+  padding: 0;
+}
+.system-menu .notification-center label.notification-section-label {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(26, 27, 32, 0.54);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 2px 2px 0 2px;
+  padding: 0;
+}
+.system-menu .notification-center .notification.notification-stored {
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 12px;
+  box-shadow: none;
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  padding: 10px 12px;
+  margin: 0;
+}
+.system-menu .notification-center .notification.notification-stored:hover {
+  background-color: rgba(255, 255, 255, 0.56);
+}
+.system-menu .notification-center .notification.notification-stored.notification-unseen {
+  border-color: rgba(94, 129, 172, 0.18);
+}
+.system-menu .notification-center .notification.notification-stored.critical {
+  border-color: #c53030;
+}
+.system-menu .notification-center .notification.notification-stored .header label.app-name {
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.system-menu .notification-center .notification.notification-stored .header label.time {
+  color: rgba(26, 27, 32, 0.54);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.system-menu .notification-center .notification.notification-stored .header button.dismiss-button {
+  margin: 0;
+  padding: 0;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 9999px;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+.system-menu .notification-center .notification.notification-stored .header button.dismiss-button image {
+  margin: 0;
+  padding: 0;
+  -gtk-icon-size: 12px;
+  color: rgba(26, 27, 32, 0.54);
+}
+.system-menu .notification-center .notification.notification-stored .header button.dismiss-button:hover {
+  background-color: rgba(209, 73, 78, 0.16);
+  border-color: rgba(209, 73, 78, 0.16);
+}
+.system-menu .notification-center .notification.notification-stored .header button.dismiss-button:hover image {
+  color: #c53030;
+}
+.system-menu .notification-center .notification.notification-stored .content .thumb image,
+.system-menu .notification-center .notification.notification-stored .content .thumb image.thumb-icon {
+  margin: 0;
+  padding: 0;
+  -gtk-icon-size: 36px;
+  color: #1a1b20;
+}
+.system-menu .notification-center .notification.notification-stored .content .text-content label.title {
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.system-menu .notification-center .notification.notification-stored .content .text-content label.body {
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.system-menu .notification-center .notification.notification-stored .actions button.action-button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background-color: rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 0;
+  min-height: 26px;
+}
+.system-menu .notification-center .notification.notification-stored .actions button.action-button label {
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+.system-menu .notification-center .notification.notification-stored .actions button.action-button:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+.system-menu .notification-center .notification.notification-stored .actions button.action-button:active {
+  background-color: rgba(94, 129, 172, 0.18);
+  border-color: #5e81ac;
+}
+.system-menu .notification-center .notification-footer {
+  margin-top: 2px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.system-menu .notification-center .notification-footer button.more-notifications-button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background-color: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin: 0;
+}
+.system-menu .notification-center .notification-footer button.more-notifications-button label.more-text {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+.system-menu .notification-center .notification-footer button.more-notifications-button:hover {
+  background-color: rgba(255, 255, 255, 0.56);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+.system-menu .notification-center .notification-footer button.more-notifications-button:hover label.more-text {
+  color: #1a1b20;
+}
+.system-menu .notification-center .notification-footer .notification-controls {
+  margin: 0;
+  padding: 0;
+}
+.system-menu .notification-center .notification-footer .notification-controls button.clear-all-button,
+.system-menu .notification-center .notification-footer .notification-controls button.mark-read-button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background-color: rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 0;
+}
+.system-menu .notification-center .notification-footer .notification-controls button.clear-all-button image,
+.system-menu .notification-center .notification-footer .notification-controls button.mark-read-button image {
+  margin: 0;
+  padding: 0;
+  -gtk-icon-size: 14px;
+  color: rgba(26, 27, 32, 0.74);
+}
+.system-menu .notification-center .notification-footer .notification-controls button.clear-all-button label,
+.system-menu .notification-center .notification-footer .notification-controls button.mark-read-button label {
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(26, 27, 32, 0.74);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+.system-menu .notification-center .notification-footer .notification-controls button.clear-all-button:hover {
+  background-color: rgba(209, 73, 78, 0.16);
+  border-color: rgba(209, 73, 78, 0.16);
+}
+.system-menu .notification-center .notification-footer .notification-controls button.clear-all-button:hover image,
+.system-menu .notification-center .notification-footer .notification-controls button.clear-all-button:hover label {
+  color: #c53030;
+}
+.system-menu .notification-center .notification-footer .notification-controls button.mark-read-button:hover {
+  background-color: rgba(94, 129, 172, 0.18);
+  border-color: rgba(94, 129, 172, 0.18);
+}
+.system-menu .notification-center .notification-footer .notification-controls button.mark-read-button:hover image,
+.system-menu .notification-center .notification-footer .notification-controls button.mark-read-button:hover label {
+  color: #5e81ac;
+}
+
+/* Volume / brightness / media OSD: unified Liquid Glass capsule pill */
+.osd,
+.osd.popup-glass-dynamic,
+.osd.popup-glass-auto {
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.24);
+  color: #1a1b20;
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  margin: 0;
+  padding: 8px 20px 8px 16px;
+}
+.osd image,
+.osd.popup-glass-dynamic image,
+.osd.popup-glass-auto image {
+  -gtk-icon-size: 1.35rem;
+  margin: 0 10px 0 2px;
+  color: #1a1b20;
+}
+.osd box,
+.osd.popup-glass-dynamic box,
+.osd.popup-glass-auto box {
+  margin: 0;
+}
+.osd label,
+.osd.popup-glass-dynamic label,
+.osd.popup-glass-auto label {
+  margin: 0 0 4px 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1a1b20;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-feature-settings: "tnum" 1;
+}
+.osd progressbar,
+.osd.popup-glass-dynamic progressbar,
+.osd.popup-glass-auto progressbar {
   min-height: 5px;
   margin: 0;
 }
-.osd progressbar > trough {
+.osd progressbar > trough,
+.osd.popup-glass-dynamic progressbar > trough,
+.osd.popup-glass-auto progressbar > trough {
   background: rgba(0, 0, 0, 0.12);
   border-radius: 9999px;
   min-height: 5px;
 }
 .osd progressbar > trough > progress,
-.osd progressbar > progress {
+.osd progressbar > progress,
+.osd.popup-glass-dynamic progressbar > trough > progress,
+.osd.popup-glass-dynamic progressbar > progress,
+.osd.popup-glass-auto progressbar > trough > progress,
+.osd.popup-glass-auto progressbar > progress {
   background: #5e81ac;
   border-radius: 9999px;
   min-height: 5px;
 }
 
-/* Follow the bar ink mode: dynamic = dark glass + white ink */
-.osd.popup-glass-dynamic {
-  background: rgba(10, 15, 22, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-}
-.osd.popup-glass-dynamic label,
-.osd.popup-glass-dynamic image {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-.osd.popup-glass-dynamic image {
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
-}
-.osd.popup-glass-dynamic progressbar > trough {
-  background: rgba(255, 255, 255, 0.18);
-}
-.osd.popup-glass-dynamic progressbar > trough > progress {
-  background: #8fb3e8;
-}
-
-.osd.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.32);
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  color: #1a1b20;
-}
-
-/* Theme-synced final OSD glass rules */
-.osd {
-  background: rgba(255, 255, 255, 0.32);
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  color: #1a1b20;
-}
-.osd label,
-.osd image {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-.osd progressbar > trough {
-  background: rgba(0, 0, 0, 0.12);
-}
-.osd progressbar > trough > progress {
-  background: #5e81ac;
-}
-
-/* general */
-.system-menu {
-  -gtk-icon-size: 1.1rem;
-  border-radius: 16px;
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.5);
-  margin: 5px 10px 15px;
-  padding: 0.4rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 0.75rem;
-  margin-right: 0.75rem;
-}
-.system-menu > box {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-  box-shadow: none;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* toggles */
-.system-menu .toggle {
-  min-width: 20rem;
-}
-.system-menu .toggle:not(:last-child) {
-  margin-bottom: 0.4rem;
-}
-.system-menu .toggle button {
-  margin-right: 0.4rem;
-}
-
-/* power profiles */
-.system-menu .power-profiles {
-  padding: 0;
-}
-.system-menu .power-profiles .current-profile {
-  padding: 0.4rem;
-}
-.system-menu .power-profiles image,
-.system-menu .power-profiles label {
-  margin: 0.4rem;
-}
-.system-menu .power-profiles .profile-options box {
-  padding: 0.4rem;
-}
-
-/* sliders */
-.system-menu .sliders {
-  min-height: 0.4rem;
-}
-.system-menu .sliders image {
-  margin: 0.4rem;
-}
-.system-menu .sliders trough {
-  margin: 0.4rem;
-}
-.system-menu .sliders block {
-  min-height: 0.4rem;
-}
-.system-menu .sliders block filled {
-  border-radius: 1.5rem;
-  background-color: rgb(29, 28, 19);
-}
-
-.arrow-indicator {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-}
-
-.arrow-down {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  transform: rotate(90deg);
-}
-
-.system-menu-list {
-  border-radius: 16px;
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.5);
-  margin: 5px 10px 15px;
-  padding: 0.4rem;
-  box-shadow: none;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  margin: 0.4rem;
-}
-
-.network-item {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-}
-.network-item:hover {
-  background: rgba(255, 249, 235, 0.99);
-}
-.network-item {
-  border-radius: calc(16px - 0.4rem - 2px);
-  margin: 0.25rem 0.4rem 0.4rem 0.4rem;
-  padding: 0.75rem;
-}
-.network-item image:first-child {
-  margin-right: 0.4rem;
-}
-.network-item label {
-  margin: 0 0.4rem;
-}
-.network-item.bt-item {
-  padding: 1rem 0.75rem;
-}
-
-.network-item-active {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  background: rgba(106, 95, 17, 0.2);
-  border: 1px solid rgba(106, 95, 17, 0.3);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-  box-shadow: none;
-}
-.network-item-active:hover {
-  background: rgba(106, 95, 17, 0.3);
-}
-.network-item-active {
-  border-radius: calc(16px - 0.4rem - 2px);
-  margin: 0.25rem 0.4rem 0.4rem 0.4rem;
-  padding: 0.75rem;
-}
-.network-item-active.bt-item {
-  padding: 1rem 0.75rem;
-}
-
-.password-dialog {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-  margin-bottom: 0.75rem;
-}
-
-.error-message {
-  color: #d17678;
-  margin: 0.25rem 0;
-}
-
-.section-label {
-  font-weight: bold;
-  margin: 0.4rem 0 0.25rem 0;
-}
-
-.refresh-button,
-.disconnect-button,
-.settings-button {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-}
-.refresh-button:hover,
-.disconnect-button:hover,
-.settings-button:hover {
-  background: rgba(255, 249, 235, 0.99);
-}
-.refresh-button,
-.disconnect-button,
-.settings-button {
-  margin: 0.4rem;
-}
-
-.disconnect-button {
-  padding: 0.58rem 0;
-}
-
-.connect-button,
-.cancel-button,
-.forget-button,
-.pair-button,
-.trust-button {
-  margin: 0.4rem;
-  box-shadow: none;
-}
-
-.disconnect-button,
-.forget-button,
-.cancel-button {
-  border-radius: calc(8px * 1.6);
-}
-
-image {
-  margin: 0.4rem;
-}
-
-.password-search {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  margin: 0.4rem;
-  padding: 0.4rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background: rgba(255, 249, 235, 0.5);
-}
-.password-search entry menu {
-  background: rgb(255, 249, 235);
-  border-radius: 8px;
-  font-size: 1.1rem;
-}
-.password-search entry menu separator {
-  background-color: rgba(255, 249, 235, 0.6);
-}
-.password-search entry menu menuitem {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-}
-.password-search entry menu menuitem:hover {
-  background: rgba(255, 249, 235, 0.99);
-}
-.password-search entry menu menuitem {
-  border-radius: 0;
-  padding: 0.4rem 0.7rem;
-}
-.password-search entry menu menuitem:first-child {
-  border-radius: 8px 8px 0 0;
-}
-.password-search entry menu menuitem:last-child {
-  border-radius: 0 0 8px 8px;
-}
-.password-search entry menu menuitem:only-child {
-  border-radius: 8px;
-}
-
-.empty-label {
-  margin: 0.4rem;
-  color: #d17678;
-}
-
-.saved-network {
-  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-  box-shadow: none;
-  background: rgba(255, 249, 235, 0.6);
-  border: 1px solid rgba(29, 28, 19, 0.1);
-  border-radius: calc(8px * 1.97);
-  padding: 0.4rem;
-}
-.saved-network:hover {
-  background: rgba(255, 249, 235, 0.99);
-}
-.saved-network {
-  border-radius: calc(16px - 0.4rem - 2px);
-  box-shadow: none;
-  margin: 0.4rem 0.4rem 0.4rem 0.75rem;
-  padding: 0.25rem;
-}
-.saved-network > label {
-  margin-left: 0.4rem;
-}
-
-.bt-button-container {
-  margin: 0 0.25rem 0.4rem 0.4rem;
-}
-
-/* Bar-button popup: same translucent material as the bar itself. */
+/* Unified Liquid Glass System Menu (360px outer, 10px padding -> 340px inner) */
+.system-menu,
 .system-menu.popup-glass-dynamic,
 .system-menu.popup-glass-auto {
+  background: rgba(255, 255, 255, 0.34);
   backdrop-filter: blur(20px);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-}
-
-.system-menu.popup-glass-dynamic {
-  background: rgba(10, 15, 22, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.98);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
-}
-
-.system-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.24);
   color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  -gtk-icon-size: 1.05rem;
+  font-size: 0.92rem;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0;
+  padding: 10px;
 }
-
+.system-menu > box,
 .system-menu.popup-glass-dynamic > box,
 .system-menu.popup-glass-auto > box {
   background: transparent;
   border: 0;
   box-shadow: none;
+  margin: 0;
+  padding: 0;
 }
-
-.system-menu.popup-glass-dynamic label,
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-dynamic .section-label {
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* Expandable toggle rows (WiFi, Bluetooth, Notifications) */
+}
+.system-menu .toggle,
+.system-menu.popup-glass-dynamic .toggle,
+.system-menu.popup-glass-auto .toggle {
+  margin: 0;
+}
+.system-menu .toggle:not(:last-child),
+.system-menu.popup-glass-dynamic .toggle:not(:last-child),
+.system-menu.popup-glass-auto .toggle:not(:last-child) {
+  margin-bottom: 4px;
+}
+.system-menu .toggle > box,
+.system-menu.popup-glass-dynamic .toggle > box,
+.system-menu.popup-glass-auto .toggle > box {
+  min-height: 36px;
+}
+.system-menu .toggle > box > button:first-child,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child,
+.system-menu.popup-glass-auto .toggle > box > button:first-child {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  min-width: 34px;
+  min-height: 34px;
+  margin-right: 6px;
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: none;
+}
+.system-menu .toggle > box > button:first-child image,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child image,
+.system-menu.popup-glass-auto .toggle > box > button:first-child image {
+  margin: 0;
+}
+.system-menu .toggle > box > button:first-child.button,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button {
+  background: rgba(94, 129, 172, 0.88);
+  border: 1px solid transparent;
   color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
 }
-
-.system-menu.popup-glass-dynamic image {
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+.system-menu .toggle > box > button:first-child.button image,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button image,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button image {
+  color: #ffffff;
 }
-
-.system-menu.popup-glass-auto label,
-.system-menu.popup-glass-auto image,
-.system-menu.popup-glass-auto .section-label {
+.system-menu .toggle > box > button:first-child.button:hover,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button:hover,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button:hover {
+  background: #5e81ac;
+}
+.system-menu .toggle > box > button:first-child.button-disabled,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button-disabled,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button-disabled {
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  color: rgba(26, 27, 32, 0.74);
+}
+.system-menu .toggle > box > button:first-child.button-disabled image,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button-disabled image,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button-disabled image {
+  color: rgba(26, 27, 32, 0.74);
+}
+.system-menu .toggle > box > button:first-child.button-disabled:hover,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button-disabled:hover,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button-disabled:hover {
+  background: rgba(0, 0, 0, 0.07);
   color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
-
-/* No row cards: the only surface is the popup glass itself. */
+.system-menu .toggle > box > button:first-child.button-disabled:hover image,
+.system-menu.popup-glass-dynamic .toggle > box > button:first-child.button-disabled:hover image,
+.system-menu.popup-glass-auto .toggle > box > button:first-child.button-disabled:hover image {
+  color: #1a1b20;
+}
+.system-menu .toggle > box > button:last-child,
+.system-menu.popup-glass-dynamic .toggle > box > button:last-child,
+.system-menu.popup-glass-auto .toggle > box > button:last-child {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 6px 10px;
+  color: #1a1b20;
+  font-weight: 500;
+}
+.system-menu .toggle > box > button:last-child:hover,
+.system-menu.popup-glass-dynamic .toggle > box > button:last-child:hover,
+.system-menu.popup-glass-auto .toggle > box > button:last-child:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+.system-menu .toggle > box > button:last-child:active,
+.system-menu.popup-glass-dynamic .toggle > box > button:last-child:active,
+.system-menu.popup-glass-auto .toggle > box > button:last-child:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+.system-menu .arrow-indicator,
+.system-menu.popup-glass-dynamic .arrow-indicator,
+.system-menu.popup-glass-auto .arrow-indicator {
+  transition: transform 180ms cubic-bezier(0.2, 0, 0, 1);
+  -gtk-icon-size: 0.95rem;
+  color: rgba(26, 27, 32, 0.74);
+  margin-left: 6px;
+}
+.system-menu .arrow-down,
+.system-menu.popup-glass-dynamic .arrow-down,
+.system-menu.popup-glass-auto .arrow-down {
+  transform: rotate(90deg);
+}
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* Shared expandable drawer container */
+}
+.system-menu .system-menu-list,
 .system-menu.popup-glass-dynamic .system-menu-list,
 .system-menu.popup-glass-auto .system-menu-list {
   background: transparent;
   border: 0;
+  box-shadow: none;
+  margin: 6px 0 2px 0;
+  padding: 0;
 }
-
+.system-menu .section-label,
+.system-menu.popup-glass-dynamic .section-label,
+.system-menu.popup-glass-auto .section-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(26, 27, 32, 0.54);
+  margin: 6px 2px 4px 2px;
+}
+.system-menu .empty-label,
+.system-menu.popup-glass-dynamic .empty-label,
+.system-menu.popup-glass-auto .empty-label {
+  font-size: 0.86rem;
+  color: rgba(26, 27, 32, 0.54);
+  margin: 10px 0;
+}
+.system-menu .error-message,
+.system-menu.popup-glass-dynamic .error-message,
+.system-menu.popup-glass-auto .error-message {
+  font-size: 0.84rem;
+  color: #c53030;
+  margin: 4px 0;
+}
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* WiFi & Bluetooth network/device rows */
+}
+.system-menu .network-item,
 .system-menu.popup-glass-dynamic .network-item,
 .system-menu.popup-glass-auto .network-item {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  box-shadow: none;
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  margin: 3px 0;
+  padding: 8px 10px;
+  color: #1a1b20;
 }
-
-.system-menu.popup-glass-dynamic button,
-.system-menu.popup-glass-auto button {
+.system-menu .network-item:hover,
+.system-menu.popup-glass-dynamic .network-item:hover,
+.system-menu.popup-glass-auto .network-item:hover {
+  background: rgba(255, 255, 255, 0.56);
+}
+.system-menu .network-item:active,
+.system-menu.popup-glass-dynamic .network-item:active,
+.system-menu.popup-glass-auto .network-item:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+.system-menu .network-item image:first-child,
+.system-menu.popup-glass-dynamic .network-item image:first-child,
+.system-menu.popup-glass-auto .network-item image:first-child {
+  margin-right: 8px;
+}
+.system-menu .network-item label,
+.system-menu.popup-glass-dynamic .network-item label,
+.system-menu.popup-glass-auto .network-item label {
+  color: #1a1b20;
+  margin: 0 4px;
+}
+.system-menu .network-item.bt-item,
+.system-menu.popup-glass-dynamic .network-item.bt-item,
+.system-menu.popup-glass-auto .network-item.bt-item {
+  padding: 9px 10px;
+}
+.system-menu .network-item-active,
+.system-menu.popup-glass-dynamic .network-item-active,
+.system-menu.popup-glass-auto .network-item-active {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background: rgba(94, 129, 172, 0.88);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 3px 0;
+  padding: 8px 10px;
+  color: #ffffff;
+  text-shadow: none;
+}
+.system-menu .network-item-active label,
+.system-menu .network-item-active image,
+.system-menu.popup-glass-dynamic .network-item-active label,
+.system-menu.popup-glass-dynamic .network-item-active image,
+.system-menu.popup-glass-auto .network-item-active label,
+.system-menu.popup-glass-auto .network-item-active image {
+  color: #ffffff;
+  text-shadow: none;
+}
+.system-menu .network-item-active image:first-child,
+.system-menu.popup-glass-dynamic .network-item-active image:first-child,
+.system-menu.popup-glass-auto .network-item-active image:first-child {
+  margin-right: 8px;
+}
+.system-menu .network-item-active:hover,
+.system-menu.popup-glass-dynamic .network-item-active:hover,
+.system-menu.popup-glass-auto .network-item-active:hover {
+  background: #5e81ac;
+}
+.system-menu .network-item-active.bt-item,
+.system-menu.popup-glass-dynamic .network-item-active.bt-item,
+.system-menu.popup-glass-auto .network-item-active.bt-item {
+  padding: 9px 10px;
+}
+.system-menu .saved-network,
+.system-menu.popup-glass-dynamic .saved-network,
+.system-menu.popup-glass-auto .saved-network {
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 3px 0;
+  padding: 6px 8px 6px 10px;
+}
+.system-menu .saved-network > label,
+.system-menu.popup-glass-dynamic .saved-network > label,
+.system-menu.popup-glass-auto .saved-network > label {
+  color: #1a1b20;
+  margin-left: 2px;
+}
+.system-menu .bt-button-container,
+.system-menu.popup-glass-dynamic .bt-button-container,
+.system-menu.popup-glass-auto .bt-button-container {
+  margin: 4px 0 6px 0;
+}
+.system-menu .password-dialog,
+.system-menu.popup-glass-dynamic .password-dialog,
+.system-menu.popup-glass-auto .password-dialog {
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 12px;
+  box-shadow: none;
+  padding: 10px;
+  margin: 4px 0 6px 0;
+}
+.system-menu .password-dialog .password-label,
+.system-menu.popup-glass-dynamic .password-dialog .password-label,
+.system-menu.popup-glass-auto .password-dialog .password-label {
+  font-weight: 600;
+  color: #1a1b20;
+  margin-bottom: 6px;
+}
+.system-menu .password-search,
+.system-menu.popup-glass-dynamic .password-search,
+.system-menu.popup-glass-auto .password-search {
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 8px;
+  padding: 5px 8px;
+  margin-bottom: 8px;
+}
+.system-menu .password-search image,
+.system-menu.popup-glass-dynamic .password-search image,
+.system-menu.popup-glass-auto .password-search image {
+  margin-right: 6px;
+  color: rgba(26, 27, 32, 0.74);
+}
+.system-menu .password-search entry,
+.system-menu.popup-glass-dynamic .password-search entry,
+.system-menu.popup-glass-auto .password-search entry {
+  color: #1a1b20;
+  background: transparent;
+  border: 0;
+}
+.system-menu .password-search entry menu,
+.system-menu.popup-glass-dynamic .password-search entry menu,
+.system-menu.popup-glass-auto .password-search entry menu {
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.24);
+  color: #1a1b20;
+  font-family: "Adwaita Sans", "Noto Sans", "Noto Sans CJK SC", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 0.92rem;
+  padding: 4px;
+}
+.system-menu .password-search entry menu separator,
+.system-menu.popup-glass-dynamic .password-search entry menu separator,
+.system-menu.popup-glass-auto .password-search entry menu separator {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.system-menu .password-search entry menu menuitem,
+.system-menu.popup-glass-dynamic .password-search entry menu menuitem,
+.system-menu.popup-glass-auto .password-search entry menu menuitem {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  color: #1a1b20;
+}
+.system-menu .password-search entry menu menuitem:hover,
+.system-menu.popup-glass-dynamic .password-search entry menu menuitem:hover,
+.system-menu.popup-glass-auto .password-search entry menu menuitem:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* Compact action buttons inside WiFi / Bluetooth drawers */
+}
+.system-menu .refresh-button,
+.system-menu .disconnect-button,
+.system-menu .settings-button,
+.system-menu .connect-button,
+.system-menu .cancel-button,
+.system-menu .forget-button,
+.system-menu .pair-button,
+.system-menu .trust-button,
+.system-menu.popup-glass-dynamic .refresh-button,
+.system-menu.popup-glass-dynamic .disconnect-button,
+.system-menu.popup-glass-dynamic .settings-button,
+.system-menu.popup-glass-dynamic .connect-button,
+.system-menu.popup-glass-dynamic .cancel-button,
+.system-menu.popup-glass-dynamic .forget-button,
+.system-menu.popup-glass-dynamic .pair-button,
+.system-menu.popup-glass-dynamic .trust-button,
+.system-menu.popup-glass-auto .refresh-button,
+.system-menu.popup-glass-auto .disconnect-button,
+.system-menu.popup-glass-auto .settings-button,
+.system-menu.popup-glass-auto .connect-button,
+.system-menu.popup-glass-auto .cancel-button,
+.system-menu.popup-glass-auto .forget-button,
+.system-menu.popup-glass-auto .pair-button,
+.system-menu.popup-glass-auto .trust-button {
+  background: rgba(255, 255, 255, 0.36);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  box-shadow: none;
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  color: #1a1b20;
+  padding: 6px 10px;
+  margin: 4px 3px 2px 3px;
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+.system-menu .refresh-button:hover,
+.system-menu .disconnect-button:hover,
+.system-menu .settings-button:hover,
+.system-menu .connect-button:hover,
+.system-menu .cancel-button:hover,
+.system-menu .forget-button:hover,
+.system-menu .pair-button:hover,
+.system-menu .trust-button:hover,
+.system-menu.popup-glass-dynamic .refresh-button:hover,
+.system-menu.popup-glass-dynamic .disconnect-button:hover,
+.system-menu.popup-glass-dynamic .settings-button:hover,
+.system-menu.popup-glass-dynamic .connect-button:hover,
+.system-menu.popup-glass-dynamic .cancel-button:hover,
+.system-menu.popup-glass-dynamic .forget-button:hover,
+.system-menu.popup-glass-dynamic .pair-button:hover,
+.system-menu.popup-glass-dynamic .trust-button:hover,
+.system-menu.popup-glass-auto .refresh-button:hover,
+.system-menu.popup-glass-auto .disconnect-button:hover,
+.system-menu.popup-glass-auto .settings-button:hover,
+.system-menu.popup-glass-auto .connect-button:hover,
+.system-menu.popup-glass-auto .cancel-button:hover,
+.system-menu.popup-glass-auto .forget-button:hover,
+.system-menu.popup-glass-auto .pair-button:hover,
+.system-menu.popup-glass-auto .trust-button:hover {
+  background: rgba(255, 255, 255, 0.56);
+}
+.system-menu .refresh-button:active,
+.system-menu .disconnect-button:active,
+.system-menu .settings-button:active,
+.system-menu .connect-button:active,
+.system-menu .cancel-button:active,
+.system-menu .forget-button:active,
+.system-menu .pair-button:active,
+.system-menu .trust-button:active,
+.system-menu.popup-glass-dynamic .refresh-button:active,
+.system-menu.popup-glass-dynamic .disconnect-button:active,
+.system-menu.popup-glass-dynamic .settings-button:active,
+.system-menu.popup-glass-dynamic .connect-button:active,
+.system-menu.popup-glass-dynamic .cancel-button:active,
+.system-menu.popup-glass-dynamic .forget-button:active,
+.system-menu.popup-glass-dynamic .pair-button:active,
+.system-menu.popup-glass-dynamic .trust-button:active,
+.system-menu.popup-glass-auto .refresh-button:active,
+.system-menu.popup-glass-auto .disconnect-button:active,
+.system-menu.popup-glass-auto .settings-button:active,
+.system-menu.popup-glass-auto .connect-button:active,
+.system-menu.popup-glass-auto .cancel-button:active,
+.system-menu.popup-glass-auto .forget-button:active,
+.system-menu.popup-glass-auto .pair-button:active,
+.system-menu.popup-glass-auto .trust-button:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+.system-menu .connect-button.button,
+.system-menu .trust-button.button,
+.system-menu .pair-button.button,
+.system-menu.popup-glass-dynamic .connect-button.button,
+.system-menu.popup-glass-dynamic .trust-button.button,
+.system-menu.popup-glass-dynamic .pair-button.button,
+.system-menu.popup-glass-auto .connect-button.button,
+.system-menu.popup-glass-auto .trust-button.button,
+.system-menu.popup-glass-auto .pair-button.button {
+  background: rgba(94, 129, 172, 0.88);
+  border-color: transparent;
+  color: #ffffff;
+  text-shadow: none;
+}
+.system-menu .connect-button.button image,
+.system-menu .trust-button.button image,
+.system-menu .pair-button.button image,
+.system-menu.popup-glass-dynamic .connect-button.button image,
+.system-menu.popup-glass-dynamic .trust-button.button image,
+.system-menu.popup-glass-dynamic .pair-button.button image,
+.system-menu.popup-glass-auto .connect-button.button image,
+.system-menu.popup-glass-auto .trust-button.button image,
+.system-menu.popup-glass-auto .pair-button.button image {
+  color: #ffffff;
+}
+.system-menu .connect-button.button:hover,
+.system-menu .trust-button.button:hover,
+.system-menu .pair-button.button:hover,
+.system-menu.popup-glass-dynamic .connect-button.button:hover,
+.system-menu.popup-glass-dynamic .trust-button.button:hover,
+.system-menu.popup-glass-dynamic .pair-button.button:hover,
+.system-menu.popup-glass-auto .connect-button.button:hover,
+.system-menu.popup-glass-auto .trust-button.button:hover,
+.system-menu.popup-glass-auto .pair-button.button:hover {
+  background: #5e81ac;
+}
+.system-menu .disconnect-button:hover,
+.system-menu .forget-button:hover,
+.system-menu.popup-glass-dynamic .disconnect-button:hover,
+.system-menu.popup-glass-dynamic .forget-button:hover,
+.system-menu.popup-glass-auto .disconnect-button:hover,
+.system-menu.popup-glass-auto .forget-button:hover {
+  background: rgba(209, 73, 78, 0.16);
+  color: #c53030;
+}
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* Power profiles */
+}
+.system-menu .power-profiles,
+.system-menu.popup-glass-dynamic .power-profiles,
+.system-menu.popup-glass-auto .power-profiles {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 6px;
+  margin-top: 2px;
+}
+.system-menu .power-profiles button,
+.system-menu.popup-glass-dynamic .power-profiles button,
+.system-menu.popup-glass-auto .power-profiles button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 6px 10px;
+  color: #1a1b20;
+}
+.system-menu .power-profiles button:hover,
+.system-menu.popup-glass-dynamic .power-profiles button:hover,
+.system-menu.popup-glass-auto .power-profiles button:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+.system-menu .power-profiles button:active,
+.system-menu.popup-glass-dynamic .power-profiles button:active,
+.system-menu.popup-glass-auto .power-profiles button:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+.system-menu .power-profiles .current-profile,
+.system-menu .power-profiles .profile-options box,
+.system-menu.popup-glass-dynamic .power-profiles .current-profile,
+.system-menu.popup-glass-dynamic .power-profiles .profile-options box,
+.system-menu.popup-glass-auto .power-profiles .current-profile,
+.system-menu.popup-glass-auto .power-profiles .profile-options box {
+  padding: 0;
+}
+.system-menu .power-profiles image,
+.system-menu.popup-glass-dynamic .power-profiles image,
+.system-menu.popup-glass-auto .power-profiles image {
+  margin-right: 8px;
+  color: #1a1b20;
+}
+.system-menu .power-profiles label,
+.system-menu.popup-glass-dynamic .power-profiles label,
+.system-menu.popup-glass-auto .power-profiles label {
+  color: #1a1b20;
+  font-weight: 500;
+}
+.system-menu .power-profiles .profile-options,
+.system-menu.popup-glass-dynamic .power-profiles .profile-options,
+.system-menu.popup-glass-auto .power-profiles .profile-options {
+  margin-top: 4px;
+  padding-left: 8px;
+}
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* Volume & brightness sliders */
+}
+.system-menu .sliders,
+.system-menu.popup-glass-dynamic .sliders,
+.system-menu.popup-glass-auto .sliders {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 8px;
+  margin-top: 2px;
+}
+.system-menu .sliders > box,
+.system-menu.popup-glass-dynamic .sliders > box,
+.system-menu.popup-glass-auto .sliders > box {
+  min-height: 32px;
+}
+.system-menu .sliders button,
+.system-menu.popup-glass-dynamic .sliders button,
+.system-menu.popup-glass-auto .sliders button {
+  transition: background-color 140ms cubic-bezier(0.2, 0, 0, 1), border-color 140ms cubic-bezier(0.2, 0, 0, 1), color 140ms cubic-bezier(0.2, 0, 0, 1), opacity 140ms cubic-bezier(0.2, 0, 0, 1);
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+  margin-right: 6px;
+  border-radius: 8px;
   background: transparent;
   border: 0;
   box-shadow: none;
+  color: #1a1b20;
 }
-
-.system-menu.popup-glass-dynamic button.network-item-active,
-.system-menu.popup-glass-auto button.network-item-active {
-  background: rgba(94, 129, 172, 0.85);
+.system-menu .sliders button:hover,
+.system-menu.popup-glass-dynamic .sliders button:hover,
+.system-menu.popup-glass-auto .sliders button:hover {
+  background: rgba(0, 0, 0, 0.07);
 }
-
-.system-menu.popup-glass-dynamic button.network-item-active label,
-.system-menu.popup-glass-dynamic button.network-item-active image,
-.system-menu.popup-glass-auto button.network-item-active label,
-.system-menu.popup-glass-auto button.network-item-active image {
-  color: #ffffff;
-}
-
-.system-menu.popup-glass-dynamic trough {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.system-menu.popup-glass-dynamic highlight,
-.system-menu.popup-glass-dynamic progress {
-  background: #8fb3e8;
-}
-
-.system-menu.popup-glass-auto trough {
+.system-menu .sliders button:active,
+.system-menu.popup-glass-dynamic .sliders button:active,
+.system-menu.popup-glass-auto .sliders button:active {
   background: rgba(0, 0, 0, 0.12);
 }
-
-.system-menu.popup-glass-auto highlight,
-.system-menu.popup-glass-auto progress {
-  background: #5e81ac;
-}
-
-.system-menu.popup-glass-dynamic entry {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.system-menu.popup-glass-auto entry {
-  color: #1a1b20;
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(0, 0, 0, 0.16);
-}
-
-/* All-light override: no dark variant. */
-.system-menu.popup-glass-dynamic,
-.system-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(0, 0, 0, 0.18);
+.system-menu .sliders .brightness > image,
+.system-menu.popup-glass-dynamic .sliders .brightness > image,
+.system-menu.popup-glass-auto .sliders .brightness > image {
+  min-width: 30px;
+  margin-right: 6px;
   color: #1a1b20;
 }
-
-.system-menu.popup-glass-dynamic label,
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-dynamic .section-label,
-.system-menu.popup-glass-auto label,
-.system-menu.popup-glass-auto image,
-.system-menu.popup-glass-auto .section-label {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+.system-menu .sliders scale,
+.system-menu.popup-glass-dynamic .sliders scale,
+.system-menu.popup-glass-auto .sliders scale {
+  padding: 4px 2px;
 }
-
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-auto image {
-  filter: none;
-}
-
-.system-menu.popup-glass-dynamic entry,
-.system-menu.popup-glass-auto entry {
-  color: #1a1b20;
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(0, 0, 0, 0.16);
-}
-
-.system-menu.popup-glass-dynamic trough,
-.system-menu.popup-glass-auto trough {
+.system-menu .sliders scale trough,
+.system-menu.popup-glass-dynamic .sliders scale trough,
+.system-menu.popup-glass-auto .sliders scale trough {
   background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+  min-height: 6px;
+  padding: 0;
+  margin: 0;
 }
-
-.system-menu.popup-glass-dynamic highlight,
-.system-menu.popup-glass-dynamic progress,
-.system-menu.popup-glass-auto highlight,
-.system-menu.popup-glass-auto progress {
+.system-menu .sliders scale highlight,
+.system-menu .sliders scale progress,
+.system-menu.popup-glass-dynamic .sliders scale highlight,
+.system-menu.popup-glass-dynamic .sliders scale progress,
+.system-menu.popup-glass-auto .sliders scale highlight,
+.system-menu.popup-glass-auto .sliders scale progress {
   background: #5e81ac;
+  border-radius: 9999px;
+  min-height: 6px;
+  margin: 0;
 }
-
-/* Final low-tint adaptive popup glass: follows the wallpaper theme, not the
- * bar's white-ink class, so it is light on light desktops and dark on dark. */
-.system-menu.popup-glass-dynamic,
-.system-menu.popup-glass-auto {
-  background: rgba(255, 255, 255, 0.2);
+.system-menu .sliders scale slider,
+.system-menu.popup-glass-dynamic .sliders scale slider,
+.system-menu.popup-glass-auto .sliders scale slider {
+  min-width: 14px;
+  min-height: 14px;
+  margin: -4px 0;
+  border-radius: 9999px;
+  background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.16);
+}
+.system-menu,
+.system-menu.popup-glass-dynamic,
+.system-menu.popup-glass-auto {
+  /* Battery footer */
+}
+.system-menu .battery-info,
+.system-menu.popup-glass-dynamic .battery-info,
+.system-menu.popup-glass-auto .battery-info {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px 6px 2px 6px;
+  margin-top: 2px;
+  color: rgba(26, 27, 32, 0.74);
+  font-size: 0.86rem;
+  font-feature-settings: "tnum" 1;
+}
+.system-menu .battery-info image,
+.system-menu.popup-glass-dynamic .battery-info image,
+.system-menu.popup-glass-auto .battery-info image {
+  margin-right: 6px;
   color: #1a1b20;
 }
-
-.system-menu.popup-glass-dynamic label,
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-dynamic .section-label,
-.system-menu.popup-glass-auto label,
-.system-menu.popup-glass-auto image,
-.system-menu.popup-glass-auto .section-label {
-  color: #1a1b20;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.system-menu.popup-glass-dynamic image,
-.system-menu.popup-glass-auto image {
-  filter: none;
-}
-
-.system-menu.popup-glass-dynamic trough,
-.system-menu.popup-glass-auto trough {
-  background: rgba(0, 0, 0, 0.12);
-}
-
-.system-menu.popup-glass-dynamic highlight,
-.system-menu.popup-glass-dynamic progress,
-.system-menu.popup-glass-auto highlight,
-.system-menu.popup-glass-auto progress {
-  background: #5e81ac;
-}
-
-.system-menu.popup-glass-dynamic entry,
-.system-menu.popup-glass-auto entry {
-  color: #1a1b20;
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(0, 0, 0, 0.16);
+.system-menu .battery-info label,
+.system-menu.popup-glass-dynamic .battery-info label,
+.system-menu.popup-glass-auto .battery-info label {
+  color: rgba(26, 27, 32, 0.74);
 }
