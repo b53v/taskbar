@@ -6,105 +6,105 @@
 */
 
 
-$background: rgba(246, 250, 254, 1);
+$background: rgba(17, 19, 24, 1);
 
-$error: rgba(186, 26, 26, 1);
+$error: rgba(255, 180, 171, 1);
 
-$error_container: rgba(255, 218, 214, 1);
+$error_container: rgba(147, 0, 10, 1);
 
-$inverse_on_surface: rgba(238, 241, 246, 1);
+$inverse_on_surface: rgba(46, 48, 53, 1);
 
-$inverse_primary: rgba(145, 206, 245, 1);
+$inverse_primary: rgba(60, 96, 144, 1);
 
-$inverse_surface: rgba(44, 49, 52, 1);
+$inverse_surface: rgba(225, 226, 233, 1);
 
-$on_background: rgba(24, 28, 31, 1);
+$on_background: rgba(225, 226, 233, 1);
 
-$on_error: rgba(255, 255, 255, 1);
+$on_error: rgba(105, 0, 5, 1);
 
-$on_error_container: rgba(65, 0, 2, 1);
+$on_error_container: rgba(255, 218, 214, 1);
 
-$on_primary: rgba(255, 255, 255, 1);
+$on_primary: rgba(0, 49, 94, 1);
 
-$on_primary_container: rgba(0, 30, 45, 1);
+$on_primary_container: rgba(212, 227, 255, 1);
 
-$on_primary_fixed: rgba(0, 30, 45, 1);
+$on_primary_fixed: rgba(0, 28, 58, 1);
 
-$on_primary_fixed_variant: rgba(0, 76, 107, 1);
+$on_primary_fixed_variant: rgba(33, 72, 118, 1);
 
-$on_secondary: rgba(255, 255, 255, 1);
+$on_secondary: rgba(38, 49, 65, 1);
 
-$on_secondary_container: rgba(10, 30, 40, 1);
+$on_secondary_container: rgba(216, 227, 248, 1);
 
-$on_secondary_fixed: rgba(10, 30, 40, 1);
+$on_secondary_fixed: rgba(17, 28, 43, 1);
 
-$on_secondary_fixed_variant: rgba(55, 73, 85, 1);
+$on_secondary_fixed_variant: rgba(61, 71, 88, 1);
 
-$on_surface: rgba(24, 28, 31, 1);
+$on_surface: rgba(225, 226, 233, 1);
 
-$on_surface_variant: rgba(65, 72, 77, 1);
+$on_surface_variant: rgba(195, 198, 207, 1);
 
-$on_tertiary: rgba(255, 255, 255, 1);
+$on_tertiary: rgba(61, 41, 70, 1);
 
-$on_tertiary_container: rgba(30, 23, 53, 1);
+$on_tertiary_container: rgba(247, 217, 255, 1);
 
-$on_tertiary_fixed: rgba(30, 23, 53, 1);
+$on_tertiary_fixed: rgba(39, 20, 48, 1);
 
-$on_tertiary_fixed_variant: rgba(74, 66, 99, 1);
+$on_tertiary_fixed_variant: rgba(85, 63, 94, 1);
 
-$outline: rgba(113, 120, 126, 1);
+$outline: rgba(141, 145, 153, 1);
 
-$outline_variant: rgba(193, 199, 206, 1);
+$outline_variant: rgba(67, 71, 78, 1);
 
-$primary: rgba(32, 100, 135, 1);
+$primary: rgba(165, 200, 255, 1);
 
-$primary_container: rgba(198, 231, 255, 1);
+$primary_container: rgba(33, 72, 118, 1);
 
-$primary_fixed: rgba(198, 231, 255, 1);
+$primary_fixed: rgba(212, 227, 255, 1);
 
-$primary_fixed_dim: rgba(145, 206, 245, 1);
+$primary_fixed_dim: rgba(165, 200, 255, 1);
 
 $scrim: rgba(0, 0, 0, 1);
 
-$secondary: rgba(79, 97, 109, 1);
+$secondary: rgba(188, 199, 220, 1);
 
-$secondary_container: rgba(210, 229, 244, 1);
+$secondary_container: rgba(61, 71, 88, 1);
 
-$secondary_fixed: rgba(210, 229, 244, 1);
+$secondary_fixed: rgba(216, 227, 248, 1);
 
-$secondary_fixed_dim: rgba(182, 201, 216, 1);
+$secondary_fixed_dim: rgba(188, 199, 220, 1);
 
 $shadow: rgba(0, 0, 0, 1);
 
-$source_color: rgba(152, 169, 182, 1);
+$source_color: rgba(9, 73, 133, 1);
 
-$surface: rgba(246, 250, 254, 1);
+$surface: rgba(17, 19, 24, 1);
 
-$surface_bright: rgba(246, 250, 254, 1);
+$surface_bright: rgba(55, 57, 62, 1);
 
-$surface_container: rgba(235, 238, 243, 1);
+$surface_container: rgba(29, 32, 36, 1);
 
-$surface_container_high: rgba(229, 232, 237, 1);
+$surface_container_high: rgba(40, 42, 47, 1);
 
-$surface_container_highest: rgba(223, 227, 231, 1);
+$surface_container_highest: rgba(50, 53, 58, 1);
 
-$surface_container_low: rgba(240, 244, 248, 1);
+$surface_container_low: rgba(25, 28, 32, 1);
 
-$surface_container_lowest: rgba(255, 255, 255, 1);
+$surface_container_lowest: rgba(12, 14, 19, 1);
 
-$surface_dim: rgba(215, 218, 223, 1);
+$surface_dim: rgba(17, 19, 24, 1);
 
-$surface_tint: rgba(32, 100, 135, 1);
+$surface_tint: rgba(165, 200, 255, 1);
 
-$surface_variant: rgba(221, 227, 234, 1);
+$surface_variant: rgba(67, 71, 78, 1);
 
-$tertiary: rgba(98, 89, 124, 1);
+$tertiary: rgba(218, 189, 226, 1);
 
-$tertiary_container: rgba(232, 222, 255, 1);
+$tertiary_container: rgba(85, 63, 94, 1);
 
-$tertiary_fixed: rgba(232, 222, 255, 1);
+$tertiary_fixed: rgba(247, 217, 255, 1);
 
-$tertiary_fixed_dim: rgba(204, 193, 233, 1);
+$tertiary_fixed_dim: rgba(218, 189, 226, 1);
 
 
 /* general color variables */
@@ -184,5 +184,5 @@ $scale: 0.5rem;
 $font: 1.1rem;
 
 /* matugen */
-$darkmode: false;
+$darkmode: true;
 $textShadow: if($darkmode, 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 1px rgba(255, 255, 255, 0.65));

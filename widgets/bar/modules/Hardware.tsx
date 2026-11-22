@@ -87,37 +87,40 @@ export default function Hardware() {
     >
       <button
         cssClasses={["bar-hw-item", "cpu"]}
+        valign={Gtk.Align.CENTER}
         tooltipText={cpuTooltip}
         onClicked={openMonitor}
       >
         <box spacing={4}>
-          <label label="" cssClasses={["hw-icon"]} />
-          <label label={cpuUsage} cssClasses={["hw-val"]} />
-          <label label={cpuTemp} cssClasses={["hw-temp"]} />
+          <label label="" valign={Gtk.Align.CENTER} cssClasses={["hw-icon"]} />
+          <label label={cpuUsage} valign={Gtk.Align.CENTER} cssClasses={["hw-val"]} />
+          <label label={cpuTemp} valign={Gtk.Align.CENTER} cssClasses={["hw-temp"]} />
         </box>
       </button>
 
       <button
         cssClasses={["bar-hw-item", "ram"]}
+        valign={Gtk.Align.CENTER}
         tooltipText={ramTooltip}
         onClicked={openMonitor}
       >
         <box spacing={4}>
-          <label label="" cssClasses={["hw-icon"]} />
-          <label label={ramText} cssClasses={["hw-val"]} />
+          <label label="" valign={Gtk.Align.CENTER} cssClasses={["hw-icon"]} />
+          <label label={ramText} valign={Gtk.Align.CENTER} cssClasses={["hw-val"]} />
         </box>
       </button>
 
       {sysmon.gpu.detected && (
         <button
           cssClasses={["bar-hw-item", "gpu"]}
+          valign={Gtk.Align.CENTER}
           tooltipText={gpuTooltip}
           onClicked={openMonitor}
         >
           <box spacing={4}>
-            <label label="󰢮" cssClasses={["hw-icon"]} />
-            <label label={gpuUsage} cssClasses={["hw-val"]} />
-            <label label={gpuTemp} cssClasses={["hw-temp"]} />
+            <label label="󰢮" valign={Gtk.Align.CENTER} cssClasses={["hw-icon"]} />
+            <label label={gpuUsage} valign={Gtk.Align.CENTER} cssClasses={["hw-val"]} />
+            <label label={gpuTemp} valign={Gtk.Align.CENTER} cssClasses={["hw-temp"]} />
           </box>
         </button>
       )}

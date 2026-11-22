@@ -20,6 +20,7 @@ export default function Volume() {
   return (
     <button
       cssClasses={["bar-volume"]}
+      valign={Gtk.Align.CENTER}
       tooltipText="Volume (Scroll to adjust, Click to mute)"
       onClicked={() => {
         speaker.mute = !speaker.mute;
@@ -55,9 +56,9 @@ export default function Volume() {
         self.add_controller(gesture);
       }}
     >
-      <box spacing={4}>
-        <image iconName={volumeIcon} />
-        <label label={volumePercent} />
+      <box spacing={4} valign={Gtk.Align.CENTER}>
+        <image valign={Gtk.Align.CENTER} iconName={volumeIcon} />
+        <label valign={Gtk.Align.CENTER} label={volumePercent} />
       </box>
     </button>
   );

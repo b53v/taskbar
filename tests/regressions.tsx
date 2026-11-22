@@ -18,6 +18,7 @@ import {
   workspaceContentWidth,
 } from "widgets/bar/modules/Workspaces";
 import Progress from "widgets/osd/modules/Progress";
+import { SysTray } from "widgets/bar/modules/SysTray";
 import { NotificationBox } from "widgets/system-menu/modules/notification-center/main";
 import { CssReloader } from "utils/cssReload";
 import { StyleProvider } from "utils/styleProvider";
@@ -116,7 +117,39 @@ async function test() {
     const dots = <HyprlandWorkspaces /> as Gtk.Widget;
     const osd = <Progress visible={false} setVisible={() => {}} /> as Gtk.Widget;
     const notifications = <NotificationBox /> as Gtk.Widget;
-    assert(dots && osd && notifications, "widget construction failed");
+    const systray = <SysTray /> as Gtk.Box;
+    assert(dots && osd && notifications && systray, "widget construction failed");
+    const revealer = systray.get_first_child() as Gtk.Revealer;
+    const toggle = revealer?.get_next_sibling() as Gtk.Button;
+    const toggleIcon = toggle?.get_child() as Gtk.Image;
+    assert(
+      revealer instanceof Gtk.Revealer &&
+        !revealer.get_reveal_child() &&
+        revealer.get_transition_type() === Gtk.RevealerTransitionType.SLIDE_LEFT &&
+        revealer.get_transition_duration() === 180,
+      "SysTray revealer defaults failed",
+    );
+    assert(
+      toggle instanceof Gtk.Button &&
+        toggle.has_css_class("tray-toggle") &&
+        !toggle.has_css_class("expanded") &&
+        toggleIcon?.get_icon_name() === "pan-start-symbolic",
+      "SysTray toggle initial state failed",
+    );
+    toggle.emit("clicked");
+    assert(
+      revealer.get_reveal_child() &&
+        toggle.has_css_class("expanded") &&
+        toggleIcon?.get_icon_name() === "pan-end-symbolic",
+      "SysTray failed to expand on toggle click",
+    );
+    toggle.emit("clicked");
+    assert(
+      !revealer.get_reveal_child() &&
+        !toggle.has_css_class("expanded") &&
+        toggleIcon?.get_icon_name() === "pan-start-symbolic",
+      "SysTray failed to collapse on second toggle click",
+    );
     const adapter = compositor as any;
     let titles = 0;
     let workspaces = 0;

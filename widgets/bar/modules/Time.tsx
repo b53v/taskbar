@@ -3,12 +3,16 @@ import { Gtk } from "ags/gtk4";
 import { createExternal, createState } from "ags";
 import { togglePopup } from "utils/popups";
 
-const WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
 const pad2 = (n: number) => n.toString().padStart(2, "0");
 
 function formatClock(): string {
   const now = new Date();
-  return `${pad2(now.getMonth() + 1)}月${pad2(now.getDate())}日 ${WEEKDAYS[now.getDay()]} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+  return `${WEEKDAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${pad2(now.getDate())}  ${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
 }
 
 // Wake up right after each minute boundary (the old 10s poll could show the
@@ -54,22 +58,24 @@ export default function Time() {
     >
       <button
         cssClasses={["clock-button"]}
-        tooltipText="点击展开侧边栏日历 / 控制中心"
+        valign={Gtk.Align.CENTER}
+        tooltipText="Click to toggle System Menu"
         onClicked={() => void togglePopup("system-menu").catch(console.error)}
       >
-        <label cssClasses={["clock"]} label={timeLabel} />
+        <label cssClasses={["clock"]} valign={Gtk.Align.CENTER} label={timeLabel} />
       </button>
       <revealer
         transitionType={Gtk.RevealerTransitionType.SLIDE_RIGHT}
-        transitionDuration={300}
+        transitionDuration={180}
         revealChild={revealPower}
       >
         <button
           cssClasses={["power-button"]}
-          tooltipText="电源与会话菜单"
+          valign={Gtk.Align.CENTER}
+          tooltipText="Power & Session Menu"
           onClicked={() => void togglePopup("logout-menu").catch(console.error)}
         >
-          <image iconName="system-shutdown-symbolic" />
+          <image valign={Gtk.Align.CENTER} iconName="system-shutdown-symbolic" />
         </button>
       </revealer>
     </box>

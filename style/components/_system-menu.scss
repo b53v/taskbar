@@ -353,7 +353,8 @@
     padding-top: 8px;
     margin-top: 2px;
 
-    & > box {
+    & > box,
+    .speaker-section > .volume {
       min-height: 32px;
     }
 
@@ -375,6 +376,121 @@
 
       &:active {
         background: $popupActiveBg;
+      }
+    }
+
+    .app-streams-toggle {
+      min-width: 26px;
+      min-height: 26px;
+      margin-right: 0;
+      margin-left: 4px;
+
+      .arrow-indicator {
+        margin-left: 0;
+      }
+    }
+
+    /* Per-application audio playback streams */
+    .app-streams {
+      margin: 4px 0 2px 0;
+      padding: 0;
+    }
+
+    .app-streams-scroll {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+
+      & > viewport {
+        background: transparent;
+      }
+
+      scrollbar {
+        background: transparent;
+        border: 0;
+
+        slider {
+          min-width: 4px;
+          min-height: 20px;
+          border-radius: $radius-pill;
+          background: $popupInkMuted;
+        }
+      }
+    }
+
+    .app-streams-list {
+      padding: 0;
+    }
+
+    .app-stream-row {
+      @include popup-card-surface($radius-control);
+      padding: 6px 8px 5px 6px;
+      margin: 0;
+
+      .app-stream-mute {
+        min-width: 28px;
+        min-height: 28px;
+        margin-right: 6px;
+        -gtk-icon-size: 1rem;
+        color: $popupInk;
+
+        &.muted {
+          color: $popupInkMuted;
+        }
+      }
+
+      .app-stream-body {
+        padding: 0;
+      }
+
+      .app-stream-header {
+        padding: 0 2px;
+      }
+
+      .app-stream-name {
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: $popupInk;
+      }
+
+      .app-stream-percent {
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: $popupInkSecondary;
+        font-feature-settings: "tnum" 1;
+      }
+
+      .app-stream-slider {
+        padding: 3px 2px 2px 2px;
+
+        trough {
+          min-height: 5px;
+        }
+
+        highlight,
+        progress {
+          min-height: 5px;
+        }
+
+        slider {
+          min-width: 12px;
+          min-height: 12px;
+          margin: -3px 0;
+        }
+      }
+
+      &.muted {
+        .app-stream-name,
+        .app-stream-percent {
+          color: $popupInkMuted;
+        }
+
+        .app-stream-slider {
+          highlight,
+          progress {
+            background: $popupInkMuted;
+          }
+        }
       }
     }
 
