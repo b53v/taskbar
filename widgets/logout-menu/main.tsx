@@ -22,7 +22,7 @@ function LogoutButton(icon: string, title: string, command: string) {
         orientation={Gtk.Orientation.VERTICAL}
         valign={Gtk.Align.CENTER}
         halign={Gtk.Align.CENTER}
-        spacing={6}
+        spacing={3}
       >
         <label cssClasses={["logout-icon"]} label={icon} />
         <label cssClasses={["logout-text"]} label={title} />
@@ -76,8 +76,9 @@ export default function LogoutMenu() {
               ink === "dynamic" ? "popup-glass-dynamic" : "popup-glass-auto",
             ])}
             orientation={Gtk.Orientation.VERTICAL}
+            homogeneous={true}
           >
-            <box>
+            <box homogeneous={true}>
               {LogoutButton("lock", "Lock", "hyprlock")}
               {LogoutButton(
                 "bedtime",
@@ -90,7 +91,7 @@ export default function LogoutMenu() {
                 "pkill Hyprland || loginctl terminate-user $USER",
               )}
             </box>
-            <box>
+            <box homogeneous={true}>
               {LogoutButton(
                 "power_settings_new",
                 "Shutdown",

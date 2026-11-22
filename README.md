@@ -33,7 +33,7 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
       <sub>Desktop</sub>
     </td>
     <td align="center" width="50%">
-      <img src="assets/screenshots/logout-menu.webp?v=2" alt="Logout Menu" width="100%" />
+      <img src="assets/screenshots/logout-menu.webp?v=3" alt="Logout Menu" width="100%" />
       <br />
       <sub>Logout Menu</sub>
     </td>

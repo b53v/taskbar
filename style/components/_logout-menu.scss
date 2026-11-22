@@ -16,28 +16,28 @@ box.logout-background {
   .logout-menu,
   .logout-menu.popup-glass-dynamic,
   .logout-menu.popup-glass-auto {
-    @include popup-glass-surface($radius-modal);
-    padding: 16px;
+    @include popup-glass-surface(18px);
+    padding: 10px;
 
     button.logout-btn {
-      @include popup-card-surface(14px);
+      @include popup-card-surface(12px);
       @include popup-interactive;
-      margin: 6px;
-      padding: 16px 20px;
-      min-width: 108px;
-      min-height: 104px;
+      margin: 4px;
+      padding: 9px 10px;
+      min-width: 80px;
+      min-height: 56px;
 
       label.logout-icon {
-        @include material-icon(3rem);
+        @include material-icon(1.75rem);
         color: $popupInk;
         text-shadow: $popupTextShadow;
-        margin-bottom: 4px;
+        margin-bottom: 1px;
       }
 
       label.logout-text {
         font-family: $uiFont;
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.78rem;
+        font-weight: 500;
         color: $popupInkSecondary;
         text-shadow: $popupTextShadow;
       }
