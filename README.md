@@ -19,7 +19,7 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
 
 <br />
 
-<img src="assets/screenshots/bar.png" alt="Taskbar" width="100%" />
+<img src="assets/screenshots/bar.png?v=2" alt="Taskbar" width="100%" />
 
 </div>
 
@@ -28,12 +28,12 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="assets/screenshots/desktop.webp" alt="Desktop" width="100%" />
+      <img src="assets/screenshots/desktop.webp?v=2" alt="Desktop" width="100%" />
       <br />
       <sub>Desktop</sub>
     </td>
     <td align="center" width="50%">
-      <img src="assets/screenshots/logout-menu.webp" alt="Logout Menu" width="100%" />
+      <img src="assets/screenshots/logout-menu.webp?v=2" alt="Logout Menu" width="100%" />
       <br />
       <sub>Logout Menu</sub>
     </td>
