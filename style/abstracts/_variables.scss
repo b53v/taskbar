@@ -6,105 +6,105 @@
 */
 
 
-$background: rgba(17, 19, 24, 1);
+$background: rgba(26, 17, 16, 1);
 
 $error: rgba(255, 180, 171, 1);
 
 $error_container: rgba(147, 0, 10, 1);
 
-$inverse_on_surface: rgba(46, 48, 53, 1);
+$inverse_on_surface: rgba(56, 46, 45, 1);
 
-$inverse_primary: rgba(60, 96, 144, 1);
+$inverse_primary: rgba(144, 74, 70, 1);
 
-$inverse_surface: rgba(225, 226, 233, 1);
+$inverse_surface: rgba(241, 222, 221, 1);
 
-$on_background: rgba(225, 226, 233, 1);
+$on_background: rgba(241, 222, 221, 1);
 
 $on_error: rgba(105, 0, 5, 1);
 
 $on_error_container: rgba(255, 218, 214, 1);
 
-$on_primary: rgba(0, 49, 94, 1);
+$on_primary: rgba(87, 30, 27, 1);
 
-$on_primary_container: rgba(212, 227, 255, 1);
+$on_primary_container: rgba(255, 218, 215, 1);
 
-$on_primary_fixed: rgba(0, 28, 58, 1);
+$on_primary_fixed: rgba(59, 9, 9, 1);
 
-$on_primary_fixed_variant: rgba(33, 72, 118, 1);
+$on_primary_fixed_variant: rgba(115, 51, 48, 1);
 
-$on_secondary: rgba(38, 49, 65, 1);
+$on_secondary: rgba(68, 41, 39, 1);
 
-$on_secondary_container: rgba(216, 227, 248, 1);
+$on_secondary_container: rgba(255, 218, 215, 1);
 
-$on_secondary_fixed: rgba(17, 28, 43, 1);
+$on_secondary_fixed: rgba(44, 21, 19, 1);
 
-$on_secondary_fixed_variant: rgba(61, 71, 88, 1);
+$on_secondary_fixed_variant: rgba(93, 63, 61, 1);
 
-$on_surface: rgba(225, 226, 233, 1);
+$on_surface: rgba(241, 222, 221, 1);
 
-$on_surface_variant: rgba(195, 198, 207, 1);
+$on_surface_variant: rgba(216, 194, 191, 1);
 
-$on_tertiary: rgba(61, 41, 70, 1);
+$on_tertiary: rgba(64, 45, 4, 1);
 
-$on_tertiary_container: rgba(247, 217, 255, 1);
+$on_tertiary_container: rgba(255, 222, 166, 1);
 
-$on_tertiary_fixed: rgba(39, 20, 48, 1);
+$on_tertiary_fixed: rgba(39, 25, 0, 1);
 
-$on_tertiary_fixed_variant: rgba(85, 63, 94, 1);
+$on_tertiary_fixed_variant: rgba(89, 67, 25, 1);
 
-$outline: rgba(141, 145, 153, 1);
+$outline: rgba(160, 140, 138, 1);
 
-$outline_variant: rgba(67, 71, 78, 1);
+$outline_variant: rgba(83, 67, 66, 1);
 
-$primary: rgba(165, 200, 255, 1);
+$primary: rgba(255, 179, 173, 1);
 
-$primary_container: rgba(33, 72, 118, 1);
+$primary_container: rgba(115, 51, 48, 1);
 
-$primary_fixed: rgba(212, 227, 255, 1);
+$primary_fixed: rgba(255, 218, 215, 1);
 
-$primary_fixed_dim: rgba(165, 200, 255, 1);
+$primary_fixed_dim: rgba(255, 179, 173, 1);
 
 $scrim: rgba(0, 0, 0, 1);
 
-$secondary: rgba(188, 199, 220, 1);
+$secondary: rgba(231, 189, 185, 1);
 
-$secondary_container: rgba(61, 71, 88, 1);
+$secondary_container: rgba(93, 63, 61, 1);
 
-$secondary_fixed: rgba(216, 227, 248, 1);
+$secondary_fixed: rgba(255, 218, 215, 1);
 
-$secondary_fixed_dim: rgba(188, 199, 220, 1);
+$secondary_fixed_dim: rgba(231, 189, 185, 1);
 
 $shadow: rgba(0, 0, 0, 1);
 
-$source_color: rgba(9, 73, 133, 1);
+$source_color: rgba(25, 9, 8, 1);
 
-$surface: rgba(17, 19, 24, 1);
+$surface: rgba(26, 17, 16, 1);
 
-$surface_bright: rgba(55, 57, 62, 1);
+$surface_bright: rgba(66, 55, 54, 1);
 
-$surface_container: rgba(29, 32, 36, 1);
+$surface_container: rgba(39, 29, 28, 1);
 
-$surface_container_high: rgba(40, 42, 47, 1);
+$surface_container_high: rgba(50, 40, 39, 1);
 
-$surface_container_highest: rgba(50, 53, 58, 1);
+$surface_container_highest: rgba(61, 50, 49, 1);
 
-$surface_container_low: rgba(25, 28, 32, 1);
+$surface_container_low: rgba(35, 25, 25, 1);
 
-$surface_container_lowest: rgba(12, 14, 19, 1);
+$surface_container_lowest: rgba(20, 12, 11, 1);
 
-$surface_dim: rgba(17, 19, 24, 1);
+$surface_dim: rgba(26, 17, 16, 1);
 
-$surface_tint: rgba(165, 200, 255, 1);
+$surface_tint: rgba(255, 179, 173, 1);
 
-$surface_variant: rgba(67, 71, 78, 1);
+$surface_variant: rgba(83, 67, 66, 1);
 
-$tertiary: rgba(218, 189, 226, 1);
+$tertiary: rgba(225, 194, 140, 1);
 
-$tertiary_container: rgba(85, 63, 94, 1);
+$tertiary_container: rgba(89, 67, 25, 1);
 
-$tertiary_fixed: rgba(247, 217, 255, 1);
+$tertiary_fixed: rgba(255, 222, 166, 1);
 
-$tertiary_fixed_dim: rgba(218, 189, 226, 1);
+$tertiary_fixed_dim: rgba(225, 194, 140, 1);
 
 
 /* general color variables */

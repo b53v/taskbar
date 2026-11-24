@@ -1,61 +1,55 @@
 @use "../layouts" as *;
 @use "../abstracts" as *;
-@use "sass:color";
 
-box.logout-background {
-  /* Keep alpha < 0.1 so Hyprland ignore_alpha 0.1 blurs only the centered glass dock */
+/* Fullscreen unblurred click-outside scrim for logout-menu */
+box.logout-backdrop {
   background-color: rgba(0, 0, 0, 0.08);
+}
 
-  > button,
-  > box > button {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
+/* Tight centered Liquid Glass power dock */
+.logout-menu,
+.logout-menu.popup-glass-dynamic,
+.logout-menu.popup-glass-auto {
+  @include popup-glass-surface($radius-window);
+  margin: 0;
+  padding: 10px;
 
-  .logout-menu,
-  .logout-menu.popup-glass-dynamic,
-  .logout-menu.popup-glass-auto {
-    @include popup-glass-surface(18px);
-    padding: 10px;
+  button.logout-btn {
+    @include popup-card-surface($radius-card);
+    @include popup-interactive;
+    margin: 4px;
+    padding: 9px 10px;
+    min-width: 80px;
+    min-height: 56px;
 
-    button.logout-btn {
-      @include popup-card-surface(12px);
-      @include popup-interactive;
-      margin: 4px;
-      padding: 9px 10px;
-      min-width: 80px;
-      min-height: 56px;
+    label.logout-icon {
+      @include material-icon(1.75rem);
+      color: $popupInk;
+      text-shadow: $popupTextShadow;
+      margin-bottom: 1px;
+    }
 
-      label.logout-icon {
-        @include material-icon(1.75rem);
-        color: $popupInk;
-        text-shadow: $popupTextShadow;
-        margin-bottom: 1px;
-      }
+    label.logout-text {
+      font-family: $uiFont;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: $popupInkSecondary;
+      text-shadow: $popupTextShadow;
+    }
 
+    &:hover,
+    &:focus {
+      background: $popupCardHoverBg;
+      border-color: $popupBorder;
+
+      label.logout-icon,
       label.logout-text {
-        font-family: $uiFont;
-        font-size: 0.78rem;
-        font-weight: 500;
-        color: $popupInkSecondary;
-        text-shadow: $popupTextShadow;
+        color: $popupInk;
       }
+    }
 
-      &:hover,
-      &:focus {
-        background: $popupCardHoverBg;
-        border-color: $popupBorder;
-
-        label.logout-icon,
-        label.logout-text {
-          color: $popupInk;
-        }
-      }
-
-      &:active {
-        background: $popupActiveBg;
-      }
+    &:active {
+      background: $popupActiveBg;
     }
   }
 }

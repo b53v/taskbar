@@ -19,7 +19,7 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
 
 <br />
 
-<img src="assets/screenshots/bar.png?v=2" alt="Taskbar" width="100%" />
+<img src="assets/screenshots/bar.png?v=4" alt="Taskbar" width="100%" />
 
 </div>
 
@@ -28,12 +28,12 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="assets/screenshots/desktop.webp?v=2" alt="Desktop" width="100%" />
+      <img src="assets/screenshots/desktop.webp?v=4" alt="Desktop" width="100%" />
       <br />
       <sub>Desktop</sub>
     </td>
     <td align="center" width="50%">
-      <img src="assets/screenshots/logout-menu.webp?v=3" alt="Logout Menu" width="100%" />
+      <img src="assets/screenshots/logout-menu.webp?v=4" alt="Logout Menu" width="100%" />
       <br />
       <sub>Logout Menu</sub>
     </td>
@@ -45,6 +45,7 @@ GTK4 status bar and desktop shell for Hyprland, built with [AGS / Astal](https:/
 - **Bar**: OS icon, CPU/RAM/GPU stats, workspaces, collapsible tray, volume, notifications, network/BT, clock
 - **Popups**: System menu (with per-app volume mixer), notification center, live toasts, logout menu, OSD
 - **Theming**: Matugen colors with automatic light/dark bar text based on the wallpaper
+- **Liquid Glass Optics**: Optional Hyprland plugin ([`hypr-plugin/hyprbar-ca/`](hypr-plugin/hyprbar-ca/)) adding whole-glass chromatic aberration + subtle 3D convex dome across the bar, popups, Rofi, and Fcitx5 IM popups
 - **Performance**: Launches via [`start-ags-lite.sh`](start-ags-lite.sh) (`gjs -m` + `GSK_RENDERER=cairo`, no `ags run` wrapper) with lazy-loaded popups (`~118 MiB` PSS idle)
 
 ## Setup
@@ -59,6 +60,14 @@ Hyprland autostart:
 
 ```ini
 exec-once = $HOME/.config/ags/start-ags-lite.sh
+```
+
+Optional Liquid Glass chromatic aberration plugin (Hyprland C++ plugin):
+
+```bash
+~/.config/ags/hypr-plugin/hyprbar-ca/build.sh
+# Add to hyprland.conf / UserDecorations.conf:
+# plugin = ~/.config/ags/hypr-plugin/hyprbar-ca/hyprbar-ca-v2.so
 ```
 
 ## IPC
