@@ -11,6 +11,10 @@
 #include <hyprland/src/config/supplementary/propRefresher/PropRefresher.hpp>
 #include <hyprland/src/config/values/ConfigValues.hpp>
 #include <hyprland/src/desktop/view/LayerSurface.hpp>
+#include <hyprland/src/desktop/view/Popup.hpp>
+#include <hyprland/src/desktop/view/View.hpp>
+#include <hyprland/src/desktop/view/WLSurface.hpp>
+#include <hyprland/src/desktop/view/Window.hpp>
 #include <hyprland/src/helpers/math/Math.hpp>
 #include <hyprland/src/managers/input/InputManager.hpp>
 #include <hyprland/src/output/Monitor.hpp>
@@ -23,8 +27,10 @@
 
 namespace {
 
-    constexpr const char* kBarNamespace = "bar";
-    constexpr int         kScissorPadPx = 4;
+    constexpr const char* kBarNamespace   = "bar";
+    constexpr int         kScissorPadPx   = 4;
+    constexpr int         kDamagePadPx    = 2;
+    constexpr size_t      kMaxDamageRects = 16;
 
     bool isPopupNamespace(const std::string& ns) {
         return ns == "system-menu" ||
@@ -66,7 +72,12 @@ uniform float     u_refract;
 uniform float     u_rimPrism;
 uniform float     u_dome;
 uniform float     u_maxBevelPx;
-uniform float     u_panelScale;
+uniform float     u_strengthScale;
+uniform float     u_edgeScale;
+uniform float     u_domeScale;
+uniform float     u_refractScale;
+uniform float     u_bodyPrismScale;
+uniform float     u_rimPrismScale;
 uniform int       u_useMask;
 uniform float     u_alphaThresh;
 uniform float     u_maskStepScale;
@@ -199,10 +210,13 @@ void main() {
         domeMask       = mix(1.0, smoothstep(0.0, 0.35, edgeFactor), flatCore);
     }
 
-    float pScale       = mix(1.0, u_panelScale, smoothstep(0.5, 1.0, flatCore));
-    float effStrength  = u_strength  * pScale;
-    float effEdgeBoost = u_edgeBoost * pScale;
-    float effDome      = u_dome      * pScale;
+    float coreMix      = smoothstep(0.5, 1.0, flatCore);
+    float effStrength  = u_strength  * mix(1.0, u_strengthScale, coreMix);
+    float effEdgeBoost = u_edgeBoost * mix(1.0, u_edgeScale,     coreMix);
+    float effDome      = u_dome      * mix(1.0, u_domeScale,     coreMix);
+    float effRefract   = u_refract   * mix(1.0, u_refractScale,  coreMix);
+    float bodyFactor   = mix(1.0, u_bodyPrismScale, coreMix);
+    float rimFactor    = mix(1.0, u_rimPrismScale,  coreMix);
 
     float zDome    = sqrt(max(1.0 - edgeFactor * edgeFactor, 0.0));
     float bevel    = smoothstep(0.18, 1.0, edgeFactor);
@@ -213,7 +227,7 @@ void main() {
 
     // 1. Convex thick-glass lens refraction (continuous dome magnification + curved perimeter bend).
     float domeWarp  = edgeFactor * (1.0 - 0.35 * edgeFactor * edgeFactor) * (effDome * 3.0);
-    vec2  refractUV = clamp(v_uv - lensNormal * (rimCurve * u_refract + domeWarp) * u_texelSize, uvMin, uvMax);
+    vec2  refractUV = clamp(v_uv - lensNormal * (rimCurve * effRefract + domeWarp) * u_texelSize, uvMin, uvMax);
 
     // 2. Whole-glass continuous optical chromatic dispersion (R/G/B distinct refraction indices).
     // Combines uniform whole-glass horizontal prism axis + convex bevel dispersion.
@@ -264,7 +278,7 @@ void main() {
     vec3  rimColor = mix(coolPrism, warmPrism, rimSide * 0.5 + 0.5);
 
     float lightEnergy = 0.28 + 0.72 * sqrt(clamp(lum, 0.0, 1.0));
-    color += (bodyPrism * 0.34 + rimColor * (fresnel * fresnel) * 0.85) * u_rimPrism * lightEnergy;
+    color += (bodyPrism * (0.34 * bodyFactor) + rimColor * ((fresnel * fresnel) * 0.85 * rimFactor)) * u_rimPrism * lightEnergy;
 
     // 4. Subtle 3D convex dome volume (soft upper specular crest, gentle belly depth,
     //    lower internal caustic bounce, and tactile grazing edge tuck).
@@ -315,23 +329,34 @@ void main() {
     GLint                              g_uRimPrism        = -1;
     GLint                              g_uDome            = -1;
     GLint                              g_uMaxBevelPx      = -1;
-    GLint                              g_uPanelScale      = -1;
+    GLint                              g_uStrengthScale   = -1;
+    GLint                              g_uEdgeScale       = -1;
+    GLint                              g_uDomeScale       = -1;
+    GLint                              g_uRefractScale    = -1;
+    GLint                              g_uBodyPrismScale  = -1;
+    GLint                              g_uRimPrismScale   = -1;
     GLint                              g_uUseMask         = -1;
     GLint                              g_uAlphaThresh     = -1;
     GLint                              g_uMaskStepScale   = -1;
 
-    SP<Config::Values::CBoolValue>     g_cfgEnabled       = nullptr;
-    SP<Config::Values::CBoolValue>     g_cfgPopups        = nullptr;
-    SP<Config::Values::CBoolValue>     g_cfgInputMethods  = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgStrength      = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgEdgeBoost     = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgVerticalRatio = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgChromaBoost   = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgRefract       = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgRimPrism      = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgDome          = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgMaxBevel      = nullptr;
-    SP<Config::Values::CFloatValue>    g_cfgPanelScale    = nullptr;
+    SP<Config::Values::CBoolValue>     g_cfgEnabled          = nullptr;
+    SP<Config::Values::CBoolValue>     g_cfgPopups           = nullptr;
+    SP<Config::Values::CBoolValue>     g_cfgInputMethods     = nullptr;
+    SP<Config::Values::CBoolValue>     g_cfgWindows          = nullptr;
+    SP<Config::Values::CBoolValue>     g_cfgWindowPopups     = nullptr;
+    SP<Config::Values::CStringValue>   g_cfgWindowTag        = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgStrength         = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgEdgeBoost        = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgVerticalRatio    = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgChromaBoost      = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgRefract          = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgRimPrism         = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgDome             = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgMaxBevel         = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgPanelScale       = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgWindowCoreScale  = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgWindowBevelScale = nullptr;
+    SP<Config::Values::CFloatValue>    g_cfgWindowMaxBevel   = nullptr;
 
     void damageAllMonitors() {
         if (!g_pHyprRenderer || !State::monitorState())
@@ -399,12 +424,17 @@ void main() {
         g_uChromaBoost   = -1;
         g_uRefract       = -1;
         g_uRimPrism      = -1;
-        g_uDome          = -1;
-        g_uMaxBevelPx    = -1;
-        g_uPanelScale    = -1;
-        g_uUseMask       = -1;
-        g_uAlphaThresh   = -1;
-        g_uMaskStepScale = -1;
+        g_uDome           = -1;
+        g_uMaxBevelPx     = -1;
+        g_uStrengthScale  = -1;
+        g_uEdgeScale      = -1;
+        g_uDomeScale      = -1;
+        g_uRefractScale   = -1;
+        g_uBodyPrismScale = -1;
+        g_uRimPrismScale  = -1;
+        g_uUseMask        = -1;
+        g_uAlphaThresh    = -1;
+        g_uMaskStepScale  = -1;
     }
 
     void initGLResources() {
@@ -472,10 +502,15 @@ void main() {
         g_uChromaBoost   = glGetUniformLocation(g_program, "u_chromaBoost");
         g_uRefract       = glGetUniformLocation(g_program, "u_refract");
         g_uRimPrism      = glGetUniformLocation(g_program, "u_rimPrism");
-        g_uDome          = glGetUniformLocation(g_program, "u_dome");
-        g_uMaxBevelPx    = glGetUniformLocation(g_program, "u_maxBevelPx");
-        g_uPanelScale    = glGetUniformLocation(g_program, "u_panelScale");
-        g_uUseMask       = glGetUniformLocation(g_program, "u_useMask");
+        g_uDome           = glGetUniformLocation(g_program, "u_dome");
+        g_uMaxBevelPx     = glGetUniformLocation(g_program, "u_maxBevelPx");
+        g_uStrengthScale  = glGetUniformLocation(g_program, "u_strengthScale");
+        g_uEdgeScale      = glGetUniformLocation(g_program, "u_edgeScale");
+        g_uDomeScale      = glGetUniformLocation(g_program, "u_domeScale");
+        g_uRefractScale   = glGetUniformLocation(g_program, "u_refractScale");
+        g_uBodyPrismScale = glGetUniformLocation(g_program, "u_bodyPrismScale");
+        g_uRimPrismScale  = glGetUniformLocation(g_program, "u_rimPrismScale");
+        g_uUseMask        = glGetUniformLocation(g_program, "u_useMask");
         g_uAlphaThresh   = glGetUniformLocation(g_program, "u_alphaThresh");
         g_uMaskStepScale = glGetUniformLocation(g_program, "u_maskStepScale");
 
@@ -551,13 +586,18 @@ void main() {
             return;
         }
 
-        // Strict target matcher: status bar, Liquid Glass popups, and Fcitx5 IM popups only.
-        // Never matches regular app windows or generic client-side xdg_popups.
-        const bool enablePopups = g_cfgPopups ? g_cfgPopups->value() : true;
-        const bool enableIM     = g_cfgInputMethods ? g_cfgInputMethods->value() : true;
+        // Target matcher: status bar, Liquid Glass popups, Fcitx5 IM popups, plus tagged windows and their owned popups.
+        const bool        enablePopups       = g_cfgPopups ? g_cfgPopups->value() : true;
+        const bool        enableIM           = g_cfgInputMethods ? g_cfgInputMethods->value() : true;
+        const bool        enableWindows      = g_cfgWindows ? g_cfgWindows->value() : true;
+        const bool        enableWindowPopups = g_cfgWindowPopups ? g_cfgWindowPopups->value() : true;
+        const std::string windowTag          = g_cfgWindowTag ? g_cfgWindowTag->value() : std::string{"liquid-glass"};
 
-        auto ls      = data.currentLS.lock();
-        bool matched = false;
+        auto ls            = data.currentLS.lock();
+        bool matched       = false;
+        bool isWindow      = false;
+        bool isWindowPopup = false;
+
         if (ls) {
             const auto& ns = ls->m_namespace;
             if (ns == kBarNamespace) {
@@ -570,6 +610,31 @@ void main() {
         } else if (enableIM && g_pInputManager && data.surface &&
                    g_pInputManager->m_relay.popupFromSurface(data.surface) != nullptr) {
             matched = true;
+        } else if (data.surface && !windowTag.empty() && (enableWindows || enableWindowPopups)) {
+            auto wlSurf = Desktop::View::CWLSurface::fromResource(data.surface);
+            auto view   = wlSurf ? wlSurf->view() : nullptr;
+            if (view) {
+                const auto vtype = view->type();
+                if (enableWindows && vtype == Desktop::View::VIEW_TYPE_WINDOW) {
+                    auto win = Desktop::View::CWindow::fromView(view);
+                    if (win && win->m_ruleApplicator && win->m_ruleApplicator->m_tagKeeper.isTagged(windowTag)) {
+                        matched  = true;
+                        isWindow = true;
+                    }
+                } else if (enableWindowPopups && vtype == Desktop::View::VIEW_TYPE_POPUP) {
+                    auto popup  = Desktop::View::CPopup::fromView(view);
+                    auto t1     = popup ? popup->getT1Owner() : nullptr;
+                    auto t1View = t1 ? t1->view() : nullptr;
+                    if (t1View && t1View->type() == Desktop::View::VIEW_TYPE_WINDOW) {
+                        auto ownerWin = Desktop::View::CWindow::fromView(t1View);
+                        if (ownerWin && ownerWin->m_ruleApplicator &&
+                            ownerWin->m_ruleApplicator->m_tagKeeper.isTagged(windowTag)) {
+                            matched       = true;
+                            isWindowPopup = true;
+                        }
+                    }
+                }
+            }
         }
 
         if (!matched) {
@@ -582,17 +647,21 @@ void main() {
             return;
         }
 
-        const float strength      = g_cfgStrength ? g_cfgStrength->value() : 0.0f;
-        const float edgeBoost     = g_cfgEdgeBoost ? g_cfgEdgeBoost->value() : 0.0f;
-        const float verticalRatio = g_cfgVerticalRatio ? g_cfgVerticalRatio->value() : 0.0f;
-        const float chromaBoost   = g_cfgChromaBoost ? g_cfgChromaBoost->value() : 1.45f;
-        const float refract       = g_cfgRefract ? g_cfgRefract->value() : 9.0f;
-        const float rimPrism      = g_cfgRimPrism ? g_cfgRimPrism->value() : 0.07f;
-        const float dome          = g_cfgDome ? g_cfgDome->value() : 0.48f;
-        const float maxBevel      = g_cfgMaxBevel ? g_cfgMaxBevel->value() : 20.0f;
-        const float panelScale    = g_cfgPanelScale ? g_cfgPanelScale->value() : 0.85f;
+        const float strength         = g_cfgStrength ? g_cfgStrength->value() : 0.0f;
+        const float edgeBoost        = g_cfgEdgeBoost ? g_cfgEdgeBoost->value() : 0.0f;
+        const float verticalRatio    = g_cfgVerticalRatio ? g_cfgVerticalRatio->value() : 0.0f;
+        const float chromaBoost      = g_cfgChromaBoost ? g_cfgChromaBoost->value() : 1.45f;
+        const float refract          = g_cfgRefract ? g_cfgRefract->value() : 9.0f;
+        const float rimPrism         = g_cfgRimPrism ? g_cfgRimPrism->value() : 0.07f;
+        const float dome             = g_cfgDome ? g_cfgDome->value() : 0.48f;
+        const float maxBevel         = g_cfgMaxBevel ? g_cfgMaxBevel->value() : 20.0f;
+        const float panelScale       = g_cfgPanelScale ? g_cfgPanelScale->value() : 0.85f;
+        const float windowCoreScale  = g_cfgWindowCoreScale ? g_cfgWindowCoreScale->value() : 0.45f;
+        const float windowBevelScale = g_cfgWindowBevelScale ? g_cfgWindowBevelScale->value() : 0.95f;
+        const float windowMaxBevel   = g_cfgWindowMaxBevel ? g_cfgWindowMaxBevel->value() : 26.0f;
 
-        if (strength <= 0.0001f && edgeBoost <= 0.0001f && refract <= 0.0001f && rimPrism <= 0.0001f && dome <= 0.0001f) {
+        if ((strength <= 0.0001f && edgeBoost <= 0.0001f && refract <= 0.0001f && rimPrism <= 0.0001f && dome <= 0.0001f) ||
+            (isWindow && windowCoreScale <= 0.0001f && windowBevelScale <= 0.0001f)) {
             orig(thisptr, tex, box, data);
             return;
         }
@@ -650,17 +719,89 @@ void main() {
             return;
         }
 
-        const float monScale = std::max(pMonitor->m_scale, 1.0f) *
-                               static_cast<float>(std::max(0.5 * (scaleX + scaleY), 0.1));
-        const float maxBevelPx = std::clamp(maxBevel, 8.0f, 48.0f) * monScale;
+        struct ScissorRect {
+            int x = 0;
+            int y = 0;
+            int w = 0;
+            int h = 0;
+        };
 
-        // Alpha-mask SDF mode for multi-card notifications (and oversized fullscreen logout-menu fallback).
-        const bool wantsMask = ls && (
+        std::vector<ScissorRect> scissorRects;
+        const bool               canUseDamage =
+            pMonitor->m_transform == WL_OUTPUT_TRANSFORM_NORMAL &&
+            g_pHyprRenderer->m_renderData.renderModif.modifs.empty() &&
+            g_pHyprRenderer->m_renderData.clipBox.empty() &&
+            data.clipRegion.empty() &&
+            data.damage &&
+            !data.damage->empty();
+
+        if (canUseDamage) {
+            const int fbBoxX1 = static_cast<int>(std::floor(bx));
+            const int fbBoxY1 = static_cast<int>(std::floor(by));
+            const int fbBoxX2 = static_cast<int>(std::ceil(bx + bw));
+            const int fbBoxY2 = static_cast<int>(std::ceil(by + bh));
+
+            data.damage->forEachRect([&](const pixman_box32_t& r) {
+                const int rx1 = static_cast<int>(std::floor(static_cast<double>(r.x1) * scaleX));
+                const int ry1 = static_cast<int>(std::floor(static_cast<double>(r.y1) * scaleY));
+                const int rx2 = static_cast<int>(std::ceil(static_cast<double>(r.x2) * scaleX));
+                const int ry2 = static_cast<int>(std::ceil(static_cast<double>(r.y2) * scaleY));
+
+                const int ix1 = std::max(rx1, fbBoxX1);
+                const int iy1 = std::max(ry1, fbBoxY1);
+                const int ix2 = std::min(rx2, fbBoxX2);
+                const int iy2 = std::min(ry2, fbBoxY2);
+
+                if (ix1 < ix2 && iy1 < iy2) {
+                    const int dsx = std::clamp(ix1 - kDamagePadPx, 0, fbW);
+                    const int dsy = std::clamp(iy1 - kDamagePadPx, 0, fbH);
+                    const int dex = std::clamp(ix2 + kDamagePadPx, 0, fbW);
+                    const int dey = std::clamp(iy2 + kDamagePadPx, 0, fbH);
+                    if (dex > dsx && dey > dsy)
+                        scissorRects.push_back({dsx, dsy, dex - dsx, dey - dsy});
+                }
+            });
+
+            if (scissorRects.empty()) {
+                orig(thisptr, tex, box, data);
+                return;
+            }
+
+            if (scissorRects.size() > kMaxDamageRects) {
+                int minX = scissorRects[0].x;
+                int minY = scissorRects[0].y;
+                int maxX = scissorRects[0].x + scissorRects[0].w;
+                int maxY = scissorRects[0].y + scissorRects[0].h;
+                for (size_t i = 1; i < scissorRects.size(); ++i) {
+                    minX = std::min(minX, scissorRects[i].x);
+                    minY = std::min(minY, scissorRects[i].y);
+                    maxX = std::max(maxX, scissorRects[i].x + scissorRects[i].w);
+                    maxY = std::max(maxY, scissorRects[i].y + scissorRects[i].h);
+                }
+                scissorRects.clear();
+                scissorRects.push_back({minX, minY, maxX - minX, maxY - minY});
+            }
+        } else {
+            scissorRects.push_back({sx, sy, sw, sh});
+        }
+
+        const float monScale       = std::max(pMonitor->m_scale, 1.0f) *
+                                     static_cast<float>(std::max(0.5 * (scaleX + scaleY), 0.1));
+        const float maxBevelPx     = std::clamp(isWindow ? windowMaxBevel : maxBevel, 8.0f, 64.0f) * monScale;
+        const float strengthScale  = isWindow ? windowCoreScale : panelScale;
+        const float edgeScale      = isWindow ? windowBevelScale : panelScale;
+        const float domeScale      = isWindow ? windowBevelScale : panelScale;
+        const float refractScale   = isWindow ? windowBevelScale : 1.0f;
+        const float bodyPrismScale = isWindow ? windowCoreScale : 1.0f;
+        const float rimPrismScale  = isWindow ? windowBevelScale : 1.0f;
+
+        // Alpha-mask SDF mode for multi-card notifications, oversized fullscreen logout-menu, and matched window popups.
+        const bool wantsMask = isWindowPopup || (ls && (
             ls->m_namespace == "notifications" ||
             (ls->m_namespace == "logout-menu" &&
              bw > 0.75 * static_cast<double>(fbW) &&
              bh > 0.75 * static_cast<double>(fbH))
-        );
+        ));
         const bool hasCustomCropUV =
             (data.primarySurfaceUVTopLeft.x >= 0.0 || data.primarySurfaceUVTopLeft.y >= 0.0) &&
             (data.primarySurfaceUVTopLeft != Vector2D(0.0, 0.0) ||
@@ -676,7 +817,9 @@ void main() {
             tex->m_transform == HYPRUTILS_TRANSFORM_NORMAL &&
             data.blurredBG->m_transform == HYPRUTILS_TRANSFORM_NORMAL;
         const bool  useMask     = wantsMask && canSampleMask;
-        const float alphaThresh = (data.discardOpacity > 0.0f) ? data.discardOpacity : 0.1f;
+        const float alphaThresh = (data.discardOpacity > 0.0f)
+                                      ? data.discardOpacity
+                                      : (isWindowPopup ? 0.05f : 0.1f);
 
         g_inHook = true;
         Hyprutils::Utils::CScopeGuard reentryGuard([&]() { g_inHook = false; });
@@ -816,7 +959,6 @@ void main() {
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glEnable(GL_SCISSOR_TEST);
-            glScissor(sx, sy, sw, sh);
 
             glUseProgram(g_program);
             glUniform1i(g_uTex, 0);
@@ -846,8 +988,18 @@ void main() {
                 glUniform1f(g_uDome, dome);
             if (g_uMaxBevelPx >= 0)
                 glUniform1f(g_uMaxBevelPx, maxBevelPx);
-            if (g_uPanelScale >= 0)
-                glUniform1f(g_uPanelScale, panelScale);
+            if (g_uStrengthScale >= 0)
+                glUniform1f(g_uStrengthScale, strengthScale);
+            if (g_uEdgeScale >= 0)
+                glUniform1f(g_uEdgeScale, edgeScale);
+            if (g_uDomeScale >= 0)
+                glUniform1f(g_uDomeScale, domeScale);
+            if (g_uRefractScale >= 0)
+                glUniform1f(g_uRefractScale, refractScale);
+            if (g_uBodyPrismScale >= 0)
+                glUniform1f(g_uBodyPrismScale, bodyPrismScale);
+            if (g_uRimPrismScale >= 0)
+                glUniform1f(g_uRimPrismScale, rimPrismScale);
             if (g_uUseMask >= 0)
                 glUniform1i(g_uUseMask, useMask ? 1 : 0);
             if (g_uAlphaThresh >= 0)
@@ -856,7 +1008,10 @@ void main() {
                 glUniform1f(g_uMaskStepScale, monScale);
 
             glBindVertexArray(g_vao);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            for (const auto& sr : scissorRects) {
+                glScissor(sr.x, sr.y, sr.w, sr.h);
+                glDrawArrays(GL_TRIANGLES, 0, 3);
+            }
         }
 
         auto caTex = g_caFB->getTexture();
@@ -970,11 +1125,50 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
         0.85f,
         Config::Values::SFloatValueOptions{.min = 0.2f, .max = 1.5f, .refresh = kBlurRefresh}
     );
+    g_cfgWindows = Config::Values::makeConfigValue<Config::Values::CBoolValue>(
+        "plugin:bar_ca:windows",
+        "Enable chromatic aberration and 3D convex bevel on windows carrying window_tag",
+        true,
+        Config::Values::SBoolValueOptions{.refresh = kBlurRefresh}
+    );
+    g_cfgWindowPopups = Config::Values::makeConfigValue<Config::Values::CBoolValue>(
+        "plugin:bar_ca:window_popups",
+        "Enable alpha-mask chromatic aberration and 3D convex bevel on popups owned by windows carrying window_tag",
+        true,
+        Config::Values::SBoolValueOptions{.refresh = kBlurRefresh}
+    );
+    g_cfgWindowTag = Config::Values::makeConfigValue<Config::Values::CStringValue>(
+        "plugin:bar_ca:window_tag",
+        "Window tag required to opt a CWindow (and its CPopups) into Liquid Glass chromatic aberration",
+        "liquid-glass",
+        Config::Values::SStringValueOptions{.refresh = kBlurRefresh}
+    );
+    g_cfgWindowCoreScale = Config::Values::makeConfigValue<Config::Values::CFloatValue>(
+        "plugin:bar_ca:window_core_scale",
+        "Interior dispersion and body prism scale for matched windows",
+        0.45f,
+        Config::Values::SFloatValueOptions{.min = 0.0f, .max = 1.5f, .refresh = kBlurRefresh}
+    );
+    g_cfgWindowBevelScale = Config::Values::makeConfigValue<Config::Values::CFloatValue>(
+        "plugin:bar_ca:window_bevel_scale",
+        "Perimeter bevel dispersion, refraction, rim prism, and 3D dome scale for matched windows",
+        0.95f,
+        Config::Values::SFloatValueOptions{.min = 0.0f, .max = 2.0f, .refresh = kBlurRefresh}
+    );
+    g_cfgWindowMaxBevel = Config::Values::makeConfigValue<Config::Values::CFloatValue>(
+        "plugin:bar_ca:window_max_bevel",
+        "Maximum convex glass bevel radius in pixels for matched windows",
+        26.0f,
+        Config::Values::SFloatValueOptions{.min = 8.0f, .max = 64.0f, .refresh = kBlurRefresh}
+    );
 
     auto resetConfigs = []() {
         g_cfgEnabled.reset();
         g_cfgPopups.reset();
         g_cfgInputMethods.reset();
+        g_cfgWindows.reset();
+        g_cfgWindowPopups.reset();
+        g_cfgWindowTag.reset();
         g_cfgStrength.reset();
         g_cfgEdgeBoost.reset();
         g_cfgVerticalRatio.reset();
@@ -984,11 +1178,17 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
         g_cfgDome.reset();
         g_cfgMaxBevel.reset();
         g_cfgPanelScale.reset();
+        g_cfgWindowCoreScale.reset();
+        g_cfgWindowBevelScale.reset();
+        g_cfgWindowMaxBevel.reset();
     };
 
     if (!HyprlandAPI::addConfigValueV2(g_handle, g_cfgEnabled) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgPopups) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgInputMethods) ||
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgWindows) ||
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgWindowPopups) ||
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgWindowTag) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgStrength) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgEdgeBoost) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgVerticalRatio) ||
@@ -997,7 +1197,10 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgRimPrism) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgDome) ||
         !HyprlandAPI::addConfigValueV2(g_handle, g_cfgMaxBevel) ||
-        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgPanelScale)) {
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgPanelScale) ||
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgWindowCoreScale) ||
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgWindowBevelScale) ||
+        !HyprlandAPI::addConfigValueV2(g_handle, g_cfgWindowMaxBevel)) {
         resetConfigs();
         throw std::runtime_error("[hyprbar-ca] Failed to register plugin:bar_ca config values");
     }
@@ -1024,9 +1227,9 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
     return {
         "hyprbar-ca",
-        "Whole-glass optical chromatic aberration & 3D convex dome for status bar, Liquid Glass popups, and Fcitx5 IM popups",
+        "Whole-glass optical chromatic aberration & 3D convex dome for status bar, Liquid Glass popups, Fcitx5 IM popups, and tagged windows",
         "ca-dev",
-        "3.0.0",
+        "3.1.0",
     };
 }
 
@@ -1042,6 +1245,9 @@ APICALL EXPORT void PLUGIN_EXIT() {
     g_cfgEnabled.reset();
     g_cfgPopups.reset();
     g_cfgInputMethods.reset();
+    g_cfgWindows.reset();
+    g_cfgWindowPopups.reset();
+    g_cfgWindowTag.reset();
     g_cfgStrength.reset();
     g_cfgEdgeBoost.reset();
     g_cfgVerticalRatio.reset();
@@ -1051,6 +1257,9 @@ APICALL EXPORT void PLUGIN_EXIT() {
     g_cfgDome.reset();
     g_cfgMaxBevel.reset();
     g_cfgPanelScale.reset();
+    g_cfgWindowCoreScale.reset();
+    g_cfgWindowBevelScale.reset();
+    g_cfgWindowMaxBevel.reset();
     g_handle = nullptr;
 
     damageAllMonitors();

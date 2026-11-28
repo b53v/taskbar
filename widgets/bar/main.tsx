@@ -10,6 +10,7 @@ import Hardware from "./modules/Hardware.tsx";
 import SystemInfo from "./modules/SystemInfo/main.tsx";
 import Time from "./modules/Time.tsx";
 import OsIcon from "./modules/OsIcon.tsx";
+import Media, { hasMediaPlayer } from "./modules/Media.tsx";
 import options from "options.ts";
 
 function Bar({ gdkmonitor, ...props }: any) {
@@ -69,13 +70,14 @@ function Bar({ gdkmonitor, ...props }: any) {
     >
       <overlay>
         <centerbox hexpand cssClasses={["centerbox"]}>
-          {/* Left: App Context & Hardware Telemetry */}
+          {/* Left: App Context, Media & Hardware Telemetry */}
           <box halign={Gtk.Align.START} valign={Gtk.Align.CENTER} $type="start" spacing={4}>
             <box valign={Gtk.Align.CENTER} visible={options["bar.modules.os-icon.enable"]}>
               <OsIcon />
             </box>
-            {/* Keep the original compact layout: no additional title/icon strip. */}
-            <Separator />
+            <Separator visible={options["bar.modules.os-icon.enable"]} />
+            <Media />
+            <Separator visible={hasMediaPlayer} />
             <Hardware />
           </box>
 

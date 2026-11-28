@@ -17,6 +17,7 @@ const options = initializeConfig(
     "bar.ink": defineOption("auto"),
     "bar.modules.os-icon.type": defineOption("arch-symbolic"),
     "bar.modules.os-icon.enable": defineOption(true),
+    "bar.modules.media.enable": defineOption(true),
     "hardware-monitor.notifications.enable": defineOption(true),
     "hardware-monitor.thresholds.cpu-temp": defineOption(85),
     "hardware-monitor.thresholds.gpu-temp": defineOption(85),

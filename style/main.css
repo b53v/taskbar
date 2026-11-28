@@ -127,6 +127,7 @@ popover.background row:active {
 }
 
 /* modules & windows */
+/* Optical pill padding derived from edge = r * (1 - pi / 4) for 30px-tall full-pill bar */
 /* A Liquid Glass surface is defined by its lit edge, not by a fill.
  * We keep the original (almost clear) tint and add only a specular rim,
  * so nothing is masked behind the bar. */
@@ -169,8 +170,8 @@ popover.background row:active {
 .Bar .OsIcon {
   -gtk-icon-size: 1.18rem;
   /* Shift bottom-heavy Arch triangle up 1px (2px margin-bottom to overcome integer centering)
-   * so its optical centroid matches the bar centerline. */
-  margin: 0 5px 2px 5px;
+   * and keep left spacing concentric inside the semicircle endcap. */
+  margin: 0 4px 2px 1px;
   color: rgba(255, 255, 255, 0.97);
 }
 .Bar {
@@ -357,6 +358,76 @@ popover.background row:active {
   padding: 0 0.26rem;
 }
 .Bar {
+  /* MPRIS Media Info & Controls (auto-hides completely when idle/stopped) */
+}
+.Bar .bar-media {
+  margin: 0;
+}
+.Bar .bar-media-info,
+.Bar .bar-media-btn {
+  min-height: 24px;
+  min-width: 0;
+  margin: 0;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.97);
+  transition: background 120ms ease, color 400ms ease-in-out;
+}
+.Bar .bar-media-info:hover,
+.Bar .bar-media-btn:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+.Bar .bar-media-info:active,
+.Bar .bar-media-btn:active {
+  background: rgba(255, 255, 255, 0.17);
+}
+.Bar .bar-media-info {
+  padding: 0 0.28rem;
+}
+.Bar .bar-media-info .bar-media-cover {
+  border-radius: 5px;
+  min-width: 18px;
+  min-height: 18px;
+}
+.Bar .bar-media-info .bar-media-icon {
+  font-size: 1rem;
+  min-width: 18px;
+  color: rgba(255, 255, 255, 0.97);
+  text-shadow: -0.5px 0 0 rgba(0, 0, 0, 0.5), 0.5px 0 0 rgba(0, 0, 0, 0.5), 0 -0.5px 0 rgba(0, 0, 0, 0.5), 0 0.5px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.32);
+}
+.Bar .bar-media-info .bar-media-icon.spotify {
+  font-size: 1.04rem;
+}
+.Bar .bar-media-info .bar-media-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.97);
+  text-shadow: -0.5px 0 0 rgba(0, 0, 0, 0.5), 0.5px 0 0 rgba(0, 0, 0, 0.5), 0 -0.5px 0 rgba(0, 0, 0, 0.5), 0 0.5px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.32);
+}
+.Bar .bar-media-btn {
+  padding: 0 0.22rem;
+}
+.Bar .bar-media-btn label {
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: -0.5px 0 0 rgba(0, 0, 0, 0.5), 0.5px 0 0 rgba(0, 0, 0, 0.5), 0 -0.5px 0 rgba(0, 0, 0, 0.5), 0 0.5px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.32);
+}
+.Bar .bar-media-btn:hover label {
+  color: rgba(255, 255, 255, 0.97);
+}
+.Bar .bar-media-btn.play-pause label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.97);
+}
+.Bar .bar-media-btn:disabled {
+  opacity: 0.38;
+}
+.Bar .bar-media-btn:disabled:hover {
+  background: transparent;
+}
+.Bar {
   /* System menu */
 }
 .Bar .system-menu-toggler box {
@@ -414,6 +485,9 @@ popover.background row:active {
   padding: 0 12px;
   margin: 0;
 }
+.bar-style-floating .centerbox > box:first-child {
+  padding: 0 12px 0 8px;
+}
 
 /* Full-width connected style */
 .bar-style-expanded {
@@ -424,7 +498,8 @@ popover.background row:active {
   transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
   border-radius: 9999px;
   min-height: 30px;
-  padding: 0 12px;
+  /* Asymmetric left concentric icon endcap (8px + 1px OsIcon) vs right text endcap (12px + clock ~= 20px, incl. $barOpticalEdge) */
+  padding: 0 12px 0 8px;
   margin: 0;
 }
 .bar-style-expanded .centerbox > box {

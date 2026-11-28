@@ -19,6 +19,12 @@ import {
 } from "widgets/bar/modules/Workspaces";
 import Progress from "widgets/osd/modules/Progress";
 import { SysTray } from "widgets/bar/modules/SysTray";
+import Media, {
+  formatMediaInfo,
+  hasMediaPlayer,
+  selectActivePlayer,
+} from "widgets/bar/modules/Media";
+import Mpris from "gi://AstalMpris";
 import { NotificationBox } from "widgets/system-menu/modules/notification-center/main";
 import { CssReloader } from "utils/cssReload";
 import { StyleProvider } from "utils/styleProvider";
@@ -118,7 +124,18 @@ async function test() {
     const osd = <Progress visible={false} setVisible={() => {}} /> as Gtk.Widget;
     const notifications = <NotificationBox /> as Gtk.Widget;
     const systray = <SysTray /> as Gtk.Box;
-    assert(dots && osd && notifications && systray, "widget construction failed");
+    const media = <Media /> as Gtk.Box;
+    assert(dots && osd && notifications && systray && media, "widget construction failed");
+    assert(
+      media instanceof Gtk.Box &&
+        media.has_css_class("bar-media") &&
+        media.has_css_class("module") &&
+        media.get_visible() === hasMediaPlayer.get(),
+      "Media initial widget/visibility state failed",
+    );
+    options["bar.modules.media.enable"].value = false;
+    assert(!hasMediaPlayer.get() && !media.get_visible(), "Media did not hide when option disabled");
+    options["bar.modules.media.enable"].value = true;
     const revealer = systray.get_first_child() as Gtk.Revealer;
     const toggle = revealer?.get_next_sibling() as Gtk.Button;
     const toggleIcon = toggle?.get_child() as Gtk.Image;
@@ -250,6 +267,42 @@ async function test() {
     "focus switch spring did not settle cleanly",
   );
   print("PASS: min-1 workspace state, even-width centering, critically-damped spring conservation/settle");
+
+  assert(selectActivePlayer([]) === null, "empty MPRIS list did not return null");
+  assert(
+    selectActivePlayer([
+      { busName: "org.mpris.MediaPlayer2.spotify", playbackStatus: Mpris.PlaybackStatus.STOPPED },
+      { busName: "org.mpris.MediaPlayer2.vlc", playbackStatus: Mpris.PlaybackStatus.STOPPED },
+    ]) === null,
+    "stopped MPRIS players did not auto-hide",
+  );
+  const pausedChrome = { busName: "org.mpris.MediaPlayer2.chromium.instance1", playbackStatus: Mpris.PlaybackStatus.PAUSED };
+  const pausedSpotify = { busName: "org.mpris.MediaPlayer2.spotify", playbackStatus: Mpris.PlaybackStatus.PAUSED };
+  const playingChrome = { busName: "org.mpris.MediaPlayer2.chromium.instance2", playbackStatus: Mpris.PlaybackStatus.PLAYING };
+  const playingSpotify = { busName: "org.mpris.MediaPlayer2.spotify", playbackStatus: Mpris.PlaybackStatus.PLAYING };
+  assert(
+    selectActivePlayer([pausedChrome, playingChrome]) === playingChrome,
+    "PLAYING player did not take priority over PAUSED player",
+  );
+  assert(
+    selectActivePlayer([playingChrome, playingSpotify]) === playingSpotify,
+    "Spotify did not take priority among PLAYING players",
+  );
+  assert(
+    selectActivePlayer([pausedChrome, pausedSpotify]) === pausedSpotify,
+    "Spotify did not take priority among PAUSED players",
+  );
+  assert(
+    selectActivePlayer([pausedChrome]) === pausedChrome,
+    "PAUSED fallback player was not selected",
+  );
+  assert(
+    formatMediaInfo("Track", "Artist", "Spotify") === "Track - Artist" &&
+      formatMediaInfo("Stream", "", "Chrome") === "Stream" &&
+      formatMediaInfo("", "", "Spotify") === "Spotify",
+    "formatMediaInfo formatting failed",
+  );
+  print("PASS: Media player priority selection, stopped auto-hide, formatting");
   sysmon.destroy();
   void app;
 }

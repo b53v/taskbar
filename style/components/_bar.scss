@@ -1,6 +1,11 @@
 @use "../layouts" as *;
 @use "../abstracts" as *;
 @use "sass:color";
+@use "sass:math";
+
+/* Optical pill padding derived from edge = r * (1 - pi / 4) for 30px-tall full-pill bar */
+$barPillRadius: 15px;
+$barOpticalEdge: math.round($barPillRadius * (1 - math.$pi * 0.25));
 
 /* A Liquid Glass surface is defined by its lit edge, not by a fill.
  * We keep the original (almost clear) tint and add only a specular rim,
@@ -64,8 +69,8 @@
   .OsIcon {
     -gtk-icon-size: 1.18rem;
     /* Shift bottom-heavy Arch triangle up 1px (2px margin-bottom to overcome integer centering)
-     * so its optical centroid matches the bar centerline. */
-    margin: 0 5px 2px 5px;
+     * and keep left spacing concentric inside the semicircle endcap. */
+    margin: 0 4px 2px 1px;
     color: $barInk;
   }
 
@@ -230,6 +235,87 @@
     padding: 0 0.26rem;
   }
 
+  /* MPRIS Media Info & Controls (auto-hides completely when idle/stopped) */
+  .bar-media {
+    margin: 0;
+  }
+
+  .bar-media-info,
+  .bar-media-btn {
+    min-height: 24px;
+    min-width: 0;
+    margin: 0;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: $barInk;
+    transition: background 120ms ease, color 400ms ease-in-out;
+
+    &:hover {
+      background: color.adjust($barInk, $alpha: -0.86);
+    }
+
+    &:active {
+      background: color.adjust($barInk, $alpha: -0.8);
+    }
+  }
+
+  .bar-media-info {
+    padding: 0 0.28rem;
+
+    .bar-media-cover {
+      border-radius: 5px;
+      min-width: 18px;
+      min-height: 18px;
+    }
+
+    .bar-media-icon {
+      font-size: 1rem;
+      min-width: 18px;
+      color: $barInk;
+      text-shadow: $barInkShadow;
+
+      &.spotify {
+        font-size: 1.04rem;
+      }
+    }
+
+    .bar-media-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: $barInk;
+      text-shadow: $barInkShadow;
+    }
+  }
+
+  .bar-media-btn {
+    padding: 0 0.22rem;
+
+    label {
+      font-size: 0.96rem;
+      font-weight: 500;
+      color: $barInkSecondary;
+      text-shadow: $barInkShadow;
+    }
+
+    &:hover label {
+      color: $barInk;
+    }
+
+    &.play-pause label {
+      font-size: 1rem;
+      color: $barInk;
+    }
+
+    &:disabled {
+      opacity: 0.38;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+
   /* System menu */
   .system-menu-toggler {
     box {
@@ -295,6 +381,10 @@
     min-height: 30px;
     padding: 0 12px;
     margin: 0;
+
+    &:first-child {
+      padding: 0 12px 0 8px;
+    }
   }
 }
 
@@ -304,7 +394,8 @@
   transition: color 400ms ease-in-out, text-shadow 400ms ease-in-out, background-color 400ms ease-in-out, border-color 400ms ease-in-out, box-shadow 400ms ease-in-out;
   border-radius: 9999px;
   min-height: 30px;
-  padding: 0 12px;
+  /* Asymmetric left concentric icon endcap (8px + 1px OsIcon) vs right text endcap (12px + clock ~= 20px, incl. $barOpticalEdge) */
+  padding: 0 12px 0 8px;
   margin: 0;
 
   .centerbox > box {
